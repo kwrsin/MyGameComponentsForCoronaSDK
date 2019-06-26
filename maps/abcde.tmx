@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="10" tilewidth="32" tileheight="32" backgroundcolor="#008040" nextobjectid="5">
+ <tileset firstgid="1" name="tilemap" tilewidth="32" tileheight="32" tilecount="256" columns="8">
+  <image source="tilemap.PNG" width="256" height="1024"/>
+  <tile id="0" probability="0.3">
+   <properties>
+    <property name="bodyType" value="static"/>
+   </properties>
+   <objectgroup draworder="index" name="rock_collider">
+    <properties>
+     <property name="aaa" value="12"/>
+    </properties>
+   </objectgroup>
+  </tile>
+  <tile id="27">
+   <objectgroup draworder="index" name="hoh"/>
+   <animation>
+    <frame tileid="27" duration="1000"/>
+    <frame tileid="60" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="bodyType" value="dynamic"/>
+   </properties>
+   <objectgroup draworder="index" name="taru"/>
+   <animation>
+    <frame tileid="48" duration="1000"/>
+    <frame tileid="49" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="31">
+   <properties>
+    <property name="bodyType" value="dynamic"/>
+   </properties>
+   <objectgroup draworder="index" name="takarabako">
+    <properties>
+     <property name="bounce" type="float" value="0.8"/>
+     <property name="density" type="float" value="10"/>
+     <property name="friction" value="0.2"/>
+    </properties>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <layer name="tilelayer_1" width="9" height="10">
+  <data>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="32"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="32"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+   <tile gid="1"/>
+  </data>
+ </layer>
+ <objectgroup name="objectlayer_1">
+  <object id="4" name="hoge" type="player" gid="28" x="184" y="126" width="32" height="32">
+   <properties>
+    <property name="bodyType" value="dynamic"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
