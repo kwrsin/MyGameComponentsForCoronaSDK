@@ -6,9 +6,16 @@
 
 -- Your code here
 
--- load a tilemap file
 
-local player = {}
+
+
+
+
+-- load a tilemap file
+local actor = require('components.actors.actor')
+local player = actor:create_actor_from_tileset(nil, "components.actors.player_behavor")
+player:start_timer()
+
 local tilemap_panel = display.newGroup()
 local physics = require("physics")
 -- physics.setDrawMode("hybrid")
@@ -24,7 +31,7 @@ end
 
 function collision_event(self, event)
   if event.phase == "began" then
-    print("collided " .. event.target.identifier)
+    -- print("collided " .. event.target.identifier)
   end
 end
 

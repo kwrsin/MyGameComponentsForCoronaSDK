@@ -59,11 +59,11 @@ function M:create_tileset_objects(directory)
 end
 
 function M:create_layer_objects(layer_object, map_options)
-  local function get_tileset(tile_id)
+  local function get_tileset(gid)
     local offset = 0
     local tileset_id = 1
     for i, t in ipairs(self.tilemap.tilesets) do
-      if tile_id >= t.firstgid and tile_id <= t.tilecount + offset then
+      if gid >= t.firstgid and gid <= t.tilecount + offset then
         return t, tileset_id
       end
       tileset_id = tileset_id + 1 
@@ -72,20 +72,20 @@ function M:create_layer_objects(layer_object, map_options)
     return nil, tileset_id
   end
 
-  local function get_tile(tile_id, tiles)
-    local tile_id_ = tile_id - 1
+  local function get_tile(local_id, tiles)
+    local local_id_ = local_id - 1
     for i, tile in ipairs(tiles) do
-      if tile.id == tonumber(tile_id_) then
+      if tile.id == tonumber(local_id_) then
         return tile
       end
     end
     return nil
   end
 
-  local function create_game_object(layer_object, tile_id, width, height, tile, object_sheet, onTouch)
+  local function create_game_object(layer_object, local_id, width, height, tile, object_sheet, onTouch)
     local object
     if tile == nil or not tile.animation then
-      object = display.newImageRect(layer_object, object_sheet, tile_id, width, height)
+      object = display.newImageRect(layer_object, object_sheet, local_id, width, height)
     elseif tile.animation then
       local sequences = {}
       for i, anim in ipairs(tile.animation) do
@@ -129,25 +129,25 @@ function M:create_layer_objects(layer_object, map_options)
     end
   end
 
-  local function create_tile(layer_object, tile_id, row, col, grid_id, layer_id, onCreateGameObject, onTouch, onLocalCollision, onPreCollision, onPostCollision)
+  local function create_tile(layer_object, gid, row, col, grid_id, layer_id, onCreateGameObject, onTouch, onLocalCollision, onPreCollision, onPostCollision)
     local game_object = {}
-    local tileset, tileset_id = get_tileset(tile_id)
+    local tileset, tileset_id = get_tileset(gid)
     local layer = self.tilemap.layers[layer_id]
     local width = tileset.tilewidth
     local height = tileset.tileheight
-    local tile = get_tile(tile_id, tileset.tiles)
-
+    local local_id = gid - tileset.firstgid + 1
+    local tile = get_tile(local_id, tileset.tiles)
     if onCreateGameObject then
-      game_object = onCreateGameObject(layer_object, tile_id, width, height, tile, tileset.object_sheet, layer, onTouch)
+      game_object = onCreateGameObject(layer_object, local_id, width, height, tile, tileset.object_sheet, layer, onTouch)
     else
-      game_object = create_game_object(layer_object, tile_id, width, height, tile, tileset.object_sheet, onTouch)
+      game_object = create_game_object(layer_object, local_id, width, height, tile, tileset.object_sheet, onTouch)
     end
 
     game_object.x = (col - 1) * width
     game_object.y = (row - 1) * height
     game_object.identifier = grid_id
     game_object.layer_name = layer.name
-    game_object.tile_id = tile_id
+    game_object.gid = gid
     game_object.tileset_id = tileset_id
 
     if self.physics then
@@ -261,21 +261,22 @@ function M:create_layer_objects(layer_object, map_options)
     end
     for i, object in ipairs(l.objects) do
       local game_object
-      local tile_id = object.gid
-      local tileset, tileset_id = get_tileset(tile_id)
+      local gid = object.gid
+      local tileset, tileset_id = get_tileset(gid)
       local width = tileset.tilewidth
       local height = tileset.tileheight
-      local tile = get_tile(tile_id, tileset.tiles)
+      local local_id = gid - tileset.firstgid + 1
+      local tile = get_tile(local_id, tileset.tiles)
       if onCreateGameObject then
-        game_object = onCreateGameObject(layer_object, tile_id, width, height, tile, tileset.object_sheet, l, onTouch)
+        game_object = onCreateGameObject(layer_object, local_id, width, height, tile, tileset.object_sheet, l, onTouch)
       else
-        game_object = create_game_object(layer_object, tile_id, width, height, tile, tileset.object_sheet, onTouch)
+        game_object = create_game_object(layer_object, local_id, width, height, tile, tileset.object_sheet, onTouch)
       end
       game_object.x = object.x
       game_object.y = object.y
       game_object.identifier = i
       game_object.layer_name = l.name
-      game_object.tile_id = tile_id
+      game_object.gid = gid
       game_object.tileset_id = tileset_id
 
       if self.physics then

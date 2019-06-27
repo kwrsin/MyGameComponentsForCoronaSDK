@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="10" tilewidth="32" tileheight="32" backgroundcolor="#008040" nextobjectid="5">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="10" tilewidth="32" tileheight="32" backgroundcolor="#008040" nextobjectid="15">
  <tileset firstgid="1" name="tilemap" tilewidth="32" tileheight="32" tilecount="256" columns="8">
   <image source="tilemap.PNG" width="256" height="1024"/>
   <tile id="0" probability="0.3">
@@ -40,6 +40,15 @@
      <property name="friction" value="0.2"/>
     </properties>
    </objectgroup>
+  </tile>
+ </tileset>
+ <tileset firstgid="257" name="chara" tilewidth="32" tileheight="32" tilecount="512" columns="32">
+  <image source="chara.png" width="1024" height="512"/>
+  <tile id="64">
+   <animation>
+    <frame tileid="64" duration="100"/>
+    <frame tileid="65" duration="100"/>
+   </animation>
   </tile>
  </tileset>
  <layer name="tilelayer_1" width="9" height="10">
@@ -137,10 +146,11 @@
   </data>
  </layer>
  <objectgroup name="objectlayer_1">
-  <object id="4" name="hoge" type="player" gid="28" x="184" y="126" width="32" height="32">
+  <object id="4" name="hoge" type="player" gid="28" x="191" y="184" width="32" height="32">
    <properties>
     <property name="bodyType" value="dynamic"/>
    </properties>
   </object>
+  <object id="14" name="hoge" type="hito" gid="321" x="82" y="167" width="32" height="32"/>
  </objectgroup>
 </map>

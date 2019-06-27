@@ -8,7 +8,7 @@ return {
   height = 10,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 5,
+  nextobjectid = 15,
   backgroundcolor = { 0, 128, 64 },
   properties = {},
   tilesets = {
@@ -123,6 +123,39 @@ return {
           }
         }
       }
+    },
+    {
+      name = "chara",
+      firstgid = 257,
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "chara.png",
+      imagewidth = 1024,
+      imageheight = 512,
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 512,
+      tiles = {
+        {
+          id = 64,
+          animation = {
+            {
+              tileid = 64,
+              duration = 100
+            },
+            {
+              tileid = 65,
+              duration = 100
+            }
+          }
+        }
+      }
     }
   },
   layers = {
@@ -167,8 +200,8 @@ return {
           name = "hoge",
           type = "player",
           shape = "rectangle",
-          x = 184,
-          y = 126,
+          x = 191,
+          y = 184,
           width = 32,
           height = 32,
           rotation = 0,
@@ -177,6 +210,20 @@ return {
           properties = {
             ["bodyType"] = "dynamic"
           }
+        },
+        {
+          id = 14,
+          name = "hoge",
+          type = "hito",
+          shape = "rectangle",
+          x = 82,
+          y = 167,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 321,
+          visible = true,
+          properties = {}
         }
       }
     }
