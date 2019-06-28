@@ -12,9 +12,6 @@
 
 
 -- load a tilemap file
-local actor = require('components.actors.actor')
-local player = actor:create_actor_from_tileset(nil, "components.actors.player_behavor")
-player:start_timer()
 
 local tilemap_panel = display.newGroup()
 local physics = require("physics")
@@ -48,6 +45,15 @@ loader:load_tilemap(tilemap_panel, map_path, {
 }, physics)
 
 
+-- char definition
+local actor = require('components.actors.actor')
+local init_data = {
+  x = display.contentCenterX,
+  y = display.contentCenterY + 96
+}
+local player = actor:create_actor_from_tileset(
+  display.newGroup(), "components.actors.player_behavor", loader.tilemap.tilesets, init_data)
+player:start_timer()
 
 
 

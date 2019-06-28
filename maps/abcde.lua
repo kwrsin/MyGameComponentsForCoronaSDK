@@ -1,7 +1,7 @@
 return {
   version = "1.1",
   luaversion = "5.1",
-  tiledversion = "0.18.0",
+  tiledversion = "0.17.2",
   orientation = "orthogonal",
   renderorder = "right-down",
   width = 9,
@@ -115,7 +115,7 @@ return {
             offsety = 0,
             draworder = "index",
             properties = {
-              ["bounce"] = 0.8,
+              ["bounce"] = 0.80000000000000004,
               ["density"] = 10,
               ["friction"] = "0.2"
             },
@@ -210,20 +210,6 @@ return {
           properties = {
             ["bodyType"] = "dynamic"
           }
-        },
-        {
-          id = 14,
-          name = "hoge",
-          type = "hito",
-          shape = "rectangle",
-          x = 82,
-          y = 167,
-          width = 32,
-          height = 32,
-          rotation = 0,
-          gid = 321,
-          visible = true,
-          properties = {}
         }
       }
     }
