@@ -52,6 +52,9 @@ return {
         },
         {
           id = 27,
+          properties = {
+            ["behavor"] = "components.actors.player_behavor"
+          },
           objectGroup = {
             type = "objectgroup",
             name = "hoh",

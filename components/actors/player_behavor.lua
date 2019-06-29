@@ -10,7 +10,7 @@ M.sequences = {
 
 function M:Defensive()
     print("oraoraora")
-    M:up()
+    -- M:up()
     coroutine.yield()
 
     return M:Offensive()
@@ -18,7 +18,7 @@ end
 
 function M:Offensive()
     print("mudamudamuda")
-    M:down()
+    -- M:down()
     coroutine.yield()
 
     return M:Defensive()

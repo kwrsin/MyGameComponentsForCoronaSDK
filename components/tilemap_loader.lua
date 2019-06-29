@@ -130,7 +130,7 @@ function M:create_layer_objects(layer_object, map_options)
   end
 
   local function create_tile(layer_object, gid, row, col, grid_id, layer_id, onCreateGameObject, onTouch, onLocalCollision, onPreCollision, onPostCollision)
-    local game_object = {}
+    local game_object = nil
     local tileset, tileset_id = get_tileset(gid)
     local layer = self.tilemap.layers[layer_id]
     local width = tileset.tilewidth
@@ -139,16 +139,22 @@ function M:create_layer_objects(layer_object, map_options)
     local tile = get_tile(local_id, tileset.tiles)
     if onCreateGameObject then
       game_object = onCreateGameObject(layer_object, local_id, width, height, tile, tileset.object_sheet, layer, onTouch)
-    else
+    end
+    if game_object == nil then
       game_object = create_game_object(layer_object, local_id, width, height, tile, tileset.object_sheet, onTouch)
     end
 
+    if game_object == nil then
+      print(string.format("could not create a game object %d", gid))
+      return nil
+    end
     game_object.x = (col - 1) * width
     game_object.y = (row - 1) * height
     game_object.identifier = grid_id
     game_object.layer_name = layer.name
     game_object.gid = gid
     game_object.tileset_id = tileset_id
+
 
     if self.physics then
       if tile and tile.objectGroup and tile.properties then          
@@ -260,7 +266,7 @@ function M:create_layer_objects(layer_object, map_options)
       end
     end
     for i, object in ipairs(l.objects) do
-      local game_object
+      local game_object = nil
       local gid = object.gid
       local tileset, tileset_id = get_tileset(gid)
       local width = tileset.tilewidth
@@ -269,9 +275,16 @@ function M:create_layer_objects(layer_object, map_options)
       local tile = get_tile(local_id, tileset.tiles)
       if onCreateGameObject then
         game_object = onCreateGameObject(layer_object, local_id, width, height, tile, tileset.object_sheet, l, onTouch)
-      else
+      end
+      if game_object == nil then
         game_object = create_game_object(layer_object, local_id, width, height, tile, tileset.object_sheet, onTouch)
       end
+
+      if game_object == nil then
+        print(string.format("could not create a game object %d", gid))
+        return nil
+      end
+
       game_object.x = object.x
       game_object.y = object.y
       game_object.identifier = i
