@@ -99,7 +99,7 @@ return function()
 
   function M:enterFrame(event)
     if M.is_move_up then
-      M:moveRround()
+      M:moveAround()
       -- M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
       -- M.sprite:applyForce(0, -0.3, M.sprite.x, M.sprite.y)
       -- M.sprite.y = M.sprite.y - 5
@@ -107,7 +107,7 @@ return function()
     end
   end
 
-  function M:moveRround()
+  function M:moveAround()
     global_queue:regist_command(function()
       transition.to(self.sprite, {time = 1000, x = 0, y = 0, onComplete=function() global_queue:clear_current_command() end})
     end)
@@ -122,6 +122,10 @@ return function()
     end)
     global_queue:regist_command(function()
       transition.to(self.sprite, {time = 1000, x = display.contentCenterX, y = display.contentCenterY, onComplete=function() global_queue:clear_current_command() end})
+    end)
+    global_queue:regist_command(function()
+      M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
+      global_queue:clear_current_command()
     end)
   end
 
