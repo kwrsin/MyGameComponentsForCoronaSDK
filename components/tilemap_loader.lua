@@ -312,7 +312,7 @@ function M:create_layer_objects(layer_object, map_options)
 
       table.insert(game_objects, game_object)
     end
-
+    self.tilemap.layers[layer_id].game_objects = game_objects
   end
 
   for i, l in ipairs(self.tilemap.layers) do

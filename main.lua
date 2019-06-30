@@ -3,11 +3,12 @@
 -- main.lua
 --
 -----------------------------------------------------------------------------------------
-
+global_queue = require("components.synchronized_non_blocking_methods")
 -- Your code here
 
 local player_behavor = "components.actors.player_behavor"
 local player
+local actor_list = {}
 
 
 
@@ -71,6 +72,7 @@ loader:load_tilemap(tilemap_panel, map_path, {
       if tile.properties.behavor == player_behavor then
         player = actor_instance
       end
+      table.insert(actor_list, actor_instance)
       return sprite_object
     end
   }
@@ -104,8 +106,10 @@ local listeners = {
     if isRepeat(event) then
       print(event.target.name .. " ON!!")
       player:up()
+      player:move_up(true)
     else
       player:down()
+      player:move_up(false)
       print(event.target.name .. " OFF!!")
     end
   end,
@@ -160,3 +164,12 @@ local listeners = {
 
 local vc = ui:get_virtual_controller(controller_panel, listeners)
 Runtime:addEventListener("touch", vc)
+
+Runtime:addEventListener("enterFrame", function(event)
+  for i = 1, #actor_list do
+    actor_list[i].enterFrame(event)
+  end
+  
+  global_queue:enterFrame()
+end)
+
