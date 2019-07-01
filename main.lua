@@ -19,6 +19,8 @@ local tilemap_panel = display.newGroup()
 local physics = require("physics")
 -- physics.setDrawMode("hybrid")
 physics.start()
+physics.pause()
+
 system.activate( "multitouch" )
 
 local map_path = 'maps.abcde'
@@ -173,3 +175,52 @@ Runtime:addEventListener("enterFrame", function(event)
   global_queue:enterFrame()
 end)
 
+
+-- scenario
+
+
+
+local scenario_panel = display.newGroup()
+local banner = display.newText(scenario_panel, "GAME START", -display.contentCenterX, display.contentCenterY, native.systemFont, 24 )
+banner.isVisible = false
+local touch_guard = display.newRect(scenario_panel, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+touch_guard.isVisible = false
+touch_guard.isHitTestable = true
+touch_guard:addEventListener("touch", function(event)
+  print("can not touch!!")
+  return true
+end)
+touch_guard:setFillColor(0, 1, 0)
+touch_guard.alpha = .3
+local function clear_cutton_command()
+  global_queue:clear_current_command()
+end
+
+
+local function execute_opening()
+  global_queue:regist_command(function()
+    banner.isVisible = true
+    transition.to(banner, {time=1000, x=display.contentCenterX, onComplete=clear_cutton_command})
+  end)
+  global_queue:regist_command(function()
+    transition.to(banner, {time=3000, x=display.contentCenterX, onComplete=clear_cutton_command})
+  end)
+  global_queue:regist_command(function()
+    transition.to(banner, {time=1000, x= display.contentWidth + display.contentCenterX, onComplete=clear_cutton_command})
+  end)
+  global_queue:regist_command(function()
+    timer.performWithDelay(100, function()
+      banner.isVisible = false
+      touch_guard.isHitTestable = false
+      physics.start()
+      clear_cutton_command()
+    end)
+  end)
+end
+
+local function execute_ending()
+end
+
+-- start game
+
+execute_opening()
