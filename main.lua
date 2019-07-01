@@ -181,7 +181,7 @@ end)
 
 
 local scenario_panel = display.newGroup()
-local banner = display.newText(scenario_panel, "GAME START", -display.contentCenterX, display.contentCenterY, native.systemFont, 24 )
+local banner = display.newText(scenario_panel, "READY", -display.contentCenterX, display.contentCenterY, "Arial", 32 )
 banner.isVisible = false
 local touch_guard = display.newRect(scenario_panel, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
 touch_guard.isVisible = false
@@ -192,7 +192,7 @@ touch_guard:addEventListener("touch", function(event)
 end)
 touch_guard:setFillColor(0, 1, 0)
 touch_guard.alpha = .3
-local function clear_cutton_command()
+local function clear_current_command()
   global_queue:clear_current_command()
 end
 
@@ -200,20 +200,42 @@ end
 local function execute_opening()
   global_queue:regist_command(function()
     banner.isVisible = true
-    transition.to(banner, {time=1000, x=display.contentCenterX, onComplete=clear_cutton_command})
+    transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
   end)
   global_queue:regist_command(function()
-    transition.to(banner, {time=3000, x=display.contentCenterX, onComplete=clear_cutton_command})
+    transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
   end)
   global_queue:regist_command(function()
-    transition.to(banner, {time=1000, x= display.contentWidth + display.contentCenterX, onComplete=clear_cutton_command})
+    transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+  end)
+  global_queue:regist_command(function()
+    banner.x = -display.contentCenterX
+    banner.text = "GO"
+    transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+  end)
+  global_queue:regist_command(function()
+    transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+  end)
+  global_queue:regist_command(function()
+    transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+  end)
+  global_queue:regist_command(function()
+    banner.x = -display.contentCenterX
+    banner.text = "FIGHT"
+    transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+  end)
+  global_queue:regist_command(function()
+    transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+  end)
+  global_queue:regist_command(function()
+    transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
   end)
   global_queue:regist_command(function()
     timer.performWithDelay(100, function()
       banner.isVisible = false
       touch_guard.isHitTestable = false
       physics.start()
-      clear_cutton_command()
+      clear_current_command()
     end)
   end)
 end
