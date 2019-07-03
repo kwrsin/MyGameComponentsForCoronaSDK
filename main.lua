@@ -253,6 +253,11 @@ bbs.createBBS(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", glob
 execute_opening()
 -- bbs:clearBBS()
 bbs:say(nil, "あういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, nil)
-bbs:say(nil, "リゾット\nねいろ\n", 500, nil, nil)
+bbs:clearBBS()
+bbs:say(nil, "リゾット\nねいろ\n", 100, nil, nil)
 bbs:say(nil, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 80, nil, nil)
-bbs:say(nil, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\n倒せない\n", 80, nil, nil)
+bbs:say(nil, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\nもう倒せない\n", 80, nil, nil)
+bbs:say(nil, "リゾット　俺はドッピオに言ったんだ！\nもうお前では\n勝てないって・・・\n", 80, nil, nil)
+bbs:clearBBS()
+bbs:say(nil, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, nil)
+
