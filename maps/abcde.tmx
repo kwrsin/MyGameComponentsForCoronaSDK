@@ -38,7 +38,7 @@
    </properties>
    <objectgroup draworder="index" name="takarabako">
     <properties>
-     <property name="bounce" type="float" value="0.80000000000000004"/>
+     <property name="bounce" type="float" value="0.8"/>
      <property name="density" type="float" value="10"/>
      <property name="friction" value="0.2"/>
     </properties>
@@ -53,6 +53,9 @@
     <frame tileid="65" duration="100"/>
    </animation>
   </tile>
+ </tileset>
+ <tileset firstgid="769" name="test_frame" tilewidth="16" tileheight="16" tilecount="9" columns="3">
+  <image source="test_frame.png" width="48" height="48"/>
  </tileset>
  <layer name="tilelayer_1" width="9" height="10">
   <data>
