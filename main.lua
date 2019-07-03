@@ -247,12 +247,12 @@ end
 local bbs = require('components.windows.bbs')
 local bbs_group = display.newGroup()
 bbs.createBBS(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", global_queue)
--- bbs:clearBBS()
 
 -- start game
 
 execute_opening()
-bbs:clearBBS()
+-- bbs:clearBBS()
 bbs:say(nil, "あういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, nil)
 bbs:say(nil, "リゾット\nねいろ\n", 500, nil, nil)
 bbs:say(nil, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 80, nil, nil)
+bbs:say(nil, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\n倒せない\n", 80, nil, nil)
