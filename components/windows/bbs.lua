@@ -46,7 +46,7 @@ end
 
 function M:clearBBS()
   self.command_queue:regist_command(function()
-    timer.performWithDelay(500, function()
+    -- timer.performWithDelay(500, function()
       for i = 1, #self.characters do
         self.characters[i].text = "X"
         self.characters[i].x = self.characters[i].init_x
@@ -62,7 +62,7 @@ function M:clearBBS()
       self.characters_offset = 0
       self.command_queue:clear_current_command()
 
-    end)
+    -- end)
   end)
 end
 
@@ -80,28 +80,29 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
     end
     return serif_array
   end
-  self.command_queue:regist_command(function()
-    local serif_array = to_serif_array(serif)
-    local timer_id = timer.performWithDelay(speed, function(event)
-      local v = table.remove(serif_array, 1)
-      local next_characters_index = self:get_next_characters_index()
-      local character = self.characters[next_characters_index]
-      if v == "\n" then
-        while character.is_line_end == false do
-          next_characters_index = self:get_next_characters_index()
-          character = self.characters[next_characters_index]
-          self.output_count = self.output_count + 1
-          if character.is_line_end then
-            break
-          end
-        end
-        -- character.text = v
-      else
-        character.text = v
+
+  local serif_array = to_serif_array(serif)
+  local timer_id
+  while #serif_array > 0 do
+    local v = table.remove(serif_array, 1)
+    local next_characters_index = self:get_next_characters_index()
+    local character = self.characters[next_characters_index]
+    if v == "\n" then
+      while character.is_line_end == false do
+        next_characters_index = self:get_next_characters_index()
+        character = self.characters[next_characters_index]
         self.output_count = self.output_count + 1
+        if character.is_line_end then
+          break
+        end
       end
-      -- scroll line by line
-      if self.output_count > (self.rows - 1) * self.cols and character.is_line_end then
+    else
+      self.output_count = self.output_count + 1
+    end
+
+    -- scroll
+    if self.output_count > (self.rows - 1) * self.cols and character.is_line_end then
+      self.command_queue:regist_command(function()
         transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
           local characters_offset = self.characters_offset
           for i = 1, self.cols do
@@ -111,14 +112,59 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
           end
 
           self.characters_offset = (self.characters_offset + 1) % self.rows
+          self.command_queue:clear_current_command()
         end})
-      end
-      if #serif_array <= 0 then
-        self.command_queue:clear_current_command()
-      end
-    end, #serif_array)
-    table.insert(self.timer_id_list, timer_id)
-  end)
+      end)
+    else
+      self.command_queue:regist_command(function()
+        timer_id = timer.performWithDelay(speed, function(event)
+          character.text = v
+          self.command_queue:clear_current_command()
+        end, 1)
+      end)
+    end
+
+  end
+  table.insert(self.timer_id_list, timer_id)
+  -- self.command_queue:regist_command(function()
+  --   local serif_array = to_serif_array(serif)
+  --   local timer_id = timer.performWithDelay(speed, function(event)
+  --     local v = table.remove(serif_array, 1)
+  --     local next_characters_index = self:get_next_characters_index()
+  --     local character = self.characters[next_characters_index]
+  --     if v == "\n" then
+  --       while character.is_line_end == false do
+  --         next_characters_index = self:get_next_characters_index()
+  --         character = self.characters[next_characters_index]
+  --         self.output_count = self.output_count + 1
+  --         if character.is_line_end then
+  --           break
+  --         end
+  --       end
+  --       -- character.text = v
+  --     else
+  --       character.text = v
+  --       self.output_count = self.output_count + 1
+  --     end
+  --     -- scroll line by line
+  --     if self.output_count > (self.rows - 1) * self.cols and character.is_line_end then
+  --       transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
+  --         local characters_offset = self.characters_offset
+  --         for i = 1, self.cols do
+  --           local character = self.characters[(characters_offset * self.cols) + i]
+  --           character.text = "ー"
+  --           character.y = character.y + (self.rows * self.size)
+  --         end
+
+  --         self.characters_offset = (self.characters_offset + 1) % self.rows
+  --       end})
+  --     end
+  --     if #serif_array <= 0 then
+  --       self.command_queue:clear_current_command()
+  --     end
+  --   end, #serif_array)
+  --   table.insert(self.timer_id_list, timer_id)
+  -- end)
 
 end
 
