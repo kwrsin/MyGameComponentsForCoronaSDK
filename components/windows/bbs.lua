@@ -51,6 +51,7 @@ function M:clearBBS()
         self.characters[i].text = ""
         self.characters[i].x = self.characters[i].init_x
         self.characters[i].y = self.characters[i].init_y
+        self.characters[i]:setFillColor(1, 1, 1, 1)
       end
 
       self.output_count = 0
@@ -72,13 +73,23 @@ function M:get_next_characters_index()
   return self.characters_index + 1
 end
 
-function M:say(actor, serif, speed, sound, onAsk, onActorAction)
+function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
   local function to_serif_array(serif)
     local serif_array = {}
     for i = 1, utf8.len(serif) do
       table.insert(serif_array, utf8.sub(serif, i, i))
     end
     return serif_array
+  end
+  local function set_color(character, start_output_position, skip_space_count, colorOptions)
+    if not colorOptions  then return end
+    for i, op in ipairs(colorOptions) do
+      local start = op.begin + start_output_position - 1 + skip_space_count
+      local stop = op.stop + start_output_position - 1 + skip_space_count
+      if start <= self.output_count and self.output_count <= stop then
+        character:setFillColor(unpack(op.color_table))
+      end
+    end
   end
 
   -- local serif_array = to_serif_array(serif)
@@ -134,6 +145,8 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
     local serif_array = to_serif_array(serif)
     local is_anim_duration = false
     local is_done_clear_command = false
+    local start_output_position = self.output_count
+    local skip_space_count = 0
     local timer_id = timer.performWithDelay(speed, function(event)
       local v = table.remove(serif_array, 1)
       local next_characters_index = self:get_next_characters_index()
@@ -143,6 +156,7 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
           next_characters_index = self:get_next_characters_index()
           character = self.characters[next_characters_index]
           self.output_count = self.output_count + 1
+          skip_space_count = skip_space_count + 1
           if character.is_line_end then
             break
           end
@@ -150,6 +164,7 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
         -- character.text = v
       else
         character.text = v
+        set_color(character, start_output_position, skip_space_count, colorOptions)
         self.output_count = self.output_count + 1
       end
       -- scroll line by line
@@ -161,6 +176,7 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
             local character = self.characters[(characters_offset * self.cols) + i]
             character.text = ""
             character.y = character.y + (self.rows * self.size)
+            character:setFillColor(1, 1, 1, 1)
           end
 
           self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
