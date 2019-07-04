@@ -11,7 +11,7 @@ local player
 local actor_list = {}
 
 
-
+local func = nil
 
 -- load a tilemap file
 
@@ -102,6 +102,9 @@ local listeners = {
   touch = function(event)
     if event.phase == "ended" or event.phase == "cancelled" then
       print("Any Touch!!")
+      if func then
+        func()
+      end
     end
   end,
   up = function(event)
@@ -248,6 +251,9 @@ local bbs = require('components.windows.bbs')
 local bbs_group = display.newGroup()
 bbs.createBBS(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", global_queue)
 
+func = function()
+  bbs:set_speed(10)
+end
 -- start game
 
 execute_opening()

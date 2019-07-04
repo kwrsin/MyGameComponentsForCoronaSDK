@@ -92,106 +92,72 @@ function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
     end
   end
 
-  -- local serif_array = to_serif_array(serif)
-  -- local timer_id
-  -- while #serif_array > 0 do
-  --   local v = table.remove(serif_array, 1)
-  --   local next_characters_index = self:get_next_characters_index()
-  --   local character = self.characters[next_characters_index]
-  --   if v == "\n" then
-  --     while character.is_line_end == false do
-  --       next_characters_index = self:get_next_characters_index()
-  --       character = self.characters[next_characters_index]
-  --       self.output_count = self.output_count + 1
-  --       if character.is_line_end then
-  --         break
-  --       end
-  --     end
-  --   else
-  --     self.output_count = self.output_count + 1
-  --   end
-
-  --   -- scroll
-  --   if self.output_count > (self.rows - 1) * self.cols and character.is_line_end then
-  --     self.command_queue:regist_command(function()
-  --       transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
-  --         local characters_offset = self.characters_offset
-  --         for i = 1, self.cols do
-  --           local character = self.characters[(characters_offset * self.cols) + i]
-  --           character.text = "-"
-  --           character.y = character.y + (self.rows * self.size)
-  --         end
-
-  --         self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
-  --         self.command_queue:clear_current_command()
-  --       end})
-  --     end)
-  --   else
-  --     if v == "\n" then
-  --     else
-  --       self.command_queue:regist_command(function()
-  --         timer_id = timer.performWithDelay(speed, function(event)
-  --           character.text = v
-  --           self.command_queue:clear_current_command()
-  --         end, 1)
-  --       end)
-  --     end
-  --   end
-  -- end
-  -- table.insert(self.timer_id_list, timer_id)
-
-
   self.command_queue:regist_command(function()
     local serif_array = to_serif_array(serif)
     local is_anim_duration = false
     local is_done_clear_command = false
     local start_output_position = self.output_count
     local skip_space_count = 0
-    local timer_id = timer.performWithDelay(speed, function(event)
-      local v = table.remove(serif_array, 1)
-      local next_characters_index = self:get_next_characters_index()
-      local character = self.characters[next_characters_index]
-      if v == "\n" then
-        while character.is_line_end == false do
-          next_characters_index = self:get_next_characters_index()
-          character = self.characters[next_characters_index]
+    local timer_id
+    local _speed = speed
+    function _set_speed(value)
+      _speed = value
+    end
+    self.set_speed = function(self, value)
+      _set_speed(value)
+    end
+    local function run(count)
+      if count <= 0 then
+        return
+      end
+      timer_id = timer.performWithDelay(_speed, function(event)
+        local v = table.remove(serif_array, 1)
+        local next_characters_index = self:get_next_characters_index()
+        local character = self.characters[next_characters_index]
+        if v == "\n" then
+          while character.is_line_end == false do
+            next_characters_index = self:get_next_characters_index()
+            character = self.characters[next_characters_index]
+            self.output_count = self.output_count + 1
+            skip_space_count = skip_space_count + 1
+            if character.is_line_end then
+              break
+            end
+          end
+          -- character.text = v
+        else
+          character.text = v
+          set_color(character, start_output_position, skip_space_count, colorOptions)
           self.output_count = self.output_count + 1
-          skip_space_count = skip_space_count + 1
-          if character.is_line_end then
-            break
-          end
         end
-        -- character.text = v
-      else
-        character.text = v
-        set_color(character, start_output_position, skip_space_count, colorOptions)
-        self.output_count = self.output_count + 1
-      end
-      -- scroll line by line
-      if self.output_count > (self.rows - 1) * (self.cols - 1) and character.is_line_end then
-        is_anim_duration = true
-        transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
-          local characters_offset = self.characters_offset
-          for i = 1 , self.cols do
-            local character = self.characters[(characters_offset * self.cols) + i]
-            character.text = ""
-            character.y = character.y + (self.rows * self.size)
-            character:setFillColor(1, 1, 1, 1)
-          end
+        -- scroll line by line
+        if self.output_count > (self.rows - 1) * (self.cols - 1) and character.is_line_end then
+          is_anim_duration = true
+          transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
+            local characters_offset = self.characters_offset
+            for i = 1 , self.cols do
+              local character = self.characters[(characters_offset * self.cols) + i]
+              character.text = ""
+              character.y = character.y + (self.rows * self.size)
+              character:setFillColor(1, 1, 1, 1)
+            end
 
-          self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
-          is_anim_duration = false
-          if #serif_array <= 0 and is_done_clear_command == false then
-            self.command_queue:clear_current_command()
-          end
-        end})
-      end
-      if #serif_array <= 0 and is_anim_duration == false then
-        self.command_queue:clear_current_command()
-        is_done_clear_command = true
-      end
-    end, #serif_array)
-    table.insert(self.timer_id_list, timer_id)
+            self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
+            is_anim_duration = false
+            if #serif_array <= 0 and is_done_clear_command == false then
+              self.command_queue:clear_current_command()
+            end
+          end})
+        end
+        if #serif_array <= 0 and is_anim_duration == false then
+          self.command_queue:clear_current_command()
+          is_done_clear_command = true
+        end
+        run(count - 1)
+      end, 1)
+      table.insert(self.timer_id_list, timer_id)
+    end
+    run(#serif_array)
   end)
 
 end
