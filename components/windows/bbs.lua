@@ -10,11 +10,11 @@ function M.createBBS(parant, x, y, rows, cols, font_name, size, frame_path, comm
       local xx = (col - 1) * size
       local yy = (row - 1) * size
       local character = display.newText(offset_group, "", xx, yy, font_name, size)
-      -- if col == 1 then
-      --   character.is_line_head = true
-      -- else
-      --   character.is_line_head = false
-      -- end
+      if col == 1 then
+        character.is_line_head = true
+      else
+        character.is_line_head = false
+      end
       if col == cols then
         character.is_line_end = true
       else
@@ -68,7 +68,7 @@ end
 
 function M:get_next_characters_index()
   local next_index = self.characters_index + 1
-  self.characters_index = next_index % (self.rows * self.cols)
+  self.characters_index = next_index % math.floor((self.rows * self.cols))
   return self.characters_index + 1
 end
 
@@ -111,7 +111,7 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
   --           character.y = character.y + (self.rows * self.size)
   --         end
 
-  --         self.characters_offset = (self.characters_offset + 1) % self.rows
+  --         self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
   --         self.command_queue:clear_current_command()
   --       end})
   --     end)
@@ -133,6 +133,7 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
   self.command_queue:regist_command(function()
     local serif_array = to_serif_array(serif)
     local is_anim_duration = false
+    local is_done_clear_command = false
     local timer_id = timer.performWithDelay(speed, function(event)
       local v = table.remove(serif_array, 1)
       local next_characters_index = self:get_next_characters_index()
@@ -152,25 +153,26 @@ function M:say(actor, serif, speed, sound, onAsk, onActorAction)
         self.output_count = self.output_count + 1
       end
       -- scroll line by line
-      if self.output_count > (self.rows - 1) * self.cols and character.is_line_end then
+      if self.output_count > (self.rows - 1) * (self.cols - 1) and character.is_line_end then
         is_anim_duration = true
         transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
           local characters_offset = self.characters_offset
-          for i = 1, self.cols do
+          for i = 1 , self.cols do
             local character = self.characters[(characters_offset * self.cols) + i]
             character.text = ""
             character.y = character.y + (self.rows * self.size)
           end
 
-          self.characters_offset = (self.characters_offset + 1) % self.rows
+          self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
           is_anim_duration = false
-          if #serif_array <= 0 then
+          if #serif_array <= 0 and is_done_clear_command == false then
             self.command_queue:clear_current_command()
           end
         end})
       end
       if #serif_array <= 0 and is_anim_duration == false then
         self.command_queue:clear_current_command()
+        is_done_clear_command = true
       end
     end, #serif_array)
     table.insert(self.timer_id_list, timer_id)
