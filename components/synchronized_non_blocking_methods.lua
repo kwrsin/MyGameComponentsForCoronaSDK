@@ -1,33 +1,35 @@
-local M = {
-  command_queue = {},
-  current_command = nil
-}
+return function()
+  local M = {
+    command_queue = {},
+    current_command = nil
+  }
 
-function M:clear_current_command()
-  if self.current_command then
-    self.current_command = nil
-  end
-end
-
-function M:regist_command(cb)
-  table.insert(self.command_queue, cb)
-end
-
-function M:command_processor()
-  local function execute()
+  function M:clear_current_command()
     if self.current_command then
-      self.current_command()
+      self.current_command = nil
     end
   end
 
-  if self.current_command == nil and #self.command_queue > 0 then
-    self.current_command = table.remove(self.command_queue, 1)
-    execute()
+  function M:regist_command(cb)
+    table.insert(self.command_queue, cb)
   end
-end
 
-function M:enterFrame()
-  self:command_processor()
-end
+  function M:command_processor()
+    local function execute()
+      if self.current_command then
+        self.current_command()
+      end
+    end
 
-return M
+    if self.current_command == nil and #self.command_queue > 0 then
+      self.current_command = table.remove(self.command_queue, 1)
+      execute()
+    end
+  end
+
+  function M:enterFrame()
+    self:command_processor()
+  end
+
+  return M
+end

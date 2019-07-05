@@ -4,7 +4,7 @@
 --
 -----------------------------------------------------------------------------------------
 t = require("components.i18n.locale")("assets.translations")
-global_queue = require("components.synchronized_non_blocking_methods")
+global_queue = require("components.synchronized_non_blocking_methods")()
 -- Your code here
 
 local player_behavor = "components.actors.player_behavor"
@@ -250,7 +250,10 @@ end
 
 local bbs = require('components.windows.bbs')
 local bbs_group = display.newGroup()
-bbs.create_bbs(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", global_queue)
+local local_queue = require("components.synchronized_non_blocking_methods")()
+bbs.create_bbs(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", local_queue)
+Runtime:addEventListener("enterFrame", local_queue)
+
 
 func = function()
   bbs:set_speed(10)
