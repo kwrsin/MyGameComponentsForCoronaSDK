@@ -60,6 +60,16 @@ return function()
     sprite:play()
 
     self.sprite = sprite
+
+    -- Runtime:addEventListener('enterFrame', function(event)
+    --   if M.is_move_up then
+    --     print("move")
+    --     M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
+    --     -- M.sprite:applyForce(0, -0.3, M.sprite.x, M.sprite.y)
+    --     -- M.sprite.y = M.sprite.y - 5
+    --   end
+    -- end)
+
   end
 
   function M:up()
@@ -81,6 +91,49 @@ return function()
     self.sprite:setSequence("right")
     self.sprite:play()
   end
+
+  M.is_move_up = false
+  function M:move_up(flag)
+    M.is_move_up = flag
+  end
+
+  function M:enterFrame(event)
+    if M.is_move_up then
+      M:moveAround()
+      -- M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
+      -- M.sprite:applyForce(0, -0.3, M.sprite.x, M.sprite.y)
+      -- M.sprite.y = M.sprite.y - 5
+      M.is_move_up = not M.is_move_up
+    end
+  end
+
+  function M:moveAround()
+    global_queue:regist_command(function()
+      M:up()
+      transition.to(self.sprite, {time = 1000, x = 0, y = 0, onComplete=function() global_queue:clear_current_command() end})
+    end)
+    global_queue:regist_command(function()
+      M:right()
+      transition.to(self.sprite, {time = 1000, x = display.contentWidth, y = 0, onComplete=function() global_queue:clear_current_command() end})
+    end)
+    global_queue:regist_command(function()
+      M:down()
+      transition.to(self.sprite, {time = 1000, x = display.contentWidth, y = display.contentHeight, onComplete=function() global_queue:clear_current_command() end})
+    end)
+    global_queue:regist_command(function()
+      M:left()
+      transition.to(self.sprite, {time = 1000, x = 0, y = display.contentHeight, onComplete=function() global_queue:clear_current_command() end})
+    end)
+    global_queue:regist_command(function()
+      M:up()
+      transition.to(self.sprite, {time = 1000, x = display.contentCenterX, y = display.contentCenterY, onComplete=function() global_queue:clear_current_command() end})
+    end)
+    global_queue:regist_command(function()
+      M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
+      global_queue:clear_current_command()
+    end)
+  end
+
 
   return M
 end
