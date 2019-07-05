@@ -3,7 +3,7 @@
 -- main.lua
 --
 -----------------------------------------------------------------------------------------
-translator = require("components.i18n.locale")("assets.translations")
+t = require("components.i18n.locale")("assets.translations")
 global_queue = require("components.synchronized_non_blocking_methods")
 -- Your code here
 
@@ -259,7 +259,7 @@ end
 
 execute_opening()
 -- bbs:clearBBS()
-bbs:say(nil, translator:get_sentences("HELLO").value .. "\nあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, {{begin=3, stop=4, color_table={0.7, 1, 0}}})
+bbs:say(nil, t("HELLO").value .. "\nあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, {{begin=3, stop=4, color_table={0.7, 1, 0}}})
 bbs:clear_bbs()
 bbs:say(nil, "リゾット\nねいろ\n暗殺者\n", 100, nil, nil)
 bbs:say(nil, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil)

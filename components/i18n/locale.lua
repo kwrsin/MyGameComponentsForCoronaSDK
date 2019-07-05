@@ -11,9 +11,7 @@ return function(translations_path)
   end
   language = string.gsub(language, "(..)-..", "%1")
 
-  local translator = {}
-  function translator:get_sentences(key)
+  return function(key)
     return translations[key][language]
   end
-  return translator
 end
