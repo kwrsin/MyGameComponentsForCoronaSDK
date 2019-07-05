@@ -23,7 +23,7 @@ physics.pause()
 
 system.activate( "multitouch" )
 
-local map_path = 'maps.abcde'
+local map_path = 'assets.abcde'
 
 local function touch_event(event)
   print("hello " .. event.target.identifier .. " " .. event.target.layer_name)
@@ -249,7 +249,7 @@ end
 
 local bbs = require('components.windows.bbs')
 local bbs_group = display.newGroup()
-bbs.createBBS(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", global_queue)
+bbs.create_bbs(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", global_queue)
 
 func = function()
   bbs:set_speed(10)
@@ -259,12 +259,12 @@ end
 execute_opening()
 -- bbs:clearBBS()
 bbs:say(nil, "あういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, {{begin=3, stop=4, color_table={0.7, 1, 0}}})
-bbs:clearBBS()
+bbs:clear_bbs()
 bbs:say(nil, "リゾット\nねいろ\n暗殺者\n", 100, nil, nil)
 bbs:say(nil, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil)
 bbs:say(nil, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\nもう倒せない\n", 80, nil)
 bbs:say(nil, "リゾット　俺はドッピオに言ったんだ！\nもうお前では\n勝てないって・・・\n", 80, nil, {{begin=10, stop=14, color_table={0.5, 0, 0}}})
-bbs:clearBBS()
+bbs:clear_bbs()
 bbs:say(nil, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
 bbs:say(nil, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
 

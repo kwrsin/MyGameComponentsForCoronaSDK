@@ -2,7 +2,7 @@ local utf8 = require('plugin.utf8')
 
 local M = {}
 
-function M.createBBS(parant, x, y, rows, cols, font_name, size, frame_path, command_queue)
+function M.create_bbs(parant, x, y, rows, cols, font_name, size, frame_path, command_queue)
   local offset_group = display.newGroup()
   local characters = {}
   for row = 1, rows do
@@ -44,7 +44,7 @@ function M.createBBS(parant, x, y, rows, cols, font_name, size, frame_path, comm
   M.command_queue = command_queue
 end
 
-function M:clearBBS()
+function M:clear_bbs()
   self.command_queue:regist_command(function()
     -- timer.performWithDelay(100, function()
       for i = 1, #self.characters do
