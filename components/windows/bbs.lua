@@ -5,10 +5,11 @@ local M = {}
 function M.create_bbs(parant, x, y, rows, cols, font_name, size, frame_path, command_queue)
   local offset_group = display.newGroup()
   local characters = {}
+  local tags = {}
   for row = 1, rows do
+    local yy = (row - 1) * size
     for col = 1, cols do
       local xx = (col - 1) * size
-      local yy = (row - 1) * size
       local character = display.newText(offset_group, "", xx, yy, font_name, size)
       if col == 1 then
         character.is_line_head = true
@@ -24,6 +25,10 @@ function M.create_bbs(parant, x, y, rows, cols, font_name, size, frame_path, com
       character.init_y = yy
       table.insert(characters, character)
     end
+    local tag_x = cols * size + size
+    local tag = display.newText(offset_group, "", tag_x, yy, font_name, size)
+    tag.init_y = yy
+    table.insert(tags, tag)
   end
 
   if parent then
@@ -35,6 +40,7 @@ function M.create_bbs(parant, x, y, rows, cols, font_name, size, frame_path, com
   M.font_name = font_name
   M.size = size
   M.characters = characters
+  M.tags = tags
   M.output_count = 0
   M.characters_index = -1
   M.prompt_icon_path = nil
@@ -52,6 +58,11 @@ function M:clear_bbs()
         self.characters[i].x = self.characters[i].init_x
         self.characters[i].y = self.characters[i].init_y
         self.characters[i]:setFillColor(1, 1, 1, 1)
+      end
+      for i = 1, #self.tags do
+        self.tags[i].text = ""
+        self.tags[i].y = self.tags[i].init_y
+        self.tags[i]:setFillColor(1, 1, 1, 1)
       end
 
       self.output_count = 0
@@ -100,6 +111,7 @@ function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
     local skip_space_count = 0
     local timer_id
     local _speed = speed
+    local label = nil
     function _set_speed(value)
       _speed = value
     end
@@ -130,6 +142,12 @@ function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
           set_color(character, start_output_position, skip_space_count, colorOptions)
           self.output_count = self.output_count + 1
         end
+        if label == nil and actor then
+          if actor.name then
+            label = actor.name
+            self.tags[math.floor(next_characters_index / self.cols) + 1].text = label
+          end
+        end
         -- scroll line by line
         if self.output_count > (self.rows - 1) * (self.cols - 1) and character.is_line_end then
           is_anim_duration = true
@@ -141,6 +159,11 @@ function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
               character.y = character.y + (self.rows * self.size)
               character:setFillColor(1, 1, 1, 1)
             end
+
+            local tag = self.tags[self.characters_offset + 1]
+            tag.text = ""
+            tag.y = tag.y + (self.rows * self.size)
+            tag:setFillColor(1, 1, 1, 1)
 
             self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
             is_anim_duration = false
