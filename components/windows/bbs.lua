@@ -143,8 +143,8 @@ function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
           self.output_count = self.output_count + 1
         end
         if label == nil and actor then
-          if actor.name then
-            label = actor.name
+          if actor.tag then
+            label = actor.tag
             self.tags[math.floor(next_characters_index / self.cols) + 1].text = label
           end
         end
