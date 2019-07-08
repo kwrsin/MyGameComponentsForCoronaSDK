@@ -2,7 +2,7 @@ local vc = require("components.controller.virtual_controller")
 local M = {
   vc = vc,
   listeners = nil,
-  button_group = nil
+  controller_group = nil
 }
 
 function M:is_repeated(event)
@@ -28,7 +28,7 @@ function M:enable_touch(enabled)
 end
 
 function M:show_controller(enabled)
-  self.button_group.isVisible = enabled
+  self.controller_group.isVisible = enabled
 end
 
 function M:create_vertual_controller(layer_object, listeners)
@@ -36,7 +36,49 @@ function M:create_vertual_controller(layer_object, listeners)
   self.listeners = listeners
 
   local function touch(self, event)
-    event.is_repeated = M:is_repeated(event)
+    -- event.is_repeated = M:is_repeated(event)
+    if event.target then
+      if event.phase == "began" then
+        event.target.alpha = 0.6
+        display.getCurrentStage():setFocus(event.target)
+        self.isFocus = true
+        event.is_repeated = true
+        M.cursor_object.x = event.x - M.cursor_group.x
+        M.cursor_object.y = event.y - M.cursor_group.y
+      elseif event.phase == "moved" then
+        if not self.isFocus then
+          display.getCurrentStage():setFocus(event.target)
+          self.isFocus = true
+        end
+        event.is_repeated = true
+        event.target.alpha = 0.6
+
+        local distance_x = event.x - M.cursor_group.x
+        local distance_y = event.y - M.cursor_group.y
+        event.target.distance_normal_x = distance_x / event.target.path.radius
+        event.target.distance_normal_y = distance_y / event.target.path.radius
+        if (distance_x * distance_x +  distance_y * distance_y < event.target.path.radius * event.target.path.radius) then
+          M.cursor_object.x = distance_x
+          M.cursor_object.y = distance_y
+        else
+          M.cursor_object.x = 0
+          M.cursor_object.y = 0
+          event.target.alpha = 1
+          display.getCurrentStage():setFocus(nil)
+          self.isFocus = nil
+          event.is_repeated = false
+        end
+      elseif self.isFocus then
+        if event.phase == "ended" or event.phase == "cancelled" then
+          M.cursor_object.x = 0
+          M.cursor_object.y = 0
+          event.target.alpha = 1
+          display.getCurrentStage():setFocus(nil)
+          self.isFocus = nil
+          event.is_repeated = true
+        end
+      end 
+    end
 
     if event.target == nil then
       if M.listeners.touch then
@@ -76,27 +118,30 @@ function M:create_vertual_controller(layer_object, listeners)
         vc:virtual_west(event, M.listeners.west)
       end
     end
-    if event.phase == "began" then
-      event.target.alpha = 0.6
-      display.getCurrentStage():setFocus(event.target)
-      self.isFocus = true
-    elseif self.isFocus then
-      if event.phase == "ended" or event.phase == "cancelled" then
-        event.target.alpha = 1
-        display.getCurrentStage():setFocus(nil)
-        self.isFocus = nil
-      end
-    end 
     return true
   end
 
   local function create_buttons(layer_object, event_handlers)
-    self.button_group = display.newGroup()
-    layer_object:insert(self.button_group)
-    local go = display.newRect(self.button_group, display.contentCenterX, display.contentCenterY, 32, 32)
+    self.controller_group = display.newGroup()
+    layer_object:insert(self.controller_group)
+
+    self.cursor_group = display.newGroup()
+    self.cursor_group.x = display.contentCenterX - 82
+    self.cursor_group.y = display.contentCenterY
+    self.controller_group:insert(self.cursor_group)
+
+
+    local go = display.newCircle(self.cursor_group, 0, 0, 64)
     go.name = "up"
     go:setFillColor(1, 0, 0)
     go:addEventListener("touch", event_handlers)
+
+    local cursor_object = display.newCircle(self.cursor_group, 0, 0, 24)
+    self.cursor_object = cursor_object
+    cursor_object:addEventListener("touch", function(event)
+      return false
+    end)
+
   end
 
   local function create_touch_guard(layer_object)
