@@ -38,13 +38,18 @@ function M:create_vertual_controller(layer_object, listeners)
   local function touch(self, event)
     -- event.is_repeated = M:is_repeated(event)
     if event.target then
+      local distance_x = event.x - M.cursor_group.x
+      local distance_y = event.y - M.cursor_group.y
+      event.target.distance_normal_x = distance_x / event.target.path.radius
+      event.target.distance_normal_y = distance_y / event.target.path.radius
       if event.phase == "began" then
         event.target.alpha = 0.6
         display.getCurrentStage():setFocus(event.target)
         self.isFocus = true
         event.is_repeated = true
-        M.cursor_object.x = event.x - M.cursor_group.x
-        M.cursor_object.y = event.y - M.cursor_group.y
+        M.cursor_object.x = distance_x
+        M.cursor_object.y = distance_y
+        
       elseif event.phase == "moved" then
         if not self.isFocus then
           display.getCurrentStage():setFocus(event.target)
@@ -53,10 +58,6 @@ function M:create_vertual_controller(layer_object, listeners)
         event.is_repeated = true
         event.target.alpha = 0.6
 
-        local distance_x = event.x - M.cursor_group.x
-        local distance_y = event.y - M.cursor_group.y
-        event.target.distance_normal_x = distance_x / event.target.path.radius
-        event.target.distance_normal_y = distance_y / event.target.path.radius
         if (distance_x * distance_x +  distance_y * distance_y < event.target.path.radius * event.target.path.radius) then
           M.cursor_object.x = distance_x
           M.cursor_object.y = distance_y
