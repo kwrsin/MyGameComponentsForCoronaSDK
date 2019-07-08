@@ -1,6 +1,6 @@
 local M = {}
 
-function M:load_tilemap(layer_object, path, map_options, physics)
+function M:load_tilemap(group_object, path, map_options, physics)
   local function separate_path(pt)
     local directory
     local filename
@@ -18,12 +18,12 @@ function M:load_tilemap(layer_object, path, map_options, physics)
 
   local d, f = separate_path(path)
   self.tilemap = require(path)
-  self.tilemap.layer_objects = display.newGroup()
+  self.tilemap.layer_objects = group_object
   self.physics = physics
 
   self:create_tileset_objects(d)
 
-  self:create_layer_objects(layer_object, map_options)
+  self:create_layer_objects(group_object, map_options)
 
   return self.tilemap
 end
@@ -326,15 +326,16 @@ function M:create_layer_objects(layer_object, map_options)
       end
     end
 
+    local map_layer_object = display.newGroup()
     if l.type == "tilelayer" then
-      create_tilelayer(layer_object, i, opt)
+      create_tilelayer(map_layer_object, i, opt)
     elseif l.type == "objectgroup" then
-      create_objectlayer(layer_object, i, opt)
+      create_objectlayer(map_layer_object, i, opt)
     elseif l.type == "imagelayer" then
     end
 
-    l.layer_object = layer_object
-    self.tilemap.layer_objects:insert(layer_object)
+    l.layer_object = map_layer_object
+    self.tilemap.layer_objects:insert(map_layer_object)
   end
 end
 
