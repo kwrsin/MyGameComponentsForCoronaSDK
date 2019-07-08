@@ -14,7 +14,6 @@ function scene:create(event)
     native.systemFont,
     30)
   local ui = composer.getVariable("ui")
-  ui:enable_touch(true)
   ui:set_vc_event_listeners({
     touch = function(event)
       if event.phase == "ended" or event.phase == "cancelled" then

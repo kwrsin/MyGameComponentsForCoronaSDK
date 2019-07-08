@@ -23,6 +23,8 @@ local listeners = {
 }
 
 local vc = ui:get_virtual_controller(controller_panel, listeners)
+ui:enable_touch(true)
+ui:show_controller(false)
 Runtime:addEventListener("touch", vc)
 
 

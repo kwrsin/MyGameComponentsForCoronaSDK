@@ -1,7 +1,8 @@
 local vc = require("components.controller.virtual_controller")
 local M = {
   vc = vc,
-  listeners = nil
+  listeners = nil,
+  button_group = nil
 }
 
 function M:is_repeated(event)
@@ -24,6 +25,10 @@ function M:enable_touch(enabled)
   else
     self.touch_guard.isHitTestable = true
   end
+end
+
+function M:show_controller(enabled)
+  self.button_group.isVisible = enabled
 end
 
 function M:create_vertual_controller(layer_object, listeners)
@@ -86,7 +91,9 @@ function M:create_vertual_controller(layer_object, listeners)
   end
 
   local function create_buttons(layer_object, event_handlers)
-    local go = display.newRect(layer_object, display.contentCenterX, display.contentCenterY, 32, 32)
+    self.button_group = display.newGroup()
+    layer_object:insert(self.button_group)
+    local go = display.newRect(self.button_group, display.contentCenterX, display.contentCenterY, 32, 32)
     go.name = "up"
     go:setFillColor(1, 0, 0)
     go:addEventListener("touch", event_handlers)

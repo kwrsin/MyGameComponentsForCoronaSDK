@@ -12,8 +12,8 @@ function scene:create(event)
   local sceneGroup = self.view
   local bg = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight)
   bg:setFillColor(0, 0, 0)
-  local back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
-  back_to_title:addEventListener('touch', function(event) composer.gotoScene("scenes.title", {time=200, effect="slideLeft"}) end)
+  -- local back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
+  -- back_to_title:addEventListener('touch', function(event) composer.gotoScene("scenes.title", {time=200, effect="slideLeft"}) end)
 
 
   -- load a tilemap file
@@ -203,6 +203,7 @@ function scene:create(event)
       timer.performWithDelay(100, function()
         banner.isVisible = false
         ui:enable_touch(true)
+        ui:show_controller(true)
         physics.start()
         clear_current_command()
       end)
