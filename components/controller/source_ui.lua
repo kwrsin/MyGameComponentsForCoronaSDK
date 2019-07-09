@@ -123,7 +123,7 @@ function M:create_vertual_controller(layer_object, listeners)
       end
     elseif event.target.name == 'cursor' then
       if M.listeners.cursor then
-        vc:virtual_west(event, M.listeners.cursor)
+        vc:virtual_cursor(event, M.listeners.cursor)
       end
     end
     return true
