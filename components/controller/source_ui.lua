@@ -46,29 +46,30 @@ function M:create_vertual_controller(layer_object, listeners)
         event.target.alpha = 0.6
         display.getCurrentStage():setFocus(event.target)
         self.isFocus = true
-        event.is_repeated = true
+        event.is_repeated = 1
         M.cursor_object.x = distance_x
         M.cursor_object.y = distance_y
 
       elseif event.phase == "moved" then
-        if not self.isFocus then
-          display.getCurrentStage():setFocus(event.target)
-          self.isFocus = true
-          event.is_repeated = true
-        end
         event.target.alpha = 0.6
 
         if (distance_x * distance_x +  distance_y * distance_y < event.target.path.radius * event.target.path.radius) then
+          if not self.isFocus then
+            display.getCurrentStage():setFocus(event.target)
+            self.isFocus = true
+            event.is_repeated = 1
+          else
+            event.is_repeated = 0
+          end
           M.cursor_object.x = distance_x
           M.cursor_object.y = distance_y
-          event.is_repeated = true
         else
           M.cursor_object.x = 0
           M.cursor_object.y = 0
           event.target.alpha = 1
           display.getCurrentStage():setFocus(nil)
           self.isFocus = nil
-          event.is_repeated = false
+          event.is_repeated = -1
         end
       elseif self.isFocus then
         if event.phase == "ended" or event.phase == "cancelled" then
@@ -77,7 +78,7 @@ function M:create_vertual_controller(layer_object, listeners)
           event.target.alpha = 1
           display.getCurrentStage():setFocus(nil)
           self.isFocus = nil
-          event.is_repeated = false
+          event.is_repeated = -1
         end
       end 
     end
