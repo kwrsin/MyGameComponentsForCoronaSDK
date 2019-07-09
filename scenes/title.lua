@@ -35,7 +35,6 @@ function scene:show(event)
     })
 
   elseif(event.phase == 'did') then
-    composer.removeScene( "scenes.scene1")
   end
 end
 

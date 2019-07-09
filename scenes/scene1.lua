@@ -167,6 +167,7 @@ function scene:show(event)
         end
       end,
       cursor = function(event)
+        if not event.is_cursor_repeated then return end
         if event.is_cursor_repeated > 0 then
           print(event.target.name .. " ON!!")
           player:up()
@@ -282,6 +283,7 @@ function scene:hide(event)
 
   if(event.phase == 'will') then
     _bbs:delete()
+    global_queue:clean_up()
     Runtime:removeEventListener("enterFrame", _actors_enterFrame)
     for i = 1 , #actor_list do
       if actor_list[i].timerId then
@@ -293,6 +295,7 @@ function scene:hide(event)
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
+    composer.removeScene( "scenes.scene1")
     print("scene1 hide did")
   end
 end

@@ -31,5 +31,13 @@ return function()
     self:command_processor()
   end
 
+  function M:clean_up()
+    self:clear_current_command()
+    for i = 1 , #self.command_queue do
+      -- table.remove(self.command_queue, i)
+      self.command_queue[i] = nil
+    end
+  end
+
   return M
 end
