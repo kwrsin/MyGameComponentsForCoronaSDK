@@ -86,7 +86,6 @@ function scene:show(event)
           else
 
           end
-          print(tilemap_panel.numChildren)
 
           if tile.properties.behavor == player_behavor then
             player = actor_instance
