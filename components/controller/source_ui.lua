@@ -5,7 +5,7 @@ local M = {
   controller_group = nil
 }
 
-function M:is_repeated(event)
+function M:is_button_repeated(event)
   local keep = false
   if event.phase == "began" then
     keep = true
@@ -36,8 +36,9 @@ function M:create_vertual_controller(layer_object, listeners)
   self.listeners = listeners
 
   local function touch(self, event)
-    -- event.is_repeated = M:is_repeated(event)
-    if event.target then
+    event.is_button_repeated = M:is_button_repeated(event)
+    
+    if event.target and event.target.name == 'cursor' then
       local distance_x = event.x - M.cursor_group.x
       local distance_y = event.y - M.cursor_group.y
       event.target.distance_normal_x = distance_x / event.target.path.radius
@@ -46,7 +47,7 @@ function M:create_vertual_controller(layer_object, listeners)
         event.target.alpha = 0.6
         display.getCurrentStage():setFocus(event.target)
         self.isFocus = true
-        event.is_repeated = 1
+        event.is_cursor_repeated = 1
         M.cursor_object.x = distance_x
         M.cursor_object.y = distance_y
 
@@ -57,9 +58,9 @@ function M:create_vertual_controller(layer_object, listeners)
           if not self.isFocus then
             display.getCurrentStage():setFocus(event.target)
             self.isFocus = true
-            event.is_repeated = 1
+            event.is_cursor_repeated = 1
           else
-            event.is_repeated = 0
+            event.is_cursor_repeated = 0
           end
           M.cursor_object.x = distance_x
           M.cursor_object.y = distance_y
@@ -69,7 +70,7 @@ function M:create_vertual_controller(layer_object, listeners)
           event.target.alpha = 1
           display.getCurrentStage():setFocus(nil)
           self.isFocus = nil
-          event.is_repeated = -1
+          event.is_cursor_repeated = -1
         end
       elseif self.isFocus then
         if event.phase == "ended" or event.phase == "cancelled" then
@@ -78,7 +79,7 @@ function M:create_vertual_controller(layer_object, listeners)
           event.target.alpha = 1
           display.getCurrentStage():setFocus(nil)
           self.isFocus = nil
-          event.is_repeated = -1
+          event.is_cursor_repeated = -1
         end
       end 
     end
@@ -120,6 +121,10 @@ function M:create_vertual_controller(layer_object, listeners)
       if M.listeners.west then
         vc:virtual_west(event, M.listeners.west)
       end
+    elseif event.target.name == 'cursor' then
+      if M.listeners.cursor then
+        vc:virtual_west(event, M.listeners.cursor)
+      end
     end
     return true
   end
@@ -135,7 +140,7 @@ function M:create_vertual_controller(layer_object, listeners)
 
 
     local go = display.newCircle(self.cursor_group, 0, 0, 64)
-    go.name = "up"
+    go.name = "cursor"
     go:setFillColor(1, 0, 0)
     go:addEventListener("touch", event_handlers)
 

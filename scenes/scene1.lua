@@ -109,46 +109,46 @@ function scene:show(event)
         end
       end,
       up = function(event)
-        if event.is_repeated > 0 then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
           player:up()
           player:move_up(true)
-        elseif event.is_repeated < 0 then
+        else
           player:down()
           player:move_up(false)
           print(event.target.name .. " OFF!!")
         end
       end,
       down = function(event)
-        if event.is_repeated then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
         else
           print(event.target.name .. " OFF!!")
         end
       end,
       left = function(event)
-        if event.is_repeated then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
         else
           print(event.target.name .. " OFF!!")
         end
       end,
       right = function(event)
-        if event.is_repeated then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
         else
           print(event.target.name .. " OFF!!")
         end
       end,
       north = function(event)
-        if event.is_repeated then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
         else
           print(event.target.name .. " OFF!!")
         end
       end,
       south = function(event)
-        if event.is_repeated then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
         else
           print(event.target.name .. " OFF!!")
@@ -160,9 +160,20 @@ function scene:show(event)
         end
       end,
       west = function(event)
-        if event.is_repeated then
+        if event.is_button_repeated then
           print(event.target.name .. " ON!!")
         else
+          print(event.target.name .. " OFF!!")
+        end
+      end,
+      cursor = function(event)
+        if event.is_cursor_repeated > 0 then
+          print(event.target.name .. " ON!!")
+          player:up()
+          player:move_up(true)
+        elseif event.is_cursor_repeated < 0 then
+          player:down()
+          player:move_up(false)
           print(event.target.name .. " OFF!!")
         end
       end,
