@@ -1,4 +1,4 @@
-local M = require("components.actors.base_behavor")()
+local M = require("user_define.behaviors.base_behavior")()
 
 M.object_sheets_index = 2
 M.sequences = {

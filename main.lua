@@ -4,7 +4,7 @@
 --
 -----------------------------------------------------------------------------------------
 local player = {
-  player_behavor = "components.actors.player_behavor",
+  player_behavior = "user_define.behaviors.player_behavior",
 }
 
 

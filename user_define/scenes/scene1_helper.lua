@@ -34,7 +34,7 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
       onLocalCollision = collision_event,
       onCreateGameObject = function(layer_object, local_id, width, height, tile, object_sheet, l, onTouch)
         -- char definition
-        local actor = require('components.actors.actor')
+        local actor = require('components.actor')
         local init_data = {
           x = 0,
           y = 0
@@ -49,8 +49,8 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
         else
 
         end
+        if tile.properties.behavor == player.player_behavior then
 
-        if tile.properties.behavor == player.player_behavor then
           player.actor = actor_instance
         end
         table.insert(actor_list, actor_instance)

@@ -14,7 +14,7 @@
   </tile>
   <tile id="27">
    <properties>
-    <property name="behavor" value="components.actors.player_behavor"/>
+    <property name="behavor" value="user_define.behaviors.player_behavor"/>
    </properties>
    <objectgroup draworder="index" name="hoh"/>
    <animation>
@@ -38,7 +38,7 @@
    </properties>
    <objectgroup draworder="index" name="takarabako">
     <properties>
-     <property name="bounce" type="float" value="0.8"/>
+     <property name="bounce" type="float" value="0.80000000000000004"/>
      <property name="density" type="float" value="10"/>
      <property name="friction" value="0.2"/>
     </properties>
