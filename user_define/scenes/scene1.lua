@@ -60,7 +60,7 @@ function scene:show(event)
     physics.pause()
     
     -- player controller
-    player.user_interface:set_vc_event_listeners(
+    player.controller:set_vc_event_listeners(
       {
         touch = function(event)
           if event.phase == "ended" or event.phase == "cancelled" then
@@ -145,7 +145,7 @@ function scene:show(event)
       global_queue:clear_current_command()
     end
 
-    player.user_interface:enable_touch(false)
+    player.controller:enable_touch(false)
     local function execute_opening()
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
@@ -183,8 +183,8 @@ function scene:show(event)
       global_queue:regist_command(function()
         timer.performWithDelay(100, function()
           banner.isVisible = false
-          player.user_interface:enable_touch(true)
-          player.user_interface:show_controller(true)
+          player.controller:enable_touch(true)
+          player.controller:show_controller(true)
           physics.start()
           clear_current_command()
         end)

@@ -17,7 +17,7 @@ local composer = require('composer')
 
 -- controller panel
 
-local user_interface = require('components.controller.source_ui')
+local controller = require('components.controller.source_ui')
 local controller_panel = display.newGroup()
 
 local listeners = {
@@ -28,11 +28,11 @@ local listeners = {
   end,
 }
 
-local vc = user_interface:get_virtual_controller(controller_panel, listeners)
-user_interface:enable_touch(true)
-user_interface:show_controller(false)
+local vc = controller:get_virtual_controller(controller_panel, listeners)
+controller:enable_touch(true)
+controller:show_controller(false)
 Runtime:addEventListener("touch", vc)
-player.user_interface = user_interface
+player.controller = controller
 
 local splash_screen = display.newGroup()
 local bg = display.newRect(splash_screen, display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight)
