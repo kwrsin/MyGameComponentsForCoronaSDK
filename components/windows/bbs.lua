@@ -95,6 +95,31 @@ return function()
     Runtime:removeEventListener("enterFrame", self.command_queue)
   end
 
+  function M:refresh()
+    for i = 1, #self.timer_id_list do
+      timer.cancel(self.timer_id_list[i])
+      self.timer_id_list[i] = nil
+    end
+    self.command_queue:clean_up()
+    for i = 1, #self.characters do
+      self.characters[i].text = ""
+      self.characters[i].x = self.characters[i].init_x
+      self.characters[i].y = self.characters[i].init_y
+      self.characters[i]:setFillColor(1, 1, 1, 1)
+    end
+    for i = 1, #self.tags do
+      self.tags[i].text = ""
+      self.tags[i].y = self.tags[i].init_y
+      self.tags[i]:setFillColor(1, 1, 1, 1)
+    end
+
+    self.output_count = 0
+    self.characters_index = -1
+    self.offset_group.y = 0
+    self.characters_offset = 0
+
+  end
+
   function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
     local function to_serif_array(serif)
       local serif_array = {}

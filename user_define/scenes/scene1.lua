@@ -5,7 +5,6 @@ local scene = composer.newScene()
 local player
 local actor_list = {}
 local tilemap_panel
-
 local fast_speak
 local bbs
 local banner
@@ -14,17 +13,13 @@ local map_path = 'assets.abcde'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
 
+local back_to_title
+
 function scene:create(event)
   local sceneGroup = self.view
   -- physics.setDrawMode("hybrid")
   physics.start()
   physics.pause()
-
-  -- local back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
-  -- back_to_title:addEventListener('touch', function(event)
-
-  --   composer.gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
-  -- end)
 
   player = composer.getVariable("player")
   helper:create_stage(sceneGroup)
@@ -48,85 +43,11 @@ function scene:create(event)
     bbs:set_speed(10)
   end
 
-  -- player controller
-  player.user_interface:set_vc_event_listeners(
-    {
-      touch = function(event)
-        if event.phase == "ended" or event.phase == "cancelled" then
-          print("Any Touch 2!!")
-          if fast_speak then
-            fast_speak()
-          end
-        end
-      end,
-      up = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      down = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      left = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      right = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      north = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      south = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      east = function(event)
-        if event.phase == "ended" or event.phase == "cancelled" then
-          print("EAST!!")
-        end
-      end,
-      west = function(event)
-        if event.is_button_repeated then
-          print(event.target.name .. " ON!!")
-        else
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-      cursor = function(event)
-        if not event.is_cursor_repeated then return end
-        if event.is_cursor_repeated > 0 then
-          print(event.target.name .. " ON!!")
-          player.actor:up()
-          player.actor:move_up(true)
-        elseif event.is_cursor_repeated < 0 then
-          player.actor:down()
-          player.actor:move_up(false)
-          print(event.target.name .. " OFF!!")
-        end
-      end,
-    }
-  )
+  back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
+  back_to_title:addEventListener('touch', function(event)
+
+    composer.gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
+  end)
 
   print("scene1 created")
 end
@@ -136,6 +57,88 @@ function scene:show(event)
 
   if(event.phase == 'will') then
     print("scene1 show will")
+    physics.pause()
+    
+    -- player controller
+    player.user_interface:set_vc_event_listeners(
+      {
+        touch = function(event)
+          if event.phase == "ended" or event.phase == "cancelled" then
+            print("Any Touch 2!!")
+            if fast_speak then
+              fast_speak()
+            end
+          end
+        end,
+        up = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        down = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        left = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        right = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        north = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        south = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        east = function(event)
+          if event.phase == "ended" or event.phase == "cancelled" then
+            print("EAST!!")
+          end
+        end,
+        west = function(event)
+          if event.is_button_repeated then
+            print(event.target.name .. " ON!!")
+          else
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+        cursor = function(event)
+          if not event.is_cursor_repeated then return end
+          if event.is_cursor_repeated > 0 then
+            print(event.target.name .. " ON!!")
+            player.actor:up()
+            player.actor:move_up(true)
+          elseif event.is_cursor_repeated < 0 then
+            player.actor:down()
+            player.actor:move_up(false)
+            print(event.target.name .. " OFF!!")
+          end
+        end,
+      }
+    )
+
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
 
     local function clear_current_command()
@@ -220,7 +223,7 @@ function scene:hide(event)
   local sceneGroup = self.view
 
   if(event.phase == 'will') then
-    bbs.command_queue:clean_up()
+    bbs:refresh()
     global_queue:clean_up()
     Runtime:removeEventListener("enterFrame", _actors_enterFrame)
     for i = 1 , #actor_list do
@@ -238,7 +241,6 @@ function scene:hide(event)
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
-    composer.removeScene( "scenes.scene1")
     print("scene1 hide did")
   end
 end
