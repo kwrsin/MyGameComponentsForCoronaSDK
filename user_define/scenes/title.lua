@@ -20,16 +20,16 @@ function scene:show(event)
       display.contentCenterY,
       native.systemFont,
       30)
-    local ui = composer.getVariable("ui")
-    ui:show_controller(false)
-    ui:set_vc_event_listeners({
+    local player = composer.getVariable("player")
+    player.user_interface:show_controller(false)
+    player.user_interface:set_vc_event_listeners({
       touch = function(event)
         if event.phase == "ended" or event.phase == "cancelled" then
           local options = {
             effect = 'slideLeft',
             time = 200,
           }
-          composer.gotoScene("scenes.scene1", options)
+          composer.gotoScene("user_define.scenes.scene1", options)
         end
       end,
     })
