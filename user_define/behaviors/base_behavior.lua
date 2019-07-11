@@ -1,7 +1,8 @@
 return function()
   local M = {
     sequence_names = {},
-    sprite = nil
+    sprite = nil,
+    count = 0,
   }
 
   function M.CoroPerformWithDelay( delay, func, n )
@@ -105,6 +106,7 @@ return function()
       -- M.sprite.y = M.sprite.y - 5
       M.is_move_up = not M.is_move_up
     end
+      M.count = M.count + 1
   end
 
   function M:moveAround()

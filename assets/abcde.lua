@@ -1,7 +1,7 @@
 return {
   version = "1.1",
   luaversion = "5.1",
-  tiledversion = "0.18.0",
+  tiledversion = "0.17.2",
   orientation = "orthogonal",
   renderorder = "right-down",
   width = 9,
@@ -53,7 +53,7 @@ return {
         {
           id = 27,
           properties = {
-            ["behavor"] = "components.actors.player_behavor"
+            ["behavor"] = "user_define.behaviors.player_behavior"
           },
           objectGroup = {
             type = "objectgroup",
@@ -118,7 +118,7 @@ return {
             offsety = 0,
             draworder = "index",
             properties = {
-              ["bounce"] = 0.8,
+              ["bounce"] = 0.80000000000000004,
               ["density"] = 10,
               ["friction"] = "0.2"
             },
