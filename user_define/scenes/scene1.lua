@@ -12,6 +12,7 @@ local _actors_enterFrame
 local map_path = 'assets.abcde'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
+local scenerio_player
 
 local back_to_title
 
@@ -247,7 +248,8 @@ function scene:show(event)
       },
 
     }
-    local scenerio_player = require("components.scenario_player")(scenario_list)
+    scenerio_player = require("components.scenario_player")(scenario_list)
+
 
   elseif(event.phase == 'did') then
 
@@ -274,6 +276,8 @@ function scene:hide(event)
         tilemap_panel[i] = nil
       end
     end
+    scenerio_player:clean_up()
+    scenerio_player = nil
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
