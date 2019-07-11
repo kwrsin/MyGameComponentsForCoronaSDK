@@ -203,15 +203,51 @@ function scene:show(event)
     Runtime:addEventListener("enterFrame", _actors_enterFrame)
 
     execute_opening()
-    bbs:say({tag="S"}, t("HELLO").value .. "\nあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, {{begin=3, stop=4, color_table={0.7, 1, 0}}})
-    bbs:clear_bbs()
-    bbs:say({tag="D"}, "リゾット\nねいろ\n暗殺者\n", 100, nil, nil)
-    bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil)
-    bbs:say({tag="D"}, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\nもう倒せない\n", 80, nil)
-    bbs:say({tag="D"}, "リゾット　俺はドッピオに言ったんだ！\nもうお前では\n勝てないって・・・\n", 80, nil, {{begin=10, stop=14, color_table={0.5, 0, 0}}})
-    bbs:clear_bbs()
-    bbs:say({tag="S"}, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
-    bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+    -- bbs:say({tag="S"}, t("HELLO").value .. "\nあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, {{begin=3, stop=4, color_table={0.7, 1, 0}}})
+    -- bbs:clear_bbs()
+    -- bbs:say({tag="D"}, "リゾット\nねいろ\n暗殺者\n", 100, nil, nil)
+    -- bbs:say({tag="D"}, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\nもう倒せない\n", 80, nil)
+    -- bbs:say({tag="D"}, "リゾット　俺はドッピオに言ったんだ！\nもうお前では\n勝てないって・・・\n", 80, nil, {{begin=10, stop=14, color_table={0.5, 0, 0}}})
+    -- bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+
+    local scenario_list = {
+      {
+        start = function()
+          bbs:clear_bbs()
+          bbs:say({tag="S"}, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
+          bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil, nil, nil)
+        end,
+        evaluate = function(self)
+          if player.actor.count >= 500 then
+            -- return 0
+            return 1
+          else
+            return -1
+          end
+        end,
+        finalize = function()
+          bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, nil, nil)
+        end,
+      },
+     {
+        start = function()
+          bbs:clear_bbs()
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+        end,
+        evaluate = function()
+          if player.actor.sprite.x <= 0 then
+            return 1
+          else
+            return -1
+          end
+        end,
+        finalize = function()
+          bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, nil, nil)
+        end,
+      },
+
+    }
+    local scenerio_player = require("components.scenario_player")(scenario_list)
 
   elseif(event.phase == 'did') then
 

@@ -156,6 +156,9 @@ return function()
       end
       local function run(count)
         if count <= 0 then
+          if onAsk then
+            onAsk()
+          end
           return
         end
         timer_id = timer.performWithDelay(_speed, function(event)
