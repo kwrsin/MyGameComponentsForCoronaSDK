@@ -6,24 +6,51 @@ M.amount = 9
 
 function M:create_button_background(content)
   local background = display.newRoundedRect(content, 0, 0, 12, 12, 5)
-  background:setFillColor(0, 0, 1, 1)
   background.kind = "bg"
 end
 
 function M:set_button_background(background, label, size)
+  background:setFillColor(0, 0, 1, .4)
   background.width = utf8.len(label) * size
   background.height = size * 1.4 
 end
 
 function M:create_button_front(content)
-  local front = display.newRoundedRect(content, 0, 0, 12, 12, 5)
-  front:setFillColor(1, 1, 1, 0.6)
-  front.kind = "front"
+  -- local front = display.newRoundedRect(content, 0, 0, 12, 12, 5)
+  -- front.kind = "front"
 end
 
 function M:set_button_front(front, label, size)
-  front.width = utf8.len(label) * size
-  front.height = size * 1.2 
+  -- front:setFillColor(1, 1, 1, 0.6)
+  -- front.width = utf8.len(label) * size
+  -- front.height = size * 1.2 
+end
+
+function M:visible_content(content, enabled, onHide)
+  if enabled then
+    content.isVisible = enabled
+    content.yScale = 0.1
+    transition.scaleTo(content, {yScale=1, xScale=1, time=50})
+  else
+    local time = 100
+    local yScale = 0.1
+    if content.index == M.result then
+      content.yScale = 1.2
+      -- local front = M:get_label_object(content, "front")
+      -- front:setFillColor(0.2, 0.15, 0.65, 0.6)
+      transition.scaleTo(content, {yScale=yScale, time=time, onComplete=function()
+        content.isVisible = enabled
+        if onHide then
+          onHide()
+        end
+      end})
+    else
+      content.yScale = 1
+      transition.scaleTo(content, {yScale=yScale, time=time, onComplete=function()
+        content.isVisible = enabled
+      end})
+    end
+  end
 end
 
 function M:get_label_object(content, kind)
@@ -173,7 +200,7 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
         end
         M:set_button_front(front, labels[i], size)
         M:set_button_background(back, labels[i], size)
-        content.isVisible = true
+        M:visible_content(content, true)
         M.used_index = M.used_index + 1
         if text_options then
           for k, v in pairs(text_options) do
@@ -198,12 +225,17 @@ function M:close()
   if M.onClose then
     M.onClose(M.result)
   end
-  M.frame_group.isVisible = false
-  M.filter.isHitTestable = false
+  M:hide()
+end
+
+function M:hide()
   for i = 1, #M.contents do
-    M.contents[i].isVisible = false
+    M:visible_content(M.contents[i], false, function()
+      M.frame_group.isVisible = false
+      M.filter.isHitTestable = false
+      M.root_group.isVisible = false
+    end)
   end
-  M.root_group.isVisible = false
 end
 
 
