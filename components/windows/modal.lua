@@ -63,7 +63,7 @@ function M:create_modal(sceneGroup, object_sheet, text_options, onCreateButton)
 end
 
 
-function M:show(labels, width, height, size, margin, onClose, text_options)
+function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_options)
   M.result = -1
   M.used_index = 1
   M.root_group.isVisible = true
@@ -111,19 +111,31 @@ function M:show(labels, width, height, size, margin, onClose, text_options)
       return 1, #demensions
     end
   end
-  local function put_demension(labels, max_length, size, offset_y, spacing)
+  local function put_demension(labels, size, offset_y, max_col, x_margin, y_spacing, counter)
     for i = 1, #labels do
       if type(labels[i]) == "table" then
-        put_demension(labels[i], max_length, size, offset_y + size * (i - 1), spacing)
+        put_demension(labels[i], size, offset_y + size * (i - 1), max_col, x_margin, y_spacing, counter)
+        counter = counter + 1
       else
+        local strings = flatten(labels)
+        local most_left_side = x_margin + utf8.len(strings[1]) * size / 2
+        local most_right_side = display.actualContentWidth - x_margin - utf8.len(strings[#strings]) * size / 2
+        local spacing
+        if (max_col - 1) <= 0 then
+          spacing = display.contentCenterX
+        else
+          spacing = (most_right_side - most_left_side) / (max_col - 1)
+        end
+
+
         local content = M.contents[M.used_index]
         content.size = size
         content.text = labels[i]
-        content.y = offset_y + margin
+        content.y = offset_y + (size + y_spacing) * counter
         if #labels == 1 then
           content.x = 0
         else
-          content.x = -display.contentCenterX + margin + utf8.len(labels[1]) * size / 2 + spacing * (i - 1)
+          content.x = -display.contentCenterX + x_margin + utf8.len(labels[1]) * size / 2 + spacing * (i - 1)
         end
         content.isVisible = true
         M.used_index = M.used_index + 1
@@ -140,20 +152,9 @@ function M:show(labels, width, height, size, margin, onClose, text_options)
     end
   end
 
-  local strings = flatten(labels)
-  -- table.sort(strings, function(m, l) return (#m > #l) end)
-  local max_length = utf8.len(strings[1])
-  local most_left_side = margin + utf8.len(strings[1]) * size / 2
-  local most_right_side = display.actualContentWidth - margin - utf8.len(strings[#strings]) * size / 2
   local max_row, max_col = get_max_count_dimension(labels)
-  local spacing
-  if (max_col - 1) <= 0 then
-    spacing = display.contentCenterX
-  else
-    spacing = (most_right_side - most_left_side) / (max_col - 1)
-  end
-
-  put_demension(labels, max_length, size, -margin, spacing)
+  local most_top_side = -max_row * (size + y_spacing) / 2
+  put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
 end
 

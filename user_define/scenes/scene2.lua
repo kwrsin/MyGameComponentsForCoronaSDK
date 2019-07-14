@@ -25,14 +25,14 @@ function scene:create(event)
   -- dialog_box1 = display.newText(sceneGroup, "question 1", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
   -- dialog_box1:addEventListener("touch", function(event)
   --   if event.phase == "ended" or event.phase == "cancelled" then
-  --     modal:show({{"momomomo"}, {"pepepe"}, {"popopo"}}, 0, 0, 24, 5, function(result) lbl.text = tostring(result) end)
+  --     modal:show({{"momomomo"}, {"pepepe"}, {"popopo"}}, 0, 0, 24, 5, 20, function(result) lbl.text = tostring(result) end)
   --   end
   --   return true
   -- end)
   dialog_box2 = display.newText(sceneGroup, "question 2", display.contentCenterX, display.contentCenterY + 60, native.systemFont, 24)
   dialog_box2:addEventListener("touch", function(event)
     if event.phase == "ended" or event.phase == "cancelled" then
-      modal:show({"YES   ", "NO    ", "CANCEL"}, 0, 0, 26, 10, function(result) lbl.text = tostring(result) end)
+      modal:show({{"YES", "NO"}, {"CANCEL"}, {"CANCEL"}, {"CANCEL"}, {"CANCEL"}, {"CANCEL"}, {"CANCEL"}, {"CANCEL"} }, 0, 0, 26, 60,  -20, function(result) lbl.text = tostring(result) end)
     end
     return true
   end)
