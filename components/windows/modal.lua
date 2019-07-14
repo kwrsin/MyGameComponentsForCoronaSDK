@@ -27,6 +27,7 @@ function M:set_button_front(front, label, size)
 end
 
 function M:visible_content(content, enabled, onHide)
+  -- M:set_filter_color(enabled)
   if enabled then
     content.isVisible = enabled
     content.yScale = 0.1
@@ -61,6 +62,20 @@ function M:get_label_object(content, kind)
   end
 end
 
+function M:set_filter_color(enabled)
+  -- if enabled then
+  --   M.filter.isVisible = true
+  --   M.filter.alpha = 0.3
+  -- else
+  --   M.filter.isVisible = false
+  --   M.filter.alpha = 0
+  -- end
+end
+
+function M:set_filter_effect(filter)
+  -- filter:setFillColor(0, 0, 0)
+end
+
 function M:create_modal(sceneGroup, object_sheet, text_options)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
@@ -79,6 +94,8 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
     touch_guard, 0, 0, display.actualContentWidth, display.actualContentHeight)
   filter.isVisible = false
   filter.isHitTestable = false
+  M:set_filter_effect(filter)
+
   filter:addEventListener("touch", function() print("guard") return true end)
   M.filter = filter
   M.default_text_options = text_options
@@ -229,13 +246,27 @@ function M:close()
 end
 
 function M:hide()
+  local selected_button
   for i = 1, #M.contents do
-    M:visible_content(M.contents[i], false, function()
-      M.frame_group.isVisible = false
-      M.filter.isHitTestable = false
-      M.root_group.isVisible = false
-    end)
+    if M.result == M.contents[i].index then
+      selected_button = M.contents[i]
+      break
+    end
   end
+  local blink = transition.to(selected_button, {xScale=1.5, yScale=1.5, time=300, transition=easing.outElastic})
+  timer.performWithDelay(500, function()
+    selected_button.xScale = 1
+    selected_button.yScale = 1
+
+    for i = 1, #M.contents do
+      M:visible_content(M.contents[i], false, function()
+        M.frame_group.isVisible = false
+        M.filter.isHitTestable = false
+        M.filter.isVisible = false
+        M.root_group.isVisible = false
+      end)
+    end
+  end)
 end
 
 
