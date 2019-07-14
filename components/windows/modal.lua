@@ -32,21 +32,24 @@ function M:create_modal(sceneGroup, object_sheet, text_options, onCreateButton)
   end
   local contents = {}
   for i = 1, M.amount do
-    local content
+    content = display.newGroup()
     if onCreateButton then
-      content = onCreateLabel(contents_group, length, size)
+      label = onCreateLabel(content, size)
     else
-      content = display.newText(contents_group, "", 0, 0, native.systemFont, size)
+      local back = display.newRoundedRect(content, 0, 0, 12, 12, 5)
+      back:setFillColor(0, 0, 1, 0.3)
+      label = display.newText(content, "", 0, 0, native.systemFont, size)
     end
+    contents_group:insert(content)
     if text_options then
       for k, v in pairs(text_options) do
-        content[k] = v
+        label[k] = v
       end
     end
     content.index = i
     content:addEventListener("touch", function(event)
       if event.phase == "ended" or event.phase == "cancelled" then
-        M.result = content.index
+        M.result = event.target.index
         M:close()
       end
       return true
@@ -129,23 +132,27 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
 
 
         local content = M.contents[M.used_index]
-        content.size = size
-        content.text = labels[i]
+        local label = M.contents[M.used_index][2]
+        local back = M.contents[M.used_index][1]
+        label.size = size
+        label.text = labels[i]
         content.y = offset_y + (size + y_spacing) * counter
         if #labels == 1 then
           content.x = 0
         else
           content.x = -display.contentCenterX + x_margin + utf8.len(labels[1]) * size / 2 + spacing * (i - 1)
         end
+        back.width = utf8.len(labels[i]) * size
+        back.height = size * 1.4 
         content.isVisible = true
         M.used_index = M.used_index + 1
         if text_options then
           for k, v in pairs(text_options) do
-            content[k] = v
+            label[k] = v
           end
         elseif M.default_text_options then
           for k, v in pairs(M.default_text_options) do
-            content[k] = v
+            label[k] = v
           end
         end
       end
