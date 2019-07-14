@@ -1,13 +1,9 @@
 return function()
+  local M = {}
   
-  function M:create_frame(frame_group, width, height, object_sheet)
+  function M:create_frame(frame_group, object_sheet)
     
   end
-
-
-
-
-
 
   return M  
 end

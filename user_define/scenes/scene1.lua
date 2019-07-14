@@ -146,7 +146,7 @@ function scene:show(event)
       global_queue:clear_current_command()
     end
 
-    player.controller:enable_touch(false)
+    player.controller:disable_touch_hit_testable(false)
     local function execute_opening()
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
@@ -184,7 +184,7 @@ function scene:show(event)
       global_queue:regist_command(function()
         timer.performWithDelay(100, function()
           banner.isVisible = false
-          player.controller:enable_touch(true)
+          player.controller:disable_touch_hit_testable(true)
           player.controller:show_controller(true)
           physics.start()
           clear_current_command()

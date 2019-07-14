@@ -1,22 +1,32 @@
 local M = {}
 
-function M:load_tilemap(group_object, path, map_options, physics)
-  local function separate_path(pt)
-    local directory
-    local filename
-    local p = string.gsub(pt, "%.", "/")
-    local idx = string.find(p, "%/", -#p)
-    directory = string.sub(p, 1, idx - 1)
-    if directory then
-      directory = directory .. "/"
-    end
-    filename = string.sub(p, idx + 1, #p)
-
-    return directory, filename
+function M:get_object_sheets(path)
+  local d, f = M:separate_path(path)
+  self.tilemap = require(path)
+  self:create_tileset_objects(d)
+  local object_sheets = {}
+  for i, t in ipairs(self.tilemap.tilesets) do
+    table.insert(object_sheets, t.object_sheet)
   end
+  return object_sheets
+end
 
+function M:separate_path(pt)
+  local directory
+  local filename
+  local p = string.gsub(pt, "%.", "/")
+  local idx = string.find(p, "%/", -#p)
+  directory = string.sub(p, 1, idx - 1)
+  if directory then
+    directory = directory .. "/"
+  end
+  filename = string.sub(p, idx + 1, #p)
 
-  local d, f = separate_path(path)
+  return directory, filename
+end
+
+function M:load_tilemap(group_object, path, map_options, physics)
+  local d, f = M:separate_path(path)
   self.tilemap = require(path)
   self.tilemap.layer_objects = group_object
   self.physics = physics

@@ -19,7 +19,7 @@ function M:set_vc_event_listeners(listeners)
   self.listeners = listeners
 end
 
-function M:enable_touch(enabled)
+function M:disable_touch_hit_testable(enabled)
   if enabled then
     self.touch_guard.isHitTestable = false
   else
