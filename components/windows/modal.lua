@@ -4,7 +4,37 @@ local M = require("components.windows.frame")()
 M.result = -1
 M.amount = 9
 
-function M:create_modal(sceneGroup, object_sheet, text_options, onCreateButton)
+function M:create_button_background(content)
+  local background = display.newRoundedRect(content, 0, 0, 12, 12, 5)
+  background:setFillColor(0, 0, 1, 1)
+  background.kind = "bg"
+end
+
+function M:set_button_background(background, label, size)
+  background.width = utf8.len(label) * size
+  background.height = size * 1.4 
+end
+
+function M:create_button_front(content)
+  local front = display.newRoundedRect(content, 0, 0, 12, 12, 5)
+  front:setFillColor(1, 1, 1, 0.6)
+  front.kind = "front"
+end
+
+function M:set_button_front(front, label, size)
+  front.width = utf8.len(label) * size
+  front.height = size * 1.2 
+end
+
+function M:get_label_object(content, kind)
+  for i = 1 , content.numChildren do
+    if content[i].kind and content[i].kind == kind then
+      return content[i]
+    end
+  end
+end
+
+function M:create_modal(sceneGroup, object_sheet, text_options)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
   local frame_group = display.newGroup()
@@ -33,13 +63,11 @@ function M:create_modal(sceneGroup, object_sheet, text_options, onCreateButton)
   local contents = {}
   for i = 1, M.amount do
     content = display.newGroup()
-    if onCreateButton then
-      label = onCreateLabel(content, size)
-    else
-      local back = display.newRoundedRect(content, 0, 0, 12, 12, 5)
-      back:setFillColor(0, 0, 1, 0.3)
-      label = display.newText(content, "", 0, 0, native.systemFont, size)
-    end
+    M:create_button_background(content)
+    label = display.newText(content, "", 0, 0, native.systemFont, size)
+    label.kind = "label"
+    M:create_button_front(content)
+
     contents_group:insert(content)
     if text_options then
       for k, v in pairs(text_options) do
@@ -132,8 +160,9 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
 
 
         local content = M.contents[M.used_index]
-        local label = M.contents[M.used_index][2]
-        local back = M.contents[M.used_index][1]
+        local label = M:get_label_object(M.contents[M.used_index], "label")
+        local back = M:get_label_object(M.contents[M.used_index], "bg")
+        local front = M:get_label_object(M.contents[M.used_index], "front")
         label.size = size
         label.text = labels[i]
         content.y = offset_y + (size + y_spacing) * counter
@@ -142,8 +171,8 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
         else
           content.x = -display.contentCenterX + x_margin + utf8.len(labels[1]) * size / 2 + spacing * (i - 1)
         end
-        back.width = utf8.len(labels[i]) * size
-        back.height = size * 1.4 
+        M:set_button_front(front, labels[i], size)
+        M:set_button_background(back, labels[i], size)
         content.isVisible = true
         M.used_index = M.used_index + 1
         if text_options then
