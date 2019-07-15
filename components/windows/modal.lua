@@ -188,10 +188,17 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
   end
   local function put_demension(labels, size, offset_y, max_col, x_margin, y_spacing, counter)
     for i = 1, #labels do
+      local is_need_cr = false
       if type(labels[i]) == "table" then
-        put_demension(labels[i], size, offset_y + size * (i - 1), max_col, x_margin, y_spacing, counter)
+        put_demension(labels[i], size, offset_y, max_col, x_margin, y_spacing, counter)
         counter = counter + 1
+        is_need_cr = true
       else
+        if is_need_cr then
+          offset_y = offset_y + size * (i - 1)
+          is_need_cr = false
+        end
+
         local strings = flatten(labels)
         local most_left_side = x_margin + utf8.len(strings[1]) * size / 2
         local most_right_side = display.actualContentWidth - x_margin - utf8.len(strings[#strings]) * size / 2
@@ -236,6 +243,19 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
   local most_top_side = -max_row * (size + y_spacing) / 2
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
+  local strings = flatten(labels)
+  -- M:set_frame(strings, max_row, max_col, x_margin, y_spacing, most_top_side, size)
+
+end
+
+function M:set_frame(strings, max_row, max_col, x_margin, y_spacing, offset_y, size)
+  -- table.sort(strings, function(a, b) return #a > #b end)
+  -- local max_length = utf8.len(strings[1])
+  local width = display.actualContentWidth - x_margin - x_margin
+  local height = (size + y_spacing) * max_row
+  -- print(string.format("%s, %s", width, height))
+  local frame = display.newRect(self.contents_group, 0, offset_y, width, height)
+  frame:setFillColor(1, 0, 1, 0.3)
 end
 
 function M:close()
