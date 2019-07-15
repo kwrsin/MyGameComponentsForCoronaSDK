@@ -86,7 +86,7 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
   root_group:insert(frame_group)
   sceneGroup:insert(root_group)
   root_group.x = display.contentCenterX
-  root_group.y = display.contentCenterY
+  root_group.y = display.actualContentHeight / 2
   M.root_group = root_group
   M.contents_group = contents_group
 
