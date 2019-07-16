@@ -10,7 +10,7 @@ function M:create_button_background(content)
 end
 
 function M:set_button_background(background, label, size)
-  background:setFillColor(0, 0, 1, .4)
+  background:setFillColor(0, 0, 1, 1)
   background.width = utf8.len(label) * size
   background.height = size * 1.4 
 end
@@ -274,6 +274,7 @@ function M:hide()
       break
     end
   end
+  selected_button:toFront()
   local blink = transition.to(selected_button, {xScale=1.5, yScale=1.5, time=300, transition=easing.outElastic})
   timer.performWithDelay(500, function()
     selected_button.xScale = 1
