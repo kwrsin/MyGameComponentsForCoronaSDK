@@ -4,15 +4,16 @@ local utf8 = require('plugin.utf8')
 return function()
   local M = {}
 
-  function M.create_bbs(parent, x, y, rows, cols, font_name, size, frame_path, command_queue)
+  function M:create_bbs(parent, x, y, rows, cols, font_name, size, frame_path, command_queue)
+    self.x_start_pos = display.actualContentWidth / 2 - size * cols / 2
     local offset_group = display.newGroup()
     parent:insert(offset_group)
     local characters = {}
     local tags = {}
     for row = 1, rows do
-      local yy = (row - 1) * size
+      local yy = display.contentCenterY - size * rows / 2 + (row - 1) * size
       for col = 1, cols do
-        local xx = (col - 1) * size
+        local xx = self.x_start_pos + (col - 1) * size
         local character = display.newText(offset_group, "", xx, yy, font_name, size)
         if col == 1 then
           character.is_line_head = true
@@ -28,12 +29,11 @@ return function()
         character.init_y = yy
         table.insert(characters, character)
       end
-      local tag_x = cols * size + size
+      local tag_x = M:get_tag_start_position() + cols * size + size
       local tag = display.newText(offset_group, "", tag_x, yy, font_name, size)
       tag.init_y = yy
       table.insert(tags, tag)
     end
-
     if parent then
       parent:insert(offset_group)
     end
@@ -51,6 +51,10 @@ return function()
     M.offset_group = offset_group
     M.characters_offset = 0
     M.command_queue = command_queue
+  end
+
+  function M:get_tag_start_position()
+    return self.x_start_pos
   end
 
   function M:clear_bbs()
