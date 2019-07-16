@@ -37,6 +37,7 @@ return function()
     if parent then
       parent:insert(offset_group)
     end
+    M:set_frame(parent, rows, cols, size)
 
     M.rows = rows
     M.cols = cols
@@ -51,6 +52,11 @@ return function()
     M.offset_group = offset_group
     M.characters_offset = 0
     M.command_queue = command_queue
+  end
+
+  function M:set_frame(parent, rows, cols, size)
+    local test_r = display.newRect(parent, display.contentCenterX - size / 2, display.contentCenterY - size / 2, cols * size, rows * size)
+    test_r:setFillColor(1, 1, 0, .3)
   end
 
   function M:get_tag_start_position()
