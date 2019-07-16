@@ -203,18 +203,18 @@ return function()
             transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
               local characters_offset = self.characters_offset
               for i = 1 , self.cols do
-                local character = self.characters[(characters_offset * self.cols) + i]
+                local character = self.characters[((characters_offset % math.floor(self.rows)) * self.cols) + i]
                 character.text = ""
                 character.y = character.y + (self.rows * self.size)
                 character:setFillColor(1, 1, 1, 1)
               end
 
-              local tag = self.tags[self.characters_offset + 1]
+              local tag = self.tags[(self.characters_offset % math.floor(self.rows)) + 1]
               tag.text = ""
               tag.y = tag.y + (self.rows * self.size)
               tag:setFillColor(1, 1, 1, 1)
 
-              self.characters_offset = (self.characters_offset + 1) % math.floor(self.rows)
+              self.characters_offset = (self.characters_offset + 1)
               is_anim_duration = false
               if #serif_array <= 0 and is_done_clear_command == false then
                 self.command_queue:clear_current_command()
