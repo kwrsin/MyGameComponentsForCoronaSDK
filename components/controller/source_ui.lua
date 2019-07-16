@@ -31,6 +31,11 @@ function M:show_controller(enabled)
   self.controller_group.isVisible = enabled
 end
 
+function M:set_pad_position(x, y)
+  self.cursor_group.x = display.contentCenterX + x
+  self.cursor_group.y = display.contentCenterY + y
+end
+
 function M:create_vertual_controller(layer_object, listeners)
   local event_handlers = {}
   self.listeners = listeners
@@ -134,8 +139,7 @@ function M:create_vertual_controller(layer_object, listeners)
     layer_object:insert(self.controller_group)
 
     self.cursor_group = display.newGroup()
-    self.cursor_group.x = display.contentCenterX - 82
-    self.cursor_group.y = display.contentCenterY
+    self:set_pad_position(-82, 180)
     self.controller_group:insert(self.cursor_group)
 
 
