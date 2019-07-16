@@ -200,7 +200,7 @@ return function()
           -- scroll line by line
           if self.output_count > (self.rows - 1) * (self.cols - 1) and character.is_line_end then
             is_anim_duration = true
-            transition.to(self.offset_group, {time=100, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
+            transition.to(self.offset_group, {time=50, y=-self.size * (self.characters_offset + 1), transition=easing.linear, onComplete=function()
               local characters_offset = self.characters_offset
               for i = 1 , self.cols do
                 local character = self.characters[((characters_offset % math.floor(self.rows)) * self.cols) + i]

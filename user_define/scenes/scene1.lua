@@ -41,7 +41,7 @@ function scene:create(event)
   bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, "frame_path", local_queue)
   Runtime:addEventListener("enterFrame", local_queue)
   fast_speak = function()
-    bbs:set_speed(10)
+    bbs:set_speed(15)
   end
 
   back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
