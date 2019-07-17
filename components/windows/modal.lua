@@ -190,8 +190,8 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
     for i = 1, #labels do
       local is_need_cr = false
       if type(labels[i]) == "table" then
-        put_demension(labels[i], size, offset_y, max_col, x_margin, y_spacing, counter)
         counter = counter + 1
+        put_demension(labels[i], size, offset_y, max_col, x_margin, y_spacing, counter)
         is_need_cr = true
       else
         if is_need_cr then
@@ -216,7 +216,12 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
         local front = M:get_label_object(M.contents[M.used_index], "front")
         label.size = size
         label.text = labels[i]
-        content.y = offset_y + (size + y_spacing) * counter
+        print(counter)
+        if counter == -1 then
+          content.y = offset_y
+        else
+          content.y = offset_y + (size + y_spacing) * counter
+        end
         if #labels == 1 then
           content.x = 0
         else
@@ -244,7 +249,7 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
   local strings = flatten(labels)
-  -- M:set_frame(strings, max_row, max_col, x_margin, y_spacing, most_top_side, size)
+  M:set_frame(strings, max_row, max_col, x_margin, y_spacing, most_top_side, size)
 
 end
 
@@ -254,7 +259,7 @@ function M:set_frame(strings, max_row, max_col, x_margin, y_spacing, offset_y, s
   local width = display.actualContentWidth - x_margin - x_margin
   local height = (size + y_spacing) * max_row
   -- print(string.format("%s, %s", width, height))
-  local frame = display.newRect(self.contents_group, 0, offset_y, width, height)
+  local frame = display.newRect(self.contents_group, 0, -(size + y_spacing) / 2, width, height)
   frame:setFillColor(1, 0, 1, 0.3)
 end
 
