@@ -32,7 +32,7 @@ function scene:create(event)
   dialog_box2 = display.newText(sceneGroup, "question 2", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
   dialog_box2:addEventListener("touch", function(event)
     if event.phase == "ended" or event.phase == "cancelled" then
-      modal:show({{"りんご"}, {"めろん"}, {"いちご"}, {"CANCEL"}, {"CANCEL"}, {"りんご"}, {"めろん"}, {"いちご"}, {"CANCEL"}}, 0, 0, 26, 40,  20, function(result) lbl.text = tostring(result) end)
+      modal:show({{"りんご", "めろん", "いちご"}, {"CANCEL"}, {"CANCEL"}, {"りんご", "めろん", "いちご"}, {"CANCEL"}}, 0, 120, 26, 40,  20, function(result) lbl.text = tostring(result) end)
     end
     return true
   end)

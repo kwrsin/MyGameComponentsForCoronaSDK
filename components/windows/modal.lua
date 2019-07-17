@@ -142,7 +142,7 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
 end
 
 
-function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_options)
+function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   M.result = -1
   M.used_index = 1
   M.root_group.isVisible = true
@@ -259,6 +259,11 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
     M.frame_group[i].width = width 
     M.frame_group[i].height = height 
   end
+
+  M.contents_group.x = M.contents_group.x + x
+  M.contents_group.y = M.contents_group.x + y
+  M.frame_group.x = M.frame_group.x + x
+  M.frame_group.y = M.frame_group.x + y
 end
 
 function M:set_frame(frame_group, object_sheet)
