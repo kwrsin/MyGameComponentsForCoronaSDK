@@ -52,6 +52,8 @@ function M:create_tileset_objects(directory)
         frame.y = (row - 1) * tileset.tileheight
         frame.width = tileset.tilewidth
         frame.height = tileset.tileheight
+        frame.sheetContentWidth = imagewidth
+        frame.sheetContentHeight = imageheight
         table.insert(frames, frame)
       end
     end

@@ -136,9 +136,9 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
   end
   M.contents = contents
 
-  M:set_frame(frame_group, object_sheet)
   M.frame_group = frame_group
   frame_group.isVisible = false
+  M:set_frame(object_sheet)
 end
 
 
@@ -252,6 +252,33 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   local most_top_side = -max_row * (size + y_spacing) / 2
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
+  M:adjust_frame(x_margin, size, y_spacing, max_row)
+
+  M.contents_group.x = M.contents_group.x + x
+  M.contents_group.y = M.contents_group.x + y
+  M.frame_group.x = M.frame_group.x + x
+  M.frame_group.y = M.frame_group.x + y
+end
+
+function M:set_frame(object_sheet)
+  if object_sheet then
+    if M.frame_group.numChildren > 0 then
+      for i = 1, M.frame_group.numChildren do
+        M.frame_group[i]:removeSelf()
+        M.frame_group[i] = nil
+      end
+    end
+    for i = 1, 9 do
+      local frame_image = display.newImage(M.frame_group, object_sheet, i, 16, 16)
+      frame_image.width = 16
+      frame_image.height = 16
+    end
+  end
+  local frame = display.newRect(M.frame_group, 0, 0, 32, 32)
+  frame:setFillColor(1, 0, 1, 0.3)
+end
+
+function M:adjust_frame(x_margin, size, y_spacing, max_row)
   for i = 1, M.frame_group.numChildren do
     local width = display.actualContentWidth - x_margin - x_margin
     local height = (size + y_spacing) * max_row
@@ -260,16 +287,6 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
     M.frame_group[i].width = width 
     M.frame_group[i].height = height 
   end
-
-  M.contents_group.x = M.contents_group.x + x
-  M.contents_group.y = M.contents_group.x + y
-  M.frame_group.x = M.frame_group.x + x
-  M.frame_group.y = M.frame_group.x + y
-end
-
-function M:set_frame(frame_group, object_sheet)
-  local frame = display.newRect(frame_group, 0, 0, 32, 32)
-  frame:setFillColor(1, 0, 1, 0.3)
 end
 
 function M:close()
