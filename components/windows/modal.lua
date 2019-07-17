@@ -121,8 +121,10 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
     content.index = i
     content:addEventListener("touch", function(event)
       if event.phase == "ended" or event.phase == "cancelled" then
-        M.result = event.target.index
-        M:close()
+        if M.result == -1 then
+          M.result = event.target.index
+          M:close()
+        end
       end
       return true
     end)
