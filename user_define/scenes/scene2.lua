@@ -22,13 +22,13 @@ function scene:create(event)
   bg:setFillColor(0, 0, 0)
 
   local lbl = display.newText(sceneGroup, "", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 24)
-  -- dialog_box1 = display.newText(sceneGroup, "question 1", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
-  -- dialog_box1:addEventListener("touch", function(event)
-  --   if event.phase == "ended" or event.phase == "cancelled" then
-  --     modal:show({"りんご", "ばなな", "いちご"}, 0, 0, 26, 5, 20, function(result) lbl.text = tostring(result) end)
-  --   end
-  --   return true
-  -- end)
+  dialog_box1 = display.newText(sceneGroup, "question 1", display.contentCenterX, display.contentCenterY-60, native.systemFont, 24)
+  dialog_box1:addEventListener("touch", function(event)
+    if event.phase == "ended" or event.phase == "cancelled" then
+      modal:show({"りんご", "ばなな", "いちご"}, 0, 0, 26, 5, 20, function(result) lbl.text = tostring(result) end)
+    end
+    return true
+  end)
   dialog_box2 = display.newText(sceneGroup, "question 2", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
   dialog_box2:addEventListener("touch", function(event)
     if event.phase == "ended" or event.phase == "cancelled" then
@@ -38,7 +38,7 @@ function scene:create(event)
   end)
 
   local object_sheets = helper:get_object_sheets(map_path)
-  modal:create_modal(sceneGroup, object_sheets, nil)
+  modal:create_modal(sceneGroup, object_sheets[3], nil)
   lbl.text = tostring(modal.result)
   sceneGroup:insert(tilemap_panel)
   local r = display.newRect(tilemap_panel, 0, 0, 32, 32)

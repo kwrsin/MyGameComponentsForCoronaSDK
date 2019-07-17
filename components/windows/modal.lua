@@ -272,45 +272,45 @@ function M:set_frame(object_sheet)
       local frame_image = display.newImage(M.frame_group, object_sheet, i)
     end
   end
-  -- local frame = display.newRect(M.frame_group, 0, 0, 32, 32)
-  -- frame:setFillColor(1, 0, 1, 0.3)
+  local frame = display.newRoundedRect(M.frame_group, 0, 0, 32, 32, 12)
+  frame:setFillColor(1, 0, 1, 0.3)
 end
 
 function M:adjust_frame(x_margin, size, y_spacing, max_row)
   local width = display.actualContentWidth - x_margin - x_margin
   local height = (size + y_spacing) * max_row
-  M.frame_group[1].x = -width / 2 - 16 / 2
-  M.frame_group[1].y = -height / 2 - 16 / 2 - 16
-  M.frame_group[2].x = 0
-  M.frame_group[2].y = -height / 2 - 16 / 2 - 16
-  M.frame_group[2].width = width
-  M.frame_group[3].x = width / 2 + 16 / 2
-  M.frame_group[3].y = -height / 2 - 16 / 2 - 16
-  M.frame_group[4].x = -width / 2 - 16 / 2
-  M.frame_group[4].y = 0 - 16
-  M.frame_group[4].height = height + 16 / 2
-  -- M.frame_group[5].x = 0
-  -- M.frame_group[5].y = 0
-  M.frame_group[5].isVisible = false
-  M.frame_group[6].x = width / 2 + 16 / 2
-  M.frame_group[6].y = 0 - 16
-  M.frame_group[6].height = height + 16 / 2
-  M.frame_group[7].x = -width / 2 - 16 / 2
-  M.frame_group[7].y = height / 2 + 16 / 2 - 16
-  M.frame_group[8].x = 0
-  M.frame_group[8].y = height / 2 + 16 / 2 - 16
-  M.frame_group[8].width = width
-  M.frame_group[9].x = width / 2 + 16 / 2
-  M.frame_group[9].y = height / 2 + 16 / 2 - 16
+  -- M.frame_group[1].x = -width / 2 - 16 / 2
+  -- M.frame_group[1].y = -height / 2 - 16 / 2 - 16
+  -- M.frame_group[2].x = 0
+  -- M.frame_group[2].y = -height / 2 - 16 / 2 - 16
+  -- M.frame_group[2].width = width
+  -- M.frame_group[3].x = width / 2 + 16 / 2
+  -- M.frame_group[3].y = -height / 2 - 16 / 2 - 16
+  -- M.frame_group[4].x = -width / 2 - 16 / 2
+  -- M.frame_group[4].y = 0 - 16
+  -- M.frame_group[4].height = height + 16 / 2
+  -- -- M.frame_group[5].x = 0
+  -- -- M.frame_group[5].y = 0
+  -- M.frame_group[5].isVisible = false
+  -- M.frame_group[6].x = width / 2 + 16 / 2
+  -- M.frame_group[6].y = 0 - 16
+  -- M.frame_group[6].height = height + 16 / 2
+  -- M.frame_group[7].x = -width / 2 - 16 / 2
+  -- M.frame_group[7].y = height / 2 + 16 / 2 - 16
+  -- M.frame_group[8].x = 0
+  -- M.frame_group[8].y = height / 2 + 16 / 2 - 16
+  -- M.frame_group[8].width = width
+  -- M.frame_group[9].x = width / 2 + 16 / 2
+  -- M.frame_group[9].y = height / 2 + 16 / 2 - 16
 
-  -- for i = 1, M.frame_group.numChildren do
-  --   local width = display.actualContentWidth - x_margin - x_margin
-  --   local height = (size + y_spacing) * max_row
-  --   M.frame_group[i].x = 0
-  --   M.frame_group[i].y = -(size + y_spacing) / 2
-  --   M.frame_group[i].width = width 
-  --   M.frame_group[i].height = height 
-  -- end
+  M.frame_group[10].x = 0
+  M.frame_group[10].y = -(size + y_spacing) / 2
+  M.frame_group[10].width = width + 16
+  M.frame_group[10].height = height + 16
+  M.frame_group[10].strokeWidth = 3
+  M.frame_group[10]:setFillColor( 0.1, 0, 0, 0.3 )
+  M.frame_group[10]:setStrokeColor( 1, 0, 0 )
+
 end
 
 function M:close()
