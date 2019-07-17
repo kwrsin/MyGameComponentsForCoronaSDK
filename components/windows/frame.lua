@@ -1,8 +1,9 @@
-local M = {}
+return function()
+  local M = {}
+  
+  function M:create_frame(frame_group, object_sheet)
+    
+  end
 
-function M.createFrame(parant, x, y, width, height, opject_sheet, length)
-
+  return M  
 end
-
-
-return M

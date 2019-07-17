@@ -29,7 +29,7 @@ function scene:show(event)
             effect = 'slideLeft',
             time = 200,
           }
-          composer.gotoScene("user_define.scenes.scene1", options)
+          composer.gotoScene("user_define.scenes.scene2", options)
         end
       end,
     })

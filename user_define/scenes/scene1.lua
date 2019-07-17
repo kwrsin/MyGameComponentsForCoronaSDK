@@ -12,6 +12,7 @@ local _actors_enterFrame
 local map_path = 'assets.abcde'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
+local scenerio_player
 
 local back_to_title
 
@@ -37,10 +38,10 @@ function scene:create(event)
   local bbs_group = display.newGroup()
   sceneGroup:insert(bbs_group)
   local local_queue = require("components.synchronized_non_blocking_methods")()
-  bbs.create_bbs(bbs_group, 0, 0, 10, 20, native.systemFont, 12, "frame_path", local_queue)
+  bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, "frame_path", local_queue)
   Runtime:addEventListener("enterFrame", local_queue)
   fast_speak = function()
-    bbs:set_speed(10)
+    bbs:set_speed(15)
   end
 
   back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
@@ -145,7 +146,7 @@ function scene:show(event)
       global_queue:clear_current_command()
     end
 
-    player.controller:enable_touch(false)
+    player.controller:disable_touch_hit_testable(false)
     local function execute_opening()
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
@@ -183,7 +184,7 @@ function scene:show(event)
       global_queue:regist_command(function()
         timer.performWithDelay(100, function()
           banner.isVisible = false
-          player.controller:enable_touch(true)
+          player.controller:disable_touch_hit_testable(true)
           player.controller:show_controller(true)
           physics.start()
           clear_current_command()
@@ -247,7 +248,8 @@ function scene:show(event)
       },
 
     }
-    local scenerio_player = require("components.scenario_player")(scenario_list)
+    scenerio_player = require("components.scenario_player")(scenario_list)
+
 
   elseif(event.phase == 'did') then
 
@@ -274,6 +276,8 @@ function scene:hide(event)
         tilemap_panel[i] = nil
       end
     end
+    scenerio_player:clean_up()
+    scenerio_player = nil
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then

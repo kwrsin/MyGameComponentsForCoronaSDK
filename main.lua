@@ -29,7 +29,7 @@ local listeners = {
 }
 
 local vc = controller:get_virtual_controller(controller_panel, listeners)
-controller:enable_touch(true)
+controller:disable_touch_hit_testable(true)
 controller:show_controller(false)
 Runtime:addEventListener("touch", vc)
 player.controller = controller
