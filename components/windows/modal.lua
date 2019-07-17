@@ -248,11 +248,11 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
   local strings = flatten(labels)
-  M:set_frame(strings, max_row, max_col, x_margin, y_spacing, most_top_side, size)
+  M:set_frame(max_row, x_margin, y_spacing, most_top_side, size)
 
 end
 
-function M:set_frame(strings, max_row, max_col, x_margin, y_spacing, offset_y, size)
+function M:set_frame(max_row, x_margin, y_spacing, offset_y, size)
   local width = display.actualContentWidth - x_margin - x_margin
   local height = (size + y_spacing) * max_row
   local frame = display.newRect(self.contents_group, 0, -(size + y_spacing) / 2, width, height)
