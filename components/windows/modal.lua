@@ -216,7 +216,6 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
         local front = M:get_label_object(M.contents[M.used_index], "front")
         label.size = size
         label.text = labels[i]
-        print(counter)
         if counter == -1 then
           content.y = offset_y
         else
@@ -254,11 +253,8 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
 end
 
 function M:set_frame(strings, max_row, max_col, x_margin, y_spacing, offset_y, size)
-  -- table.sort(strings, function(a, b) return #a > #b end)
-  -- local max_length = utf8.len(strings[1])
   local width = display.actualContentWidth - x_margin - x_margin
   local height = (size + y_spacing) * max_row
-  -- print(string.format("%s, %s", width, height))
   local frame = display.newRect(self.contents_group, 0, -(size + y_spacing) / 2, width, height)
   frame:setFillColor(1, 0, 1, 0.3)
 end
