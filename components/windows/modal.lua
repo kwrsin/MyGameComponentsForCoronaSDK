@@ -10,7 +10,7 @@ function M:create_button_background(content)
 end
 
 function M:set_button_background(background, label, size)
-  background:setFillColor(0, 0, 1, 1)
+  background:setFillColor(0, 0, 1, .3)
   background.width = utf8.len(label) * size
   background.height = size * 1.4 
 end
@@ -148,6 +148,7 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   M.root_group.isVisible = true
   M.filter.isHitTestable = true
   M.onClose = onClose
+  M.frame_group:toFront()
 
   -- local function countup(labels)
   --   local cnt = 0
@@ -279,6 +280,7 @@ function M:close()
 end
 
 function M:hide()
+  M.frame_group:toBack()
   local selected_button
   for i = 1, #M.contents do
     if M.result == M.contents[i].index then
