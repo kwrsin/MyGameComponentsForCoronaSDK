@@ -29,9 +29,11 @@ end
 function M:visible_content(content, enabled, onHide)
   -- M:set_filter_color(enabled)
   if enabled then
+    M.frame_group.isVisible = true
     content.isVisible = enabled
     content.yScale = 0.1
     transition.scaleTo(content, {yScale=1, xScale=1, time=50})
+
   else
     local time = 100
     local yScale = 0.1
@@ -134,7 +136,7 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
   end
   M.contents = contents
 
-  M:create_frame(frame_group, object_sheet)
+  M:set_frame(frame_group, object_sheet)
   M.frame_group = frame_group
   frame_group.isVisible = false
 end
@@ -249,15 +251,18 @@ function M:show(labels, width, height, size, x_margin, y_spacing, onClose, text_
   local most_top_side = -max_row * (size + y_spacing) / 2
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
-  local strings = flatten(labels)
-  M:set_frame(max_row, x_margin, y_spacing, most_top_side, size)
-
+  for i = 1, M.frame_group.numChildren do
+    local width = display.actualContentWidth - x_margin - x_margin
+    local height = (size + y_spacing) * max_row
+    M.frame_group[i].x = 0
+    M.frame_group[i].y = -(size + y_spacing) / 2
+    M.frame_group[i].width = width 
+    M.frame_group[i].height = height 
+  end
 end
 
-function M:set_frame(max_row, x_margin, y_spacing, offset_y, size)
-  local width = display.actualContentWidth - x_margin - x_margin
-  local height = (size + y_spacing) * max_row
-  local frame = display.newRect(self.contents_group, 0, -(size + y_spacing) / 2, width, height)
+function M:set_frame(frame_group, object_sheet)
+  local frame = display.newRect(frame_group, 0, 0, 32, 32)
   frame:setFillColor(1, 0, 1, 0.3)
 end
 
