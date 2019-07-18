@@ -261,7 +261,7 @@ function scene:hide(event)
   local sceneGroup = self.view
 
   if(event.phase == 'will') then
-    bbs:refresh()
+    bbs:clean_up()
     global_queue:clean_up()
     Runtime:removeEventListener("enterFrame", _actors_enterFrame)
     for i = 1 , #actor_list do
