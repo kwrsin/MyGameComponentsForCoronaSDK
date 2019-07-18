@@ -19,17 +19,17 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
   local function goodbye(state)
     global_queue:regist_command(function()
       if state then
-        bbs:clear_bbs()
-        bbs:say({tag=""}, "お疲れ様でした。\n", 100, nil, nil, function()
-          global_queue:clear_current_command()
-          require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
-        end)
-      else
         local message = "あばよ〜っ！！"
         if state == 0 then
           message = "この負け犬が〜っ"
         end
-        banner:show(message, display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
+        bbs:clear_bbs()
+        bbs:say({tag=""}, message, 100, nil, nil, function()
+          global_queue:clear_current_command()
+          require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
+        end)
+      else
+        banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
           global_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
