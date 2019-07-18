@@ -16,17 +16,20 @@ function M:initialize(player, bbs)
 end
 
 function M:start_game(player, bbs, modal, banner, scenerio_player)
-  local function goodbye()
+  local function goodbye(state)
     global_queue:regist_command(function()
-      -- bbs:clear_bbs()
-      -- bbs:say({tag=""}, "あばよ〜っ！！\n", 100, nil, nil, function()
-      --   global_queue:clear_current_command()
-      --   require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
-      -- end)
-      banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
-        global_queue:clear_current_command()
-        require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
-      end)
+      if state then
+        bbs:clear_bbs()
+        bbs:say({tag=""}, "あばよ〜っ！！\n", 100, nil, nil, function()
+          global_queue:clear_current_command()
+          require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
+        end)
+      else
+        banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
+          global_queue:clear_current_command()
+          require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
+        end)
+      end
     end)
   end
 
@@ -64,7 +67,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
         finalize = function(state)
           bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
-            goodbye()
+            goodbye(state)
           end)
         end,
       },
