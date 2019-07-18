@@ -303,6 +303,7 @@ function M:hide()
     if M.onClose then
       M.onClose(M.result)
     end
+    M.result = -1
 
   end)
 end

@@ -20,12 +20,16 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
     global_queue:regist_command(function()
       if state then
         bbs:clear_bbs()
-        bbs:say({tag=""}, "あばよ〜っ！！\n", 100, nil, nil, function()
+        bbs:say({tag=""}, "お疲れ様でした。\n", 100, nil, nil, function()
           global_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       else
-        banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
+        local message = "あばよ〜っ！！"
+        if state == 0 then
+          message = "この負け犬が〜っ"
+        end
+        banner:show(message, display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
           global_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
@@ -38,19 +42,26 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
       {
         start = function()
           bbs:clear_bbs()
-          bbs:say({tag="S"}, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
-          bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil, nil, nil)
+          bbs:say({tag="S"}, "問題1\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
+          bbs:say({tag="D"}, "5 + 6 = ?\n", 180, nil, nil, function()
+            modal:show({{"10"}, {"11"}}, 0, 0, 24, 80, 20)
+          end)
         end,
-        evaluate = function(self)
-          if true then
-            -- return 0
-            return 1
-          else
+        evaluate = function()
+          if modal.result == -1 then
             return -1
+          elseif modal.result == 2 then
+            return 1
+          elseif modal.result ~= 2 then
+            return 0
           end
         end,
         finalize = function(state)
-          bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, nil, nil)
+          if state == 1 then
+            bbs:say({tag="D"}, "正解です\n", 20, nil, nil, nil, nil)
+          else
+            goodbye(state)
+          end
         end,
       },
      {
