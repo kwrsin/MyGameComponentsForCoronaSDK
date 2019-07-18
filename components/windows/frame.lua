@@ -1,6 +1,14 @@
 return function()
   local M = {}
 
+  function M:get_label_object(content, kind)
+    for i = 1 , content.numChildren do
+      if content[i].kind and content[i].kind == kind then
+        return content[i]
+      end
+    end
+  end
+
   function M:create_filter(touch_guard)
     local filter = display.newRect(
       touch_guard, 0, 0, display.actualContentWidth, display.actualContentHeight)
@@ -40,30 +48,30 @@ return function()
     end
   end
 
-  function M:adjust_frame(width, height)
-    M.frame_group[1].x = -width / 2 - M.frame_group[1].width / 2
-    M.frame_group[1].y = -height / 2 - M.frame_group[1].width / 2 - M.frame_group[1].width
-    M.frame_group[2].x = 0
-    M.frame_group[2].y = -height / 2 - M.frame_group[1].width / 2 - M.frame_group[1].width
-    M.frame_group[2].width = width
-    M.frame_group[3].x = width / 2 + M.frame_group[1].width / 2
-    M.frame_group[3].y = -height / 2 - M.frame_group[1].width / 2 - M.frame_group[1].width
-    M.frame_group[4].x = -width / 2 - M.frame_group[1].width / 2
-    M.frame_group[4].y = 0 - M.frame_group[1].width
-    M.frame_group[4].height = height + M.frame_group[1].width / 2
-    -- M.frame_group[5].x = 0
-    -- M.frame_group[5].y = 0
-    M.frame_group[5].isVisible = false
-    M.frame_group[6].x = width / 2 + M.frame_group[1].width / 2
-    M.frame_group[6].y = 0 - M.frame_group[1].width
-    M.frame_group[6].height = height + M.frame_group[1].width / 2
-    M.frame_group[7].x = -width / 2 - M.frame_group[1].width / 2
-    M.frame_group[7].y = height / 2 + M.frame_group[1].width / 2 - M.frame_group[1].width
-    M.frame_group[8].x = 0
-    M.frame_group[8].y = height / 2 + M.frame_group[1].width / 2 - M.frame_group[1].width
-    M.frame_group[8].width = width
-    M.frame_group[9].x = width / 2 + M.frame_group[1].width / 2
-    M.frame_group[9].y = height / 2 + M.frame_group[1].width / 2 - M.frame_group[1].width
+  function M:adjust_frame(frame_group, width, height)
+    frame_group[1].x = -width / 2 - frame_group[1].width / 2
+    frame_group[1].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+    frame_group[2].x = 0
+    frame_group[2].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+    frame_group[2].width = width
+    frame_group[3].x = width / 2 + frame_group[1].width / 2
+    frame_group[3].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+    frame_group[4].x = -width / 2 - frame_group[1].width / 2
+    frame_group[4].y = 0 - frame_group[1].width
+    frame_group[4].height = height + frame_group[1].width / 2
+    -- frame_group[5].x = 0
+    -- frame_group[5].y = 0
+    frame_group[5].isVisible = false
+    frame_group[6].x = width / 2 + frame_group[1].width / 2
+    frame_group[6].y = 0 - frame_group[1].width
+    frame_group[6].height = height + frame_group[1].width / 2
+    frame_group[7].x = -width / 2 - frame_group[1].width / 2
+    frame_group[7].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+    frame_group[8].x = 0
+    frame_group[8].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+    frame_group[8].width = width
+    frame_group[9].x = width / 2 + frame_group[1].width / 2
+    frame_group[9].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
 
   end
 

@@ -82,4 +82,11 @@ function M:create_modal(sceneGroup, map_path)
   return modal
 end
 
+function M:create_banner(sceneGroup, map_path)
+  local banner = require("components.windows.banner")
+  local object_sheets = M:get_object_sheets(map_path)
+  banner:create_banner(sceneGroup, object_sheets[3], nil)
+  return banner
+end
+
 return M

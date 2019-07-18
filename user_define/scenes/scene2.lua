@@ -5,6 +5,7 @@ local map_path = 'assets.abcde'
 local modal
 local bbs
 local player
+local banner
 
 
 local scene = composer.newScene()
@@ -16,6 +17,8 @@ function scene:create(event)
   helper:create_background(sceneGroup)
   bbs = helper:create_bbs(sceneGroup)
   modal = helper:create_modal(sceneGroup, map_path)
+  banner = helper:create_banner(sceneGroup, map_path)
+
 end
 
 function scene:show(event)
@@ -23,7 +26,7 @@ function scene:show(event)
 
   if(event.phase == 'will') then
     helper:initialize(player, bbs)
-    helper:execute_opening(bbs, modal)
+    helper:execute_opening(bbs, modal, banner)
   elseif(event.phase == 'did') then
   end
 end

@@ -56,14 +56,6 @@ function M:visible_content(content, enabled, onHide)
   end
 end
 
-function M:get_label_object(content, kind)
-  for i = 1 , content.numChildren do
-    if content[i].kind and content[i].kind == kind then
-      return content[i]
-    end
-  end
-end
-
 function M:create_modal(sceneGroup, object_sheet, text_options)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
@@ -232,8 +224,8 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
 
   local width = display.actualContentWidth - x_margin - x_margin
   local height = (size + y_spacing) * max_row
-  -- M:adjust_frame(width, height)
-  M:adjust_frame(width, height, x_margin, size, y_spacing, max_row)
+  M:adjust_frame(M.frame_group, width, height)
+  -- M:adjust_frame(width, height, x_margin, size, y_spacing, max_row)
 
   M.contents_group.x = M.contents_group.x + x
   M.contents_group.y = M.contents_group.x + y
