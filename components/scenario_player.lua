@@ -18,7 +18,7 @@ function M:enterFrame()
           table.remove(M.scenario_list, i)
         end
       end
-      M.scenario.finalize()
+      M.scenario.finalize(eval)
 
       M.scenario = nil
     end

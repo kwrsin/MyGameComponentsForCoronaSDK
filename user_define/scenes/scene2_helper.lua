@@ -46,7 +46,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
             return -1
           end
         end,
-        finalize = function()
+        finalize = function(state)
           bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, nil, nil)
         end,
       },
@@ -62,7 +62,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
             return -1
           end
         end,
-        finalize = function()
+        finalize = function(state)
           bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
             goodbye()
           end)
