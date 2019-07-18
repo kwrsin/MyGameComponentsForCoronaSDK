@@ -64,20 +64,6 @@ function M:get_label_object(content, kind)
   end
 end
 
-function M:set_filter_color(enabled)
-  -- if enabled then
-  --   M.filter.isVisible = true
-  --   M.filter.alpha = 0.3
-  -- else
-  --   M.filter.isVisible = false
-  --   M.filter.alpha = 0
-  -- end
-end
-
-function M:set_filter_effect(filter)
-  -- filter:setFillColor(0, 0, 0)
-end
-
 function M:create_modal(sceneGroup, object_sheet, text_options)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
@@ -92,14 +78,7 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
   M.root_group = root_group
   M.contents_group = contents_group
 
-  local filter = display.newRect(
-    touch_guard, 0, 0, display.actualContentWidth, display.actualContentHeight)
-  filter.isVisible = false
-  filter.isHitTestable = false
-  M:set_filter_effect(filter)
-
-  filter:addEventListener("touch", function() print("guard") return true end)
-  M.filter = filter
+  M.filter = M:create_filter(touch_guard)
   M.default_text_options = text_options
 
   local size = nil
@@ -135,10 +114,9 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
     table.insert(contents, content)
   end
   M.contents = contents
-
   M.frame_group = frame_group
   frame_group.isVisible = false
-  M:set_frame(object_sheet)
+  M:set_frame(frame_group, object_sheet)
 end
 
 
@@ -252,7 +230,10 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   local most_top_side = -max_row * (size + y_spacing) / 2
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
-  M:adjust_frame(x_margin, size, y_spacing, max_row)
+  local width = display.actualContentWidth - x_margin - x_margin
+  local height = (size + y_spacing) * max_row
+  -- M:adjust_frame(width, height)
+  M:adjust_frame(width, height, x_margin, size, y_spacing, max_row)
 
   M.contents_group.x = M.contents_group.x + x
   M.contents_group.y = M.contents_group.x + y
@@ -260,58 +241,20 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   M.frame_group.y = M.frame_group.x + y
 end
 
-function M:set_frame(object_sheet)
-  if object_sheet then
-    if M.frame_group.numChildren > 0 then
-      for i = 1, M.frame_group.numChildren do
-        M.frame_group[i]:removeSelf()
-        M.frame_group[i] = nil
-      end
-    end
-    for i = 1, 9 do
-      local frame_image = display.newImage(M.frame_group, object_sheet, i)
-    end
-  end
-  -- local frame = display.newRoundedRect(M.frame_group, 0, 0, 32, 32, 12)
-  -- frame:setFillColor(1, 0, 1, 0.3)
-end
+-- function M:set_frame(frame_group, object_sheet)
+--   local frame = display.newRoundedRect(frame_group, 0, 0, 32, 32, 12)
+--   frame:setFillColor(1, 0, 1, 0.3)
+-- end
 
-function M:adjust_frame(x_margin, size, y_spacing, max_row)
-  local width = display.actualContentWidth - x_margin - x_margin
-  local height = (size + y_spacing) * max_row
-  M.frame_group[1].x = -width / 2 - 16 / 2
-  M.frame_group[1].y = -height / 2 - 16 / 2 - 16
-  M.frame_group[2].x = 0
-  M.frame_group[2].y = -height / 2 - 16 / 2 - 16
-  M.frame_group[2].width = width
-  M.frame_group[3].x = width / 2 + 16 / 2
-  M.frame_group[3].y = -height / 2 - 16 / 2 - 16
-  M.frame_group[4].x = -width / 2 - 16 / 2
-  M.frame_group[4].y = 0 - 16
-  M.frame_group[4].height = height + 16 / 2
-  -- M.frame_group[5].x = 0
-  -- M.frame_group[5].y = 0
-  M.frame_group[5].isVisible = false
-  M.frame_group[6].x = width / 2 + 16 / 2
-  M.frame_group[6].y = 0 - 16
-  M.frame_group[6].height = height + 16 / 2
-  M.frame_group[7].x = -width / 2 - 16 / 2
-  M.frame_group[7].y = height / 2 + 16 / 2 - 16
-  M.frame_group[8].x = 0
-  M.frame_group[8].y = height / 2 + 16 / 2 - 16
-  M.frame_group[8].width = width
-  M.frame_group[9].x = width / 2 + 16 / 2
-  M.frame_group[9].y = height / 2 + 16 / 2 - 16
-
-  -- M.frame_group[10].x = 0
-  -- M.frame_group[10].y = -(size + y_spacing) / 2
-  -- M.frame_group[10].width = width + 16
-  -- M.frame_group[10].height = height + 16
-  -- M.frame_group[10].strokeWidth = 3
-  -- M.frame_group[10]:setFillColor( 0.1, 0, 0, 0.3 )
-  -- M.frame_group[10]:setStrokeColor( 1, 0, 0 )
-
-end
+-- function M:adjust_frame(width, height, x_margin, size, y_spacing, max_row)
+--   M.frame_group[1].x = 0
+--   M.frame_group[1].y = -(size + y_spacing) / 2
+--   M.frame_group[1].width = width + 16
+--   M.frame_group[1].height = height + 16
+--   M.frame_group[1].strokeWidth = 3
+--   M.frame_group[1]:setFillColor( 0.1, 0, 0, 0.3 )
+--   M.frame_group[1]:setStrokeColor( 1, 0, 0 )
+-- end
 
 function M:close()
   if M.onClose then
@@ -345,11 +288,5 @@ function M:hide()
     end
   end)
 end
-
-
-
-
-
-
 
 return M  
