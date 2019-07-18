@@ -15,7 +15,7 @@ function M:initialize(player, bbs)
   )
 end
 
-function M:execute_opening(bbs, modal, banner)
+function M:start_game(player, bbs, modal, banner, scenerio_player)
   local function goodbye()
     global_queue:regist_command(function()
       -- bbs:clear_bbs()
@@ -28,17 +28,61 @@ function M:execute_opening(bbs, modal, banner)
         require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
       end)
     end)
+  end
+
+  local function start_scenario()
+    local scenario_list = {
+      {
+        start = function()
+          bbs:clear_bbs()
+          bbs:say({tag="S"}, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
+          bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil, nil, nil)
+        end,
+        evaluate = function(self)
+          if true then
+            -- return 0
+            return 1
+          else
+            return -1
+          end
+        end,
+        finalize = function()
+          bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, nil, nil)
+        end,
+      },
+     {
+        start = function()
+          bbs:clear_bbs()
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+        end,
+        evaluate = function()
+          if true then
+            return 1
+          else
+            return -1
+          end
+        end,
+        finalize = function()
+          bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
+            goodbye()
+          end)
+        end,
+      },
+    }
+    scenerio_player:set_scenario_list(scenario_list)
 
   end
+
   global_queue:regist_command(function()
     bbs:clear_bbs()
     bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil)
     bbs:say({tag=""}, "これからいくつか質問をします！！\n", 100, nil, nil)
     bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
       modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
+        global_queue:clear_current_command()
         if result == 1 then
+          start_scenario()
         else
-          global_queue:clear_current_command()
           goodbye()
         end
       end)

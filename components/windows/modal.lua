@@ -96,7 +96,7 @@ function M:visible_content(content, enabled, onHide)
   end
 end
 
-function M:create_modal(sceneGroup, object_sheet, text_options)
+function M:create_modal(parent, object_sheet, text_options)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
   local frame_group = display.newGroup()
@@ -104,7 +104,7 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
   root_group:insert(touch_guard)
   root_group:insert(contents_group)
   root_group:insert(frame_group)
-  sceneGroup:insert(root_group)
+  parent:insert(root_group)
   root_group.x = display.contentCenterX
   root_group.y = display.actualContentHeight / 2
   M.root_group = root_group
