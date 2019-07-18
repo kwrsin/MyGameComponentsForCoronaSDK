@@ -54,8 +54,8 @@ function M:show(sentence, x, y, size, text_options, onClose, onAction)
       onAction(M.banner_group, x, y)
     else
       M.banner_group.x = display.actualContentWidth / 2
-      M.banner_group.y = -display.actualContentHeight / 2 - height * 2
-      transition.to(M.banner_group, {x=x, y=y, time=200, onComplete=function(event)
+      M.banner_group.y = 0 - height * 2
+      transition.to(M.banner_group, {x=x, y=y, time=300, transition=easing.outBounce, onComplete=function(event)
         timer.performWithDelay(500, function(event)
           M.filter.isHitTestable = false
           M.banner_group.isVisible = false

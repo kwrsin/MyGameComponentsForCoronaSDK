@@ -35,44 +35,19 @@ return function()
   end
 
   function M:set_frame(frame_group, object_sheet)
-    if object_sheet then
-      if frame_group.numChildren > 0 then
-        for i = 1, frame_group.numChildren do
-          frame_group[i]:removeSelf()
-          frame_group[i] = nil
-        end
-      end
-      for i = 1, 9 do
-        local frame_image = display.newImage(frame_group, object_sheet, i)
-      end
-    end
+    local frame = display.newRoundedRect(frame_group, 0, 0, 32, 32, 12)
+    frame:setFillColor(1, 0, 1, 0.3)
   end
 
   function M:adjust_frame(frame_group, width, height)
-    frame_group[1].x = -width / 2 - frame_group[1].width / 2
-    frame_group[1].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
-    frame_group[2].x = 0
-    frame_group[2].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
-    frame_group[2].width = width
-    frame_group[3].x = width / 2 + frame_group[1].width / 2
-    frame_group[3].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
-    frame_group[4].x = -width / 2 - frame_group[1].width / 2
-    frame_group[4].y = 0 - frame_group[1].width
-    frame_group[4].height = height + frame_group[1].width / 2
-    -- frame_group[5].x = 0
-    -- frame_group[5].y = 0
-    frame_group[5].isVisible = false
-    frame_group[6].x = width / 2 + frame_group[1].width / 2
-    frame_group[6].y = 0 - frame_group[1].width
-    frame_group[6].height = height + frame_group[1].width / 2
-    frame_group[7].x = -width / 2 - frame_group[1].width / 2
-    frame_group[7].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
-    frame_group[8].x = 0
-    frame_group[8].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
-    frame_group[8].width = width
-    frame_group[9].x = width / 2 + frame_group[1].width / 2
-    frame_group[9].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
-
+    M.frame_group[1].x = 0
+    -- M.frame_group[1].y = -(size + y_spacing) / 2
+    M.frame_group[1].y = 0  
+    M.frame_group[1].width = width + 16
+    M.frame_group[1].height = height + 16
+    M.frame_group[1].strokeWidth = 3
+    M.frame_group[1]:setFillColor( 0.1, 0, 0, 0.3 )
+    M.frame_group[1]:setStrokeColor( 1, 0, 0 )
   end
 
   return M  
