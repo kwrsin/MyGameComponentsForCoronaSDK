@@ -1,5 +1,9 @@
 local M = {}
 
+M.CANCEL_ALL = 0
+M.CONTINUE = -1
+M.NEXT = 1
+
 function M:enterFrame()
   if M.scenario == nil then
     if #M.scenario_list > 0 then

@@ -20,7 +20,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
     global_queue:regist_command(function()
       if state then
         local message = "あばよ〜っ！！"
-        if state == 0 then
+        if state == scenerio_player.CANCEL_ALL then
           message = "この負け犬が〜っ"
         end
         bbs:clear_bbs()
@@ -50,15 +50,15 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
         evaluate = function()
           if modal.result == -1 then
-            return -1
+            return scenerio_player.CONTINUE
           elseif modal.result == 2 then
-            return 1
+            return scenerio_player.NEXT
           elseif modal.result ~= 2 then
-            return 0
+            return scenerio_player.CANCEL_ALL
           end
         end,
         finalize = function(state)
-          if state == 1 then
+          if state == scenerio_player.NEXT then
             bbs:say({tag="D"}, "正解です\n", 20, nil, nil, nil, nil)
           else
             goodbye(state)
@@ -73,9 +73,9 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
         evaluate = function()
           if true then
-            return 1
+            return scenerio_player.NEXT
           else
-            return -1
+            return scenerio_player.CONTINUE
           end
         end,
         finalize = function(state)
