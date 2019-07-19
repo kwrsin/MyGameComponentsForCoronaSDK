@@ -4,13 +4,14 @@ function M:enterFrame()
   if M.scenario == nil then
     if #M.scenario_list > 0 then
       M.scenario = table.remove(M.scenario_list, 1)
-      M.scenario.start()
+      M.scenario.running = false
+      M.scenario:start()
     -- else
     --   M:clean_up()
     --   return
     end
   end
-  if M.scenario then
+  if M.scenario and M.scenario.running == true then
     local eval = M.scenario.evaluate()
     if eval >= 0 then
       if eval == 0 then

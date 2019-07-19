@@ -40,11 +40,12 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
   local function start_scenario()
     local scenario_list = {
       {
-        start = function()
+        start = function(self)
           bbs:clear_bbs()
           bbs:say({tag="S"}, "問題1\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
           bbs:say({tag="D"}, "5 + 6 = ?\n", 180, nil, nil, function()
             modal:show({{"10"}, {"11"}}, 0, 0, 24, 80, 20)
+            self.running = true
           end)
         end,
         evaluate = function()
@@ -65,9 +66,10 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
       },
      {
-        start = function()
+        start = function(self)
           bbs:clear_bbs()
           bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+          self.running = true
         end,
         evaluate = function()
           if true then
