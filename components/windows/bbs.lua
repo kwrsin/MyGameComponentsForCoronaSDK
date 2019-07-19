@@ -105,7 +105,7 @@ return function()
     Runtime:removeEventListener("enterFrame", self.command_queue)
   end
 
-  function M:refresh()
+  function M:clean_up()
     for i = 1, #self.timer_id_list do
       timer.cancel(self.timer_id_list[i])
       self.timer_id_list[i] = nil

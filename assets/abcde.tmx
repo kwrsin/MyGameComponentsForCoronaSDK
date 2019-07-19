@@ -14,7 +14,7 @@
   </tile>
   <tile id="27">
    <properties>
-    <property name="behavor" value="user_define.behaviors.player_behavor"/>
+    <property name="behavor" value="user_define.behaviors.player_behavior"/>
    </properties>
    <objectgroup draworder="index" name="hoh"/>
    <animation>

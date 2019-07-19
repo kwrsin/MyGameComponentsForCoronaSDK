@@ -4,6 +4,46 @@ local M = require("components.windows.frame")()
 M.result = -1
 M.amount = 9
 
+function M:adjust_frame(frame_group, width, height)
+  frame_group[1].x = -width / 2 - frame_group[1].width / 2
+  frame_group[1].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+  frame_group[2].x = 0
+  frame_group[2].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+  frame_group[2].width = width
+  frame_group[3].x = width / 2 + frame_group[1].width / 2
+  frame_group[3].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+  frame_group[4].x = -width / 2 - frame_group[1].width / 2
+  frame_group[4].y = 0 - frame_group[1].width
+  frame_group[4].height = height + frame_group[1].width / 2
+  -- frame_group[5].x = 0
+  -- frame_group[5].y = 0
+  frame_group[5].isVisible = false
+  frame_group[6].x = width / 2 + frame_group[1].width / 2
+  frame_group[6].y = 0 - frame_group[1].width
+  frame_group[6].height = height + frame_group[1].width / 2
+  frame_group[7].x = -width / 2 - frame_group[1].width / 2
+  frame_group[7].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+  frame_group[8].x = 0
+  frame_group[8].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+  frame_group[8].width = width
+  frame_group[9].x = width / 2 + frame_group[1].width / 2
+  frame_group[9].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+end
+
+function M:set_frame(frame_group, object_sheet)
+  if object_sheet then
+    if frame_group.numChildren > 0 then
+      for i = 1, frame_group.numChildren do
+        frame_group[i]:removeSelf()
+        frame_group[i] = nil
+      end
+    end
+    for i = 1, 9 do
+      local frame_image = display.newImage(frame_group, object_sheet, i)
+    end
+  end
+end
+
 function M:create_button_background(content)
   local background = display.newRoundedRect(content, 0, 0, 12, 12, 5)
   background.kind = "bg"
@@ -56,29 +96,7 @@ function M:visible_content(content, enabled, onHide)
   end
 end
 
-function M:get_label_object(content, kind)
-  for i = 1 , content.numChildren do
-    if content[i].kind and content[i].kind == kind then
-      return content[i]
-    end
-  end
-end
-
-function M:set_filter_color(enabled)
-  -- if enabled then
-  --   M.filter.isVisible = true
-  --   M.filter.alpha = 0.3
-  -- else
-  --   M.filter.isVisible = false
-  --   M.filter.alpha = 0
-  -- end
-end
-
-function M:set_filter_effect(filter)
-  -- filter:setFillColor(0, 0, 0)
-end
-
-function M:create_modal(sceneGroup, object_sheet, text_options)
+function M:create_modal(parent, object_sheet, text_options)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
   local frame_group = display.newGroup()
@@ -86,20 +104,13 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
   root_group:insert(touch_guard)
   root_group:insert(contents_group)
   root_group:insert(frame_group)
-  sceneGroup:insert(root_group)
+  parent:insert(root_group)
   root_group.x = display.contentCenterX
   root_group.y = display.actualContentHeight / 2
   M.root_group = root_group
   M.contents_group = contents_group
 
-  local filter = display.newRect(
-    touch_guard, 0, 0, display.actualContentWidth, display.actualContentHeight)
-  filter.isVisible = false
-  filter.isHitTestable = false
-  M:set_filter_effect(filter)
-
-  filter:addEventListener("touch", function() print("guard") return true end)
-  M.filter = filter
+  M.filter = M:create_filter(touch_guard)
   M.default_text_options = text_options
 
   local size = nil
@@ -135,10 +146,9 @@ function M:create_modal(sceneGroup, object_sheet, text_options)
     table.insert(contents, content)
   end
   M.contents = contents
-
-  M:set_frame(frame_group, object_sheet)
   M.frame_group = frame_group
   frame_group.isVisible = false
+  M:set_frame(frame_group, object_sheet)
 end
 
 
@@ -252,14 +262,10 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   local most_top_side = -max_row * (size + y_spacing) / 2
   put_demension(labels, size, most_top_side, max_col, x_margin, y_spacing, -1)
 
-  for i = 1, M.frame_group.numChildren do
-    local width = display.actualContentWidth - x_margin - x_margin
-    local height = (size + y_spacing) * max_row
-    M.frame_group[i].x = 0
-    M.frame_group[i].y = -(size + y_spacing) / 2
-    M.frame_group[i].width = width 
-    M.frame_group[i].height = height 
-  end
+  local width = display.actualContentWidth - x_margin - x_margin
+  local height = (size + y_spacing) * max_row
+  M:adjust_frame(M.frame_group, width, height)
+  -- M:adjust_frame(width, height, x_margin, size, y_spacing, max_row)
 
   M.contents_group.x = M.contents_group.x + x
   M.contents_group.y = M.contents_group.x + y
@@ -267,15 +273,7 @@ function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   M.frame_group.y = M.frame_group.x + y
 end
 
-function M:set_frame(frame_group, object_sheet)
-  local frame = display.newRect(frame_group, 0, 0, 32, 32)
-  frame:setFillColor(1, 0, 1, 0.3)
-end
-
 function M:close()
-  if M.onClose then
-    M.onClose(M.result)
-  end
   M:hide()
 end
 
@@ -302,13 +300,12 @@ function M:hide()
         M.root_group.isVisible = false
       end)
     end
+    if M.onClose then
+      M.onClose(M.result)
+    end
+    M.result = -1
+
   end)
 end
-
-
-
-
-
-
 
 return M  

@@ -65,4 +65,28 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
   return actor_list
 end
 
+function M:create_bbs(sceneGroup)
+  local bbs = require('components.windows.bbs')()
+  local bbs_group = display.newGroup()
+  sceneGroup:insert(bbs_group)
+  local local_queue = require("components.synchronized_non_blocking_methods")()
+  bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, "frame_path", local_queue)
+  Runtime:addEventListener("enterFrame", local_queue)
+  return bbs
+end
+
+function M:create_modal(sceneGroup, map_path)
+  local modal = require("components.windows.modal")
+  local object_sheets = M:get_object_sheets(map_path)
+  modal:create_modal(sceneGroup, object_sheets[3], nil)
+  return modal
+end
+
+function M:create_banner(sceneGroup, map_path)
+  local banner = require("components.windows.banner")
+  local object_sheets = M:get_object_sheets(map_path)
+  banner:create_banner(sceneGroup, object_sheets[3], nil)
+  return banner
+end
+
 return M
