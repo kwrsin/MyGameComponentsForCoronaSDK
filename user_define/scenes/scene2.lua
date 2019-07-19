@@ -16,7 +16,7 @@ function scene:create(event)
   player = composer.getVariable("player")
 
   helper:create_background(sceneGroup)
-  bbs = helper:create_bbs(sceneGroup)
+  bbs = helper:create_bbs(sceneGroup, map_path)
   modal = helper:create_modal(sceneGroup, map_path)
   banner = helper:create_banner(sceneGroup, map_path)
 
