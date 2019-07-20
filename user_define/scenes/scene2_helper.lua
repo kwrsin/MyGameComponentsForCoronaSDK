@@ -15,12 +15,12 @@ function M:initialize(player, bbs)
   )
 end
 
-function M:start_game(player, bbs, modal, banner, scenerio_player)
+function M:start_game(player, bbs, modal, banner, scenario_player)
   local function goodbye(state, done)
     global_queue:regist_command(function()
       if state then
         local message = "あばよ〜っ！！"
-        if state == scenerio_player.CANCEL_ALL then
+        if state == scenario_player.CANCEL_ALL then
           message = "この負け犬が〜っ"
         end
         bbs:clear_bbs()
@@ -52,15 +52,15 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
         evaluate = function()
           if modal.result == -1 then
-            return scenerio_player.CONTINUE
+            return scenario_player.CONTINUE
           elseif modal.result == 2 then
-            return scenerio_player.NEXT
+            return scenario_player.NEXT
           elseif modal.result ~= 2 then
-            return scenerio_player.CANCEL_ALL
+            return scenario_player.CANCEL_ALL
           end
         end,
         answer = function(self, state, done)
-          if state == scenerio_player.NEXT then
+          if state == scenario_player.NEXT then
             bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
           else
             goodbye(state, done)
@@ -76,19 +76,73 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
         evaluate = function()
           if true then
-            return scenerio_player.NEXT
+            return scenario_player.NEXT
           else
-            return scenerio_player.CONTINUE
+            return scenario_player.CONTINUE
           end
         end,
         answer = function(self, state, done)
           bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
-            goodbye(state, done)
+            -- goodbye(state, done)
+            done()
           end)
         end,
+
+        scenario_list = {
+          {
+            quest = function(self, done)
+              bbs:clear_bbs()
+              bbs:say({tag="S"}, "問題2\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
+              bbs:say({tag="D"}, "8 + 9 = ?\n", 180, nil, nil, function()
+                modal:show({{"17"}, {"19"}}, 0, 0, 24, 80, 20)
+                done()
+              end)
+            end,
+            evaluate = function()
+              if modal.result == -1 then
+                return scenario_player.CONTINUE
+              elseif modal.result == 1 then
+                return scenario_player.NEXT
+              elseif modal.result ~= 1 then
+                return scenario_player.CANCEL_ALL
+              end
+            end,
+            answer = function(self, state, done)
+              if state == scenario_player.NEXT then
+                bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
+              else
+                goodbye(state, done)
+              end
+            end,
+          },
+          {
+            quest = function(self, done)
+              bbs:clear_bbs()
+              bbs:say({tag="C"}, "いろはにほへと\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
+                done()
+              end)
+            end,
+            evaluate = function()
+              if true then
+                return scenario_player.NEXT
+              else
+                return scenario_player.CONTINUE
+              end
+            end,
+            answer = function(self, state, done)
+              bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
+                goodbye(state, done)
+              end)
+            end,
+          },
+        }
+
+
+
+
       },
     }
-    scenerio_player:set_scenario_list(scenario_list)
+    scenario_player:set_scenario_list(scenario_list)
 
   end
 
