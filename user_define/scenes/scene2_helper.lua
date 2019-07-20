@@ -42,7 +42,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
   local function start_scenario()
     local scenario_list = {
       {
-        start = function(self, done)
+        quest = function(self, done)
           bbs:clear_bbs()
           bbs:say({tag="S"}, "問題1\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
           bbs:say({tag="D"}, "5 + 6 = ?\n", 180, nil, nil, function()
@@ -59,7 +59,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
             return scenerio_player.CANCEL_ALL
           end
         end,
-        finalize = function(self, state, done)
+        answer = function(self, state, done)
           if state == scenerio_player.NEXT then
             bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
           else
@@ -68,7 +68,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end,
       },
      {
-        start = function(self, done)
+        quest = function(self, done)
           bbs:clear_bbs()
           bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
             done()
@@ -81,7 +81,7 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
             return scenerio_player.CONTINUE
           end
         end,
-        finalize = function(self, state, done)
+        answer = function(self, state, done)
           bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
             goodbye(state, done)
           end)

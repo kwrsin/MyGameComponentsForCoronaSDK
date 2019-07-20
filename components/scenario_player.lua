@@ -12,7 +12,7 @@ return function(scenario_list)
         M.scenario = M:get_child(eval)
         eval = M.CONTINUE
         M.scenario.running = false
-        M.scenario:start(function()
+        M.scenario:quest(function()
           M.scenario.running = true
         end)
       -- else
@@ -29,7 +29,7 @@ return function(scenario_list)
         elseif M.scenario.scenario_list and #M.scenario.scenario_list > 0 then
           M.scenario_list = M.scenario.scenario_list
         end
-        M.scenario:finalize(eval, function()
+        M.scenario:answer(eval, function()
           M.scenario = nil
         end)
       end
