@@ -16,7 +16,7 @@ function M:initialize(player, bbs)
 end
 
 function M:start_game(player, bbs, modal, banner, scenerio_player)
-  local function goodbye(state, signal)
+  local function goodbye(state, done)
     global_queue:regist_command(function()
       if state then
         local message = "あばよ〜っ！！"
@@ -25,13 +25,13 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
         end
         bbs:clear_bbs()
         bbs:say({tag=""}, message, 100, nil, nil, function()
-          if signal then signal() end
+          if done then done() end
           global_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       else
         banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
-          if signal then signal() end
+          if done then done() end
           global_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
@@ -42,12 +42,12 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
   local function start_scenario()
     local scenario_list = {
       {
-        start = function(self, signal)
+        start = function(self, done)
           bbs:clear_bbs()
           bbs:say({tag="S"}, "問題1\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
           bbs:say({tag="D"}, "5 + 6 = ?\n", 180, nil, nil, function()
             modal:show({{"10"}, {"11"}}, 0, 0, 24, 80, 20)
-            signal()
+            done()
           end)
         end,
         evaluate = function()
@@ -59,19 +59,19 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
             return scenerio_player.CANCEL_ALL
           end
         end,
-        finalize = function(self, state, signal)
+        finalize = function(self, state, done)
           if state == scenerio_player.NEXT then
-            bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() signal() end, nil)
+            bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
           else
-            goodbye(state, signal)
+            goodbye(state, done)
           end
         end,
       },
      {
-        start = function(self, signal)
+        start = function(self, done)
           bbs:clear_bbs()
           bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
-            signal()
+            done()
           end)
         end,
         evaluate = function()
@@ -81,9 +81,9 @@ function M:start_game(player, bbs, modal, banner, scenerio_player)
             return scenerio_player.CONTINUE
           end
         end,
-        finalize = function(self, state, signal)
+        finalize = function(self, state, done)
           bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, function()
-            goodbye(state, signal)
+            goodbye(state, done)
           end)
         end,
       },
