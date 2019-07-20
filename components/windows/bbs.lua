@@ -2,12 +2,18 @@ local utf8 = require('plugin.utf8')
 
 
 return function()
-  local M = {}
+  local M = require("components.windows.frame")()
 
-  function M:create_bbs(parent, x, y, rows, cols, font_name, size, frame_path, command_queue)
+  function M:create_bbs(parent, x, y, rows, cols, font_name, size, object_sheet, command_queue)
     self.x_start_pos = display.actualContentWidth / 2 - size * cols / 2
+    local bbs_group = display.newGroup()
     local offset_group = display.newGroup()
-    parent:insert(offset_group)
+    local frame_group = display.newGroup()
+    bbs_group:insert(offset_group)
+    bbs_group:insert(frame_group)
+    parent:insert(bbs_group)
+    bbs_group.x = x
+    bbs_group.y = y
     local characters = {}
     local tags = {}
     for row = 1, rows do
@@ -34,10 +40,6 @@ return function()
       tag.init_y = yy
       table.insert(tags, tag)
     end
-    if parent then
-      parent:insert(offset_group)
-    end
-    M:set_frame(parent, rows, cols, size)
 
     M.rows = rows
     M.cols = cols
@@ -50,14 +52,62 @@ return function()
     M.prompt_icon_path = nil
     M.timer_id_list = {}
     M.offset_group = offset_group
+    M.bbs_group = bbs_group
     M.characters_offset = 0
     M.command_queue = command_queue
+    M:set_frame(frame_group, object_sheet)
+    local width, height = cols * size, rows * size
+    M:adjust_frame(frame_group, width, height, size)
   end
 
-  function M:set_frame(parent, rows, cols, size)
-    local test_r = display.newRect(parent, display.contentCenterX - size / 2, display.contentCenterY - size / 2, cols * size, rows * size)
-    test_r:setFillColor(1, 1, 0, .3)
+  function M:set_frame(frame_group, object_sheet)
+    if object_sheet then
+      if frame_group.numChildren > 0 then
+        for i = 1, frame_group.numChildren do
+          frame_group[i]:removeSelf()
+          frame_group[i] = nil
+        end
+      end
+      for i = 1, 9 do
+        local frame_image = display.newImage(frame_group, object_sheet, i)
+      end
+    end
   end
+
+  -- function M:adjust_frame(frame_group, width, height, size)
+  --   frame_group[1].x = display.contentCenterX - size / 2
+  --   frame_group[1].y = display.contentCenterY - size / 2  
+  --   frame_group[1].width = width + 16
+  --   frame_group[1].height = height + 16
+  --   frame_group[1].strokeWidth = 3
+  --   frame_group[1]:setFillColor( 0.1, 0, 0, 0.3 )
+  --   frame_group[1]:setStrokeColor( 1, 0, 0 )
+  -- end
+function M:adjust_frame(frame_group, width, height, size)
+  frame_group[1].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
+  frame_group[1].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
+  frame_group[2].x = display.contentCenterX - size / 2
+  frame_group[2].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
+  frame_group[2].width = width
+  frame_group[3].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
+  frame_group[3].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
+  frame_group[4].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
+  frame_group[4].y = display.contentCenterY - frame_group[1].height + size / 2
+  frame_group[4].height = height + frame_group[1].height / 2
+  -- frame_group[5].x = 0
+  -- frame_group[5].y = 0
+  frame_group[5].isVisible = false
+  frame_group[6].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
+  frame_group[6].y = display.contentCenterY - frame_group[1].height + size / 2
+  frame_group[6].height = height + frame_group[1].height / 2
+  frame_group[7].x = display.contentCenterX -width / 2 - frame_group[1].width / 2 - size / 2
+  frame_group[7].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2
+  frame_group[8].x = display.contentCenterX - size / 2
+  frame_group[8].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2
+  frame_group[8].width = width
+  frame_group[9].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
+  frame_group[9].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2 
+end
 
   function M:get_tag_start_position()
     return self.x_start_pos
