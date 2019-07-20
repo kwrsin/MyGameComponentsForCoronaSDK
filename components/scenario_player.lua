@@ -5,43 +5,48 @@ return function(scenario_list)
   M.CANCEL_ALL = 0
   M.NEXT = 1
 
+  local eval = M.CONTINUE
   function M:enterFrame()
     if M.scenario == nil then
       if M:has_children() then
-        M.scenario = M:get_child()
+        M.scenario = M:get_child(eval)
+        eval = M.CONTINUE
         M.scenario.running = false
-        M.scenario:start()
+        M.scenario:start(function()
+          M.scenario.running = true
+        end)
       -- else
       --   M:clean_up()
       --   return
       end
     end
     if M.scenario and M.scenario.running == true then
-      local eval= M.scenario.evaluate()
+      eval = M.scenario.evaluate()
       if eval >= M.CANCEL_ALL then
+        M.scenario.running = false
         if eval == M.CANCEL_ALL then
           M:delete_children()
+        elseif M.scenario.scenario_list and #M.scenario.scenario_list > 0 then
+          M.scenario_list = M.scenario.scenario_list
         end
-        M:update_scenario_list(eval)
-        M.scenario.finalize(eval)
-        M.scenario = nil
-        eval = M.CONTINUE
+        M.scenario:finalize(eval, function()
+          M.scenario = nil
+        end)
       end
     end
   end
 
-  function M:update_scenario_list(eval)
-    if M.scenario.scenario_list and #M.scenario.scenario_list > 0 then
-      M.scenario_list = M.scenario.scenario_list
-    end
-  end
-
-  function M:has_children()
+  function M:has_children(eval)
     return #M.scenario_list > 0
   end
 
-  function M:get_child()
-    return table.remove(M.scenario_list, 1)
+  function M:get_child(eval)
+    if eval >= M.NEXT then
+      local scenario = table.remove(M.scenario_list, eval)
+      return scenario
+    else
+      return table.remove(M.scenario_list, 1)
+    end
   end
 
   function M:delete_children()
