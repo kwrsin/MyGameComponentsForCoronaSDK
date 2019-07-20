@@ -7,8 +7,8 @@ return function(scenario_list)
 
   function M:enterFrame()
     if M.scenario == nil then
-      if #M.scenario_list > 0 then
-        M.scenario = table.remove(M.scenario_list, 1)
+      if M:has_children() then
+        M.scenario = M:get_child()
         M.scenario.running = false
         M.scenario:start()
       -- else
@@ -20,13 +20,27 @@ return function(scenario_list)
       local eval = M.scenario.evaluate()
       if eval >= 0 then
         if eval == 0 then
-          for i = 1, #M.scenario_list do
-            table.remove(M.scenario_list, i)
-          end
+          M:delete_children()
         end
         M.scenario.finalize(eval)
 
         M.scenario = nil
+      end
+    end
+  end
+
+  function M:has_children()
+    return #M.scenario_list > 0
+  end
+
+  function M:get_child()
+    return table.remove(M.scenario_list, 1)
+  end
+
+  function M:delete_children()
+    if M:has_children() then
+      for i = 1, #M.scenario_list do
+        table.remove(M.scenario_list, i)
       end
     end
   end
@@ -38,11 +52,7 @@ return function(scenario_list)
   function M:clean_up()
     print("close scenario_player")
     Runtime:removeEventListener("enterFrame", M)
-    if #M.scenario_list > 0 then
-      for i = 1, #M.scenario_list do
-        table.remove(M.scenario_list, i)
-      end
-    end
+    M:delete_children()
     M.scenario = nil
   end
 
