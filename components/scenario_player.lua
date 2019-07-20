@@ -1,8 +1,8 @@
 return function(scenario_list)
   local M = {}
 
-  M.CANCEL_ALL = 0
   M.CONTINUE = -1
+  M.CANCEL_ALL = 0
   M.NEXT = 1
 
   function M:enterFrame()
@@ -17,15 +17,22 @@ return function(scenario_list)
       end
     end
     if M.scenario and M.scenario.running == true then
-      local eval = M.scenario.evaluate()
-      if eval >= 0 then
-        if eval == 0 then
+      local eval= M.scenario.evaluate()
+      if eval >= M.CANCEL_ALL then
+        if eval == M.CANCEL_ALL then
           M:delete_children()
         end
+        M:update_scenario_list(eval)
         M.scenario.finalize(eval)
-
         M.scenario = nil
+        eval = M.CONTINUE
       end
+    end
+  end
+
+  function M:update_scenario_list(eval)
+    if M.scenario.scenario_list and #M.scenario.scenario_list > 0 then
+      M.scenario_list = M.scenario.scenario_list
     end
   end
 
