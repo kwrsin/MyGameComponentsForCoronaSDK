@@ -40,14 +40,14 @@ return function()
   end
 
   function M:adjust_frame(frame_group, width, height)
-    M.frame_group[1].x = 0
-    -- M.frame_group[1].y = -(size + y_spacing) / 2
-    M.frame_group[1].y = 0  
-    M.frame_group[1].width = width + 16
-    M.frame_group[1].height = height + 16
-    M.frame_group[1].strokeWidth = 3
-    M.frame_group[1]:setFillColor( 0.1, 0, 0, 0.3 )
-    M.frame_group[1]:setStrokeColor( 1, 0, 0 )
+    frame_group[1].x = 0
+    -- frame_group[1].y = -(size + y_spacing) / 2
+    frame_group[1].y = 0  
+    frame_group[1].width = width + 16
+    frame_group[1].height = height + 16
+    frame_group[1].strokeWidth = 3
+    frame_group[1]:setFillColor( 0.1, 0, 0, 0.3 )
+    frame_group[1]:setStrokeColor( 1, 0, 0 )
   end
 
   return M  

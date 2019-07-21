@@ -65,12 +65,11 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
   return actor_list
 end
 
-function M:create_bbs(sceneGroup)
+function M:create_bbs(sceneGroup, map_path)
   local bbs = require('components.windows.bbs')()
-  local bbs_group = display.newGroup()
-  sceneGroup:insert(bbs_group)
   local local_queue = require("components.synchronized_non_blocking_methods")()
-  bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, "frame_path", local_queue)
+  local object_sheets = M:get_object_sheets(map_path)
+  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3], local_queue)
   Runtime:addEventListener("enterFrame", local_queue)
   return bbs
 end

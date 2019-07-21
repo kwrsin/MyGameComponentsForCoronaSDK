@@ -6,28 +6,28 @@ M.amount = 9
 
 function M:adjust_frame(frame_group, width, height)
   frame_group[1].x = -width / 2 - frame_group[1].width / 2
-  frame_group[1].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+  frame_group[1].y = -height / 2 - frame_group[1].height / 2 - frame_group[1].height
   frame_group[2].x = 0
-  frame_group[2].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+  frame_group[2].y = -height / 2 - frame_group[1].height / 2 - frame_group[1].height
   frame_group[2].width = width
   frame_group[3].x = width / 2 + frame_group[1].width / 2
-  frame_group[3].y = -height / 2 - frame_group[1].width / 2 - frame_group[1].width
+  frame_group[3].y = -height / 2 - frame_group[1].height / 2 - frame_group[1].height
   frame_group[4].x = -width / 2 - frame_group[1].width / 2
-  frame_group[4].y = 0 - frame_group[1].width
-  frame_group[4].height = height + frame_group[1].width / 2
+  frame_group[4].y = 0 - frame_group[1].height
+  frame_group[4].height = height + frame_group[1].height / 2
   -- frame_group[5].x = 0
   -- frame_group[5].y = 0
   frame_group[5].isVisible = false
   frame_group[6].x = width / 2 + frame_group[1].width / 2
-  frame_group[6].y = 0 - frame_group[1].width
-  frame_group[6].height = height + frame_group[1].width / 2
+  frame_group[6].y = 0 - frame_group[1].height
+  frame_group[6].height = height + frame_group[1].height / 2
   frame_group[7].x = -width / 2 - frame_group[1].width / 2
-  frame_group[7].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+  frame_group[7].y = height / 2 + frame_group[1].height / 2 - frame_group[1].height
   frame_group[8].x = 0
-  frame_group[8].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+  frame_group[8].y = height / 2 + frame_group[1].height / 2 - frame_group[1].height
   frame_group[8].width = width
   frame_group[9].x = width / 2 + frame_group[1].width / 2
-  frame_group[9].y = height / 2 + frame_group[1].width / 2 - frame_group[1].width
+  frame_group[9].y = height / 2 + frame_group[1].height / 2 - frame_group[1].height
 end
 
 function M:set_frame(frame_group, object_sheet)
