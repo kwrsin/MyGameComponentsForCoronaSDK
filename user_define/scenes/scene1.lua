@@ -26,7 +26,6 @@ function scene:create(event)
   tilemap_panel = display.newGroup()
   -- sceneGroup:insert(tilemap_panel)
   camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel,nil)
-  camera:start_focus()
 
   -- banner
   local scenario_panel = display.newGroup()
@@ -139,7 +138,8 @@ function scene:show(event)
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
-    camera:set_target(player.actor.sprite)
+    camera:set_focus(player.actor.sprite)
+    camera:start_focus()
 
     local function clear_current_command()
       global_queue:clear_current_command()
