@@ -25,7 +25,8 @@ function scene:create(event)
   helper:create_stage(sceneGroup)
   tilemap_panel = display.newGroup()
   -- sceneGroup:insert(tilemap_panel)
-  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel, nil)
+  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel,nil)
+  camera:start_focus()
 
   -- banner
   local scenario_panel = display.newGroup()
@@ -50,7 +51,8 @@ function scene:show(event)
     physics.pause()
     
     -- player controller
-    -- local x_origin, y_origin = 0, 0
+    camera.x_origin = 0
+    camera.y_origin = 0
     player.controller:set_vc_event_listeners(
       {
         touch = function(event)
@@ -137,6 +139,7 @@ function scene:show(event)
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
+    camera:set_target(player.actor.sprite)
 
     local function clear_current_command()
       global_queue:clear_current_command()
@@ -232,6 +235,7 @@ function scene:hide(event)
   local sceneGroup = self.view
 
   if(event.phase == 'will') then
+    camera:stop_focus()
     global_queue:clean_up()
     Runtime:removeEventListener("enterFrame", _actors_enterFrame)
     for i = 1 , #actor_list do
