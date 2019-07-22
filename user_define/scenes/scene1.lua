@@ -38,7 +38,7 @@ function scene:create(event)
   local bbs_group = display.newGroup()
   sceneGroup:insert(bbs_group)
   local local_queue = require("components.synchronized_non_blocking_methods")()
-  bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, "frame_path", local_queue)
+  bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, nil, local_queue)
   Runtime:addEventListener("enterFrame", local_queue)
   fast_speak = function()
     bbs:set_speed(15)
@@ -213,12 +213,12 @@ function scene:show(event)
 
     local scenario_list = {
       {
-        start = function()
+        quest = function(self, done)
           bbs:clear_bbs()
           bbs:say({tag="S"}, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
-          bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil, nil, nil)
+          bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil, function() done() end, nil)
         end,
-        evaluate = function(self)
+        evaluate = function()
           if player.actor.count >= 500 then
             -- return 0
             return 1
@@ -226,14 +226,14 @@ function scene:show(event)
             return -1
           end
         end,
-        finalize = function()
-          bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, nil, nil)
+        answer = function(self, state, done)
+          bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, function() done() end, nil)
         end,
       },
      {
-        start = function()
+        quest = function(self, done)
           bbs:clear_bbs()
-          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}}, function() done() end)
         end,
         evaluate = function()
           if player.actor.sprite.x <= 0 then
@@ -242,8 +242,8 @@ function scene:show(event)
             return -1
           end
         end,
-        finalize = function()
-          bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, nil, nil)
+        answer = function(self, state, done)
+          bbs:say({tag="D"}, "thank you！\n", 20, nil, nil,  function() done() end, nil)
         end,
       },
 

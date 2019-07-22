@@ -84,6 +84,9 @@ return function()
   --   frame_group[1]:setStrokeColor( 1, 0, 0 )
   -- end
 function M:adjust_frame(frame_group, width, height, size)
+  if frame_group.numChildren <= 0 then
+    return
+  end
   frame_group[1].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
   frame_group[1].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
   frame_group[2].x = display.contentCenterX - size / 2
