@@ -126,11 +126,20 @@ function scene:show(event)
           if not event.is_cursor_repeated then return end
           if event.is_cursor_repeated > 0 then
             print(event.target.name .. " ON!!")
-            player.actor:up()
-            player.actor:move_up(true)
+            -- player.actor:up()
+            -- player.actor:move_up(true)
           elseif event.is_cursor_repeated < 0 then
-            player.actor:down()
-            player.actor:move_up(false)
+            -- player.actor:down()
+            -- player.actor:move_up(false)
+            camera:move(function(child, done)
+              transition.to(child, {time=1000, x=-3000, y=30, transition=easing.inOutQuart, onComplete=function()
+                timer.performWithDelay(1000, function(event)
+                  transition.to(child, {time=2000, x=000, y=00, transition=easing.inOutQuart, onComplete=function()
+                    done()
+                  end})
+                end)
+              end})
+            end)
             print(event.target.name .. " OFF!!")
           end
         end,

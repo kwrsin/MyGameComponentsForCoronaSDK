@@ -1,5 +1,6 @@
 return function(parent, width, height, child, target, world_width, world_height)
   local M = {}
+  M.is_playing = false
   local root = display.newGroup()
   root:insert(child)
   root.x = -width / 2
@@ -7,6 +8,11 @@ return function(parent, width, height, child, target, world_width, world_height)
 
   function M:set_focus(target)
     M.target = target
+  end
+
+  function M:move(onAction)
+    M.is_playing = true
+    onAction(M.child, function() M.is_playing = false end)
   end
 
   local function clamp()
@@ -23,7 +29,7 @@ return function(parent, width, height, child, target, world_width, world_height)
   end
 
   local function enterFrame()
-    if M.target then
+    if M.target and not M.is_playing then
       M.child.x = - (M.target.x - width / 4)
       M.child.y = - (M.target.y - height / 4)
       clamp()
