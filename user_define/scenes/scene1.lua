@@ -7,7 +7,7 @@ local actor_list = {}
 local tilemap_panel
 local banner
 local _actors_enterFrame
-local map_path = 'assets.abcde'
+local map_path = 'assets.fghi'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
 local scenerio_player
@@ -25,7 +25,7 @@ function scene:create(event)
   helper:create_stage(sceneGroup)
   tilemap_panel = display.newGroup()
   -- sceneGroup:insert(tilemap_panel)
-  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel, nil, display.contentWidth, display.contentHeight)
+  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel, nil, 300, 300)
 
   -- banner
   local scenario_panel = display.newGroup()
@@ -138,7 +138,7 @@ function scene:show(event)
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
-    camera:set_focus(player.actor.sprite)
+    -- camera:set_focus(player.actor.sprite)
     camera:start_focus()
 
     local function clear_current_command()
@@ -209,12 +209,13 @@ function scene:show(event)
           done()
         end,
         evaluate = function()
-          if player.actor.count >= 500 then
-            -- return 0
-            return 1
-          else
-            return -1
-          end
+          -- if player.actor.count >= 500 then
+          --   -- return 0
+          --   return 1
+          -- else
+          --   return -1
+          -- end
+          return 1
         end,
         answer = function(self, state, done)
           done()
