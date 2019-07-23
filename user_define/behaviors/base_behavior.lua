@@ -44,7 +44,7 @@ return function()
 
   function M:start_timer()
     self.timerId = self.CoroPerformWithDelay( 2000, self.Defensive )
-    return "base_behavor startTimer"
+    return "base_behavior startTimer"
   end
 
   function M:create_sprite(parent_object, x, y, object_sheets)

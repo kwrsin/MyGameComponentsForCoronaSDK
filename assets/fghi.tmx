@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="180" height="18" tilewidth="32" tileheight="32" backgroundcolor="#008040" nextobjectid="15">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="180" height="18" tilewidth="32" tileheight="32" backgroundcolor="#008040" nextobjectid="16">
  <tileset firstgid="1" name="tilemap" tilewidth="32" tileheight="32" tilecount="256" columns="8">
   <image source="tilemap.PNG" width="256" height="1024"/>
   <tile id="0" probability="0.3">
@@ -13,9 +13,6 @@
    </objectgroup>
   </tile>
   <tile id="27">
-   <properties>
-    <property name="behavor" value="user_define.behaviors.player_behavior"/>
-   </properties>
    <objectgroup draworder="index" name="hoh"/>
    <animation>
     <frame tileid="27" duration="1000"/>
@@ -38,7 +35,7 @@
    </properties>
    <objectgroup draworder="index" name="takarabako">
     <properties>
-     <property name="bounce" type="float" value="0.8"/>
+     <property name="bounce" type="float" value="0.80000000000000004"/>
      <property name="density" type="float" value="10"/>
      <property name="friction" value="0.2"/>
     </properties>
@@ -48,6 +45,9 @@
  <tileset firstgid="257" name="chara" tilewidth="32" tileheight="32" tilecount="512" columns="32">
   <image source="chara.png" width="1024" height="512"/>
   <tile id="64">
+   <properties>
+    <property name="behavior" value="user_define.behaviors.player_behavior"/>
+   </properties>
    <animation>
     <frame tileid="64" duration="100"/>
     <frame tileid="65" duration="100"/>
@@ -3301,4 +3301,7 @@
    <tile gid="2"/>
   </data>
  </layer>
+ <objectgroup name="objectlayer_1">
+  <object id="15" name="blue" type="player" gid="321" x="195" y="245" width="32" height="32"/>
+ </objectgroup>
 </map>

@@ -24,13 +24,13 @@ return function(parent, width, height, child, target, world_width, world_height)
     end
     -- M.child.x = math.max(math.min(M.child.x, world_width - width), width / 2)
     -- M.child.y = math.max(math.min(M.child.y, world_height - height), height / 2)
-    M.child.x = math.min(math.max(M.child.x, 0), world_width - width)
+    M.child.x = math.max(math.min(M.child.x, 0), world_width - width)
     M.child.y = math.min(math.max(M.child.y, 0), world_height - height)
   end
 
   local function enterFrame()
     if M.target and not M.is_playing then
-      M.child.x = - (M.target.x - width / 4)
+      M.child.x = (M.target.x - width / 4)
       M.child.y = - (M.target.y - height / 4)
       clamp()
 
@@ -50,8 +50,8 @@ return function(parent, width, height, child, target, world_width, world_height)
   -- container.anchorChildren = false
   container.anchorX = 0
   container.anchorY = 0
-  container.width = world_width
-  container.height = world_height
+  -- container.width = world_width
+  -- container.height = world_height
   -- root:insert(container)
   M.container = container
   M.child = child

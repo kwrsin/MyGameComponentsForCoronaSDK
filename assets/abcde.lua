@@ -53,7 +53,7 @@ return {
         {
           id = 27,
           properties = {
-            ["behavor"] = "user_define.behaviors.player_behavior"
+            ["behavior"] = "user_define.behaviors.player_behavior"
           },
           objectGroup = {
             type = "objectgroup",
