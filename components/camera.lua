@@ -15,28 +15,32 @@ return function(parent, width, height, child, target, world_width, world_height)
     onAction(M.child, function() M.is_playing = false end)
   end
 
+
   function M:get_following_positions()
     return -(M.target.x - width / 2), -(M.target.y - height / 2)
   end
 
-  local function clamp()
+  function M:clamp(x, y)
     local target_width = 0
     local target_height = 0
     if M.target then
       target_width = M.target.width / 2
       target_height = M.target.height / 2
     end
-    M.target.x = math.min(math.max(M.target.x, width / 2), world_width - width / 2)
-    M.target.y = math.min(math.max(M.target.y, height / 2), world_height - height / 2)
+    x = math.min(x, 0)
+    x = math.max(x, -(world_width - width - target_width))
+    y = math.min(y, 0)
+    y = math.max(y, -(world_height - height - target_width))
+    return x, y
   end
 
   local function enterFrame()
     if M.target and not M.is_playing then
-      clamp()
       M.child.x = - (M.target.x - width / 2)
       M.child.y = - (M.target.y - height / 2)
 
     end
+    M.child.x, M.child.y = M:clamp(M.child.x, M.child.y)
 
   end
 
