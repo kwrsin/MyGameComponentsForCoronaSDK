@@ -25,8 +25,11 @@ function scene:create(event)
   helper:create_stage(sceneGroup)
   tilemap_panel = display.newGroup()
   -- sceneGroup:insert(tilemap_panel)
-  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel, nil, 5760, 576)
+  local camera_group = display.newGroup()
 
+  camera = require("components.camera")(camera_group, 300, 300, tilemap_panel, nil, 5760, 576)
+  sceneGroup:insert(camera_group)
+  camera_group.x = display.contentCenterX - 150
   -- banner
   local scenario_panel = display.newGroup()
   sceneGroup:insert(scenario_panel)

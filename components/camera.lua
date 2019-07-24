@@ -28,9 +28,9 @@ return function(parent, width, height, child, target, world_width, world_height)
       target_height = M.target.height / 2
     end
     x = math.min(x, 0)
-    x = math.max(x, -(world_width - width - target_width))
+    x = math.max(x, -(world_width - width))
     y = math.min(y, 0)
-    y = math.max(y, -(world_height - height - target_width))
+    y = math.max(y, -(world_height - height))
     return x, y
   end
 
