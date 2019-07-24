@@ -6,13 +6,17 @@ return function(parent, width, height, child, target, world_width, world_height)
   root.x = -width / 2
   root.y = -height / 2
 
-  function M:set_focus(target)
+  function M:set_following(target)
     M.target = target
   end
 
   function M:move(onAction)
     M.is_playing = true
     onAction(M.child, function() M.is_playing = false end)
+  end
+
+  function M:get_following_positions()
+    return -(M.target.x - width / 2), -(M.target.y - height / 2)
   end
 
   local function clamp()
@@ -22,27 +26,25 @@ return function(parent, width, height, child, target, world_width, world_height)
       target_width = M.target.width / 2
       target_height = M.target.height / 2
     end
-    -- M.child.x = math.max(math.min(M.child.x, world_width - width), width / 2)
-    -- M.child.y = math.max(math.min(M.child.y, world_height - height), height / 2)
-    M.child.x = math.min(math.max(M.child.x, 0), world_width - width)
-    M.child.y = math.min(math.max(M.child.y, 0), world_height - height)
+    M.target.x = math.min(math.max(M.target.x, width / 2), world_width - width / 2)
+    M.target.y = math.min(math.max(M.target.y, height / 2), world_height - height / 2)
   end
 
   local function enterFrame()
     if M.target and not M.is_playing then
-      M.child.x = - (M.target.x - width / 4)
-      M.child.y = - (M.target.y - height / 4)
       clamp()
+      M.child.x = - (M.target.x - width / 2)
+      M.child.y = - (M.target.y - height / 2)
 
     end
 
   end
 
-  function M:start_focus()
+  function M:start_following()
     self.enterFrame = Runtime:addEventListener("enterFrame", enterFrame)
   end
 
-  function M:stop_focus()
+  function M:stop_following()
     Runtime:removeEventListener("enterFrame", enterFrame)
   end
 
@@ -58,7 +60,7 @@ return function(parent, width, height, child, target, world_width, world_height)
   M.container:insert(root)
   -- M.container:translate(display.contentCenterX, display.contentCenterY)
   parent:insert(container)
-  M:set_focus(target)
+  M:set_following(target)
 
 
   return M

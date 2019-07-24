@@ -25,7 +25,7 @@ function scene:create(event)
   helper:create_stage(sceneGroup)
   tilemap_panel = display.newGroup()
   -- sceneGroup:insert(tilemap_panel)
-  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel, nil, 900, 300)
+  camera = require("components.camera")(sceneGroup, 300, 300, tilemap_panel, nil, 900, 900)
 
   -- banner
   local scenario_panel = display.newGroup()
@@ -138,7 +138,13 @@ function scene:show(event)
                 timer.performWithDelay(1000, function(event)
                   transition.to(child, {time=2000, x=000, y=00, transition=easing.inOutQuart, onComplete=function()
                       done()
-                    transition.to(player.actor.sprite, {time=1000, x=300, y=80, transition=easing.inOutQuart, onComplete=function()
+                      local x, y = camera:get_following_positions()
+                      transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                        transition.to(player.actor.sprite, {time=1000, x=500, y=80, transition=easing.inOutQuart, onComplete=function()
+                          transition.to(player.actor.sprite, {time=1000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
+
+                          end})
+                      end})
                     end})
                   end})
                 end)
@@ -151,8 +157,8 @@ function scene:show(event)
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
-    camera:set_focus(player.actor.sprite)
-    camera:start_focus()
+    camera:set_following(player.actor.sprite)
+    camera:start_following()
 
     local function clear_current_command()
       global_queue:clear_current_command()
@@ -249,7 +255,7 @@ function scene:hide(event)
   local sceneGroup = self.view
 
   if(event.phase == 'will') then
-    camera:stop_focus()
+    camera:stop_following()
     global_queue:clean_up()
     Runtime:removeEventListener("enterFrame", _actors_enterFrame)
     for i = 1 , #actor_list do
