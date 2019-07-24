@@ -60,12 +60,16 @@ function scene:show(event)
             display.getCurrentStage():setFocus()
             camera.x_origin = event.x - camera.child.x
             camera.y_origin = event.y - camera.child.y
+            camera.is_playing = true
           elseif event.phase == "moved" then
             camera.child.x = event.x - camera.x_origin
             camera.child.y = event.y - camera.y_origin
+            camera.is_playing = true
           elseif event.phase == "ended" or event.phase == "cancelled" then
+            -- camera.is_playing = false
             display.currentStage:setFocus(nil)
           end
+          camera.child.x, camera.child.y = camera:clamp(camera.child.x, camera.child.y)
 
         end,
         up = function(event)
@@ -133,25 +137,26 @@ function scene:show(event)
             -- player.actor:move_up(false)
             -- transition.to(player.actor.sprite, {time=1000, x=3600, y=80, transition=easing.inOutQuart, onComplete=function()
             -- end})
-            camera:move(function(child, done)
-              local x, y = camera:clamp(-3000, 30)
-              transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                timer.performWithDelay(1000, function(event)
-                  x, y = camera:clamp(0, 0)
-                  transition.to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                    x, y = camera:clamp(camera:get_following_positions())
-                      transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                        done()
-                        transition.to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
-                          transition.to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
 
-                          end})
-                      end})
-                    end})
-                  end})
-                end)
-              end})
-            end)
+            -- camera:move(function(child, done)
+            --   local x, y = camera:clamp(-3000, 30)
+            --   transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+            --     timer.performWithDelay(1000, function(event)
+            --       x, y = camera:clamp(0, 0)
+            --       transition.to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+            --         x, y = camera:clamp(camera:get_following_positions())
+            --           transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+            --             done()
+            --             transition.to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
+            --               transition.to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
+
+            --               end})
+            --           end})
+            --         end})
+            --       end})
+            --     end)
+            --   end})
+            -- end)
             print(event.target.name .. " OFF!!")
           end
         end,
@@ -159,7 +164,8 @@ function scene:show(event)
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
-    camera:set_following(player.actor.sprite)
+    -- camera:set_following(player.actor.sprite)
+    camera:set_following({x=0, y=0, width=32, height=32})
     camera:start_following()
 
     local function clear_current_command()
