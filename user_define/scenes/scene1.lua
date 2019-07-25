@@ -133,9 +133,25 @@ function scene:show(event)
           -- if not player.controller:is_button_repeated("cursor") then return end
           if player.controller:is_button_repeated("cursor") then
             print(event.target.name .. " ON!!")
+            local x_cursor = player.controller.cursor_object.x
+            local y_cursor = player.controller.cursor_object.y
+            if y_cursor * y_cursor - x_cursor * x_cursor> 0 then
+              if player.controller.cursor_object.y < 0 then
+                player.actor:up()
+              elseif player.controller.cursor_object.y > 0 then
+                player.actor:down()
+              end
+            elseif x_cursor * x_cursor - y_cursor * y_cursor> 0 then
+              if player.controller.cursor_object.x < 0 then
+                player.actor:left()
+              elseif player.controller.cursor_object.x > 0 then
+                player.actor:right()
+              end
+            end
             -- player.actor:up()
             -- player.actor:move_up(true)
           elseif not player.controller:is_button_repeated("cursor") then
+            player.actor:down()
             -- player.actor:down()
             -- player.actor:move_up(false)
             -- transition.to(player.actor.sprite, {time=1000, x=3600, y=80, transition=easing.inOutQuart, onComplete=function()
@@ -241,7 +257,7 @@ function scene:show(event)
         evaluate = function()
           player.controller:observe("cursor", function()
             local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
-            local length = 5
+            local length = 3
             local x_cursor = player.controller.cursor_object.x
             local y_cursor = player.controller.cursor_object.y
             local x = (x_cursor / sla) * length
@@ -253,19 +269,6 @@ function scene:show(event)
               player.actor.sprite.y = player.actor.sprite.y + y
             end
 
-            -- if y - x > 0 then
-            --   if player.controller.cursor_object.y < 0 then
-            --     player.actor.sprite.y = player.actor.sprite.y - 5
-            --   elseif player.controller.cursor_object.y > 0 then
-            --     player.actor.sprite.y = player.actor.sprite.y + 5
-            --   end
-            -- elseif x - y > 0 then
-            --   if player.controller.cursor_object.x < 0 then
-            --     player.actor.sprite.x = player.actor.sprite.x - 5
-            --   elseif player.controller.cursor_object.x > 0 then
-            --     player.actor.sprite.x = player.actor.sprite.x + 5
-            --   end
-            -- end
           end)
 
           -- if player.actor.count >= 500 then

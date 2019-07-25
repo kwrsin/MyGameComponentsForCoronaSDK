@@ -74,21 +74,25 @@ return function()
   end
 
   function M:up()
+    self.sprite:pause()
     self.sprite:setSequence("up")
     self.sprite:play()
   end
 
   function M:down()
+    self.sprite:pause()
     self.sprite:setSequence("down")
     self.sprite:play()
   end
 
   function M:left()
+    self.sprite:pause()
     self.sprite:setSequence("left")
     self.sprite:play()
   end
 
   function M:right()
+    self.sprite:pause()
     self.sprite:setSequence("right")
     self.sprite:play()
   end
