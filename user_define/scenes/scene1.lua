@@ -63,11 +63,11 @@ function scene:show(event)
             display.getCurrentStage():setFocus()
             camera.x_origin = event.x - camera.child.x
             camera.y_origin = event.y - camera.child.y
-            camera.is_playing = true
+            -- camera.is_playing = true
           elseif event.phase == "moved" then
             camera.child.x = event.x - camera.x_origin
             camera.child.y = event.y - camera.y_origin
-            camera.is_playing = true
+            -- camera.is_playing = true
           elseif event.phase == "ended" or event.phase == "cancelled" then
             -- camera.is_playing = false
             display.currentStage:setFocus(nil)
@@ -130,12 +130,12 @@ function scene:show(event)
           end
         end,
         cursor = function(event)
-          if not event.is_cursor_repeated then return end
-          if event.is_cursor_repeated > 0 then
+          -- if not player.controller:is_button_repeated("cursor") then return end
+          if player.controller:is_button_repeated("cursor") then
             print(event.target.name .. " ON!!")
             -- player.actor:up()
             -- player.actor:move_up(true)
-          elseif event.is_cursor_repeated < 0 then
+          elseif not player.controller:is_button_repeated("cursor") then
             -- player.actor:down()
             -- player.actor:move_up(false)
             -- transition.to(player.actor.sprite, {time=1000, x=3600, y=80, transition=easing.inOutQuart, onComplete=function()
@@ -160,15 +160,15 @@ function scene:show(event)
             --     end)
             --   end})
             -- end)
-            print(event.target.name .. " OFF!!")
+            -- print(event.target.name .. " OFF!!")
           end
         end,
       }
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
-    -- camera:set_following(player.actor.sprite)
-    camera:set_following({x=0, y=0, width=32, height=32})
+    camera:set_following(player.actor.sprite)
+    -- camera:set_following({x=0, y=0, width=32, height=32})
     camera:start_following()
 
     local function clear_current_command()
@@ -239,13 +239,21 @@ function scene:show(event)
           done()
         end,
         evaluate = function()
+          player.controller:observe("cursor", function()
+            if player.controller.cursor_object.x < 0 then
+              player.actor.sprite.x = player.actor.sprite.x - 5
+            elseif player.controller.cursor_object.x > 0 then
+              player.actor.sprite.x = player.actor.sprite.x + 5
+            end
+          end)
+
           -- if player.actor.count >= 500 then
           --   -- return 0
           --   return 1
           -- else
           --   return -1
           -- end
-          return 1
+          return -1
         end,
         answer = function(self, state, done)
           done()

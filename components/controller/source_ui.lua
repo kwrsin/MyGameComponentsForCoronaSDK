@@ -1,23 +1,10 @@
-local vc = require("components.controller.virtual_controller")
-local M = {
-  vc = vc,
-  listeners = nil,
-  controller_group = nil
-}
+local M = {}
+M.listeners = nil
+M.controller_group = nil
+M.RELEASED = 0
+M.PUSHED = 1
+M.button_state = {}
 
-function M:is_button_repeated(event)
-  local keep = false
-  if event.phase == "began" then
-    keep = true
-  elseif event.phase == "ended" or event.phase == "cancelled" then
-    keep = false
-  end
-  return keep
-end
-
-function M:set_vc_event_listeners(listeners)
-  self.listeners = listeners
-end
 
 function M:disable_touch_hit_testable(enabled)
   if enabled then
@@ -38,11 +25,9 @@ end
 
 function M:create_vertual_controller(layer_object, listeners)
   local event_handlers = {}
-  self.listeners = listeners
+  M:set_vc_event_listeners(listeners)
 
   local function touch(self, event)
-    event.is_button_repeated = M:is_button_repeated(event)
-    
     if event.target and event.target.name == 'cursor' then
       local distance_x = event.x - M.cursor_group.x
       local distance_y = event.y - M.cursor_group.y
@@ -52,7 +37,6 @@ function M:create_vertual_controller(layer_object, listeners)
         event.target.alpha = 0.6
         display.getCurrentStage():setFocus(event.target)
         self.isFocus = true
-        event.is_cursor_repeated = 1
         M.cursor_object.x = distance_x
         M.cursor_object.y = distance_y
 
@@ -63,9 +47,7 @@ function M:create_vertual_controller(layer_object, listeners)
           if not self.isFocus then
             display.getCurrentStage():setFocus(event.target)
             self.isFocus = true
-            event.is_cursor_repeated = 1
           else
-            event.is_cursor_repeated = 0
           end
           M.cursor_object.x = distance_x
           M.cursor_object.y = distance_y
@@ -75,7 +57,6 @@ function M:create_vertual_controller(layer_object, listeners)
           event.target.alpha = 1
           display.getCurrentStage():setFocus(nil)
           self.isFocus = nil
-          event.is_cursor_repeated = -1
         end
       elseif self.isFocus then
         if event.phase == "ended" or event.phase == "cancelled" then
@@ -84,54 +65,20 @@ function M:create_vertual_controller(layer_object, listeners)
           event.target.alpha = 1
           display.getCurrentStage():setFocus(nil)
           self.isFocus = nil
-          event.is_cursor_repeated = -1
         end
       end 
     end
-
+    local result
     if event.target == nil then
-      if M.listeners.touch then
-        vc:virtual_touch(event, M.listeners.touch)
-        return true
-      end
-    elseif event.target.name == 'up' then
-      if M.listeners.up then
-        vc:virtual_up(event, M.listeners.up)
-      end
-    elseif event.target.name == 'down' then
-      if M.listeners.down then
-        vc:virtual_down(event, M.listeners.down)
-      end
-    elseif event.target.name == 'left' then
-      if M.listeners.left then
-        vc:virtual_left(event, M.listeners.left)
-      end
-    elseif event.target.name == 'right' then
-      if M.listeners.right then
-        vc:virtual_right(event, M.listeners.right)
-      end
-    elseif event.target.name == 'north' then
-      if M.listeners.north then
-        vc:virtual_north(event, M.listeners.north)
-      end
-    elseif event.target.name == 'south' then
-      if M.listeners.south then
-        vc:virtual_south(event, M.listeners.south)
-      end
-    elseif event.target.name == 'east' then
-      if M.listeners.east then
-        vc:virtual_east(event, M.listeners.east)
-      end
-    elseif event.target.name == 'west' then
-      if M.listeners.west then
-        vc:virtual_west(event, M.listeners.west)
-      end
-    elseif event.target.name == 'cursor' then
-      if M.listeners.cursor then
-        vc:virtual_cursor(event, M.listeners.cursor)
-      end
+      result = M:execute(event, "touch")
+    else
+      result = M:execute(event, event.target.name)
     end
-    return true
+    if result == nil then
+      return true
+    else
+      return result
+    end
   end
 
   local function create_buttons(layer_object, event_handlers)
@@ -180,6 +127,35 @@ end
 
 function M:get_virtual_controller(layer_object, listeners)
   return self:create_vertual_controller(layer_object, listeners)
+end
+
+function M:set_vc_event_listeners(listeners)
+  self.listeners = listeners
+  for button_name, v in pairs(self.listeners) do
+    M.button_state[button_name] = M.RELEASED
+  end
+end
+
+function M:execute(event, button_name)
+  if event.phase == "began" or event.phase == "moved" then
+    M.button_state[button_name] = M.PUSHED
+  elseif event.phase == "ended" or event.phase == "cancelled" then
+    M.button_state[button_name] = M.RELEASED
+  end
+  if self.listeners then
+    return self.listeners[button_name](event)
+  end
+  return true
+end
+
+function M:observe(button_name, handler)
+  if M.button_state[button_name] == M.PUSHED then
+    handler()
+  end
+end
+
+function M:is_button_repeated(button_name)
+  return M.button_state[button_name] == M.PUSHED
 end
 
 return M
