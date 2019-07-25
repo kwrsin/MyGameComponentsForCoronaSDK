@@ -240,11 +240,32 @@ function scene:show(event)
         end,
         evaluate = function()
           player.controller:observe("cursor", function()
-            if player.controller.cursor_object.x < 0 then
-              player.actor.sprite.x = player.actor.sprite.x - 5
-            elseif player.controller.cursor_object.x > 0 then
-              player.actor.sprite.x = player.actor.sprite.x + 5
+            local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
+            local length = 5
+            local x_cursor = player.controller.cursor_object.x
+            local y_cursor = player.controller.cursor_object.y
+            local x = (x_cursor / sla) * length
+            local y = (y_cursor / sla) * length
+            if not (x ~= x) then
+              player.actor.sprite.x = player.actor.sprite.x + x
             end
+            if not (y ~= y) then
+              player.actor.sprite.y = player.actor.sprite.y + y
+            end
+
+            -- if y - x > 0 then
+            --   if player.controller.cursor_object.y < 0 then
+            --     player.actor.sprite.y = player.actor.sprite.y - 5
+            --   elseif player.controller.cursor_object.y > 0 then
+            --     player.actor.sprite.y = player.actor.sprite.y + 5
+            --   end
+            -- elseif x - y > 0 then
+            --   if player.controller.cursor_object.x < 0 then
+            --     player.actor.sprite.x = player.actor.sprite.x - 5
+            --   elseif player.controller.cursor_object.x > 0 then
+            --     player.actor.sprite.x = player.actor.sprite.x + 5
+            --   end
+            -- end
           end)
 
           -- if player.actor.count >= 500 then
