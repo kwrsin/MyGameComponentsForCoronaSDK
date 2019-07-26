@@ -48,16 +48,24 @@ return function()
     transition.cancel("sync")
   end
 
-  function M:to(game_object, listener)
-    listener.onComplete = function() M:clear_current_command() end
+  function M:to(game_object, listener, leave_it)
+    if not listener.onComplete then
+      listener.onComplete = function() 
+        if not leave_it then
+          M:clear_current_command()
+        end
+      end
+    end
     listener.tag = "sync"
     transition.to(game_object, listener)
   end
 
-  function M:performWithDelay(time, listener)
+  function M:performWithDelay(time, listener, leave_it)
     local timer_id = timer.performWithDelay(time, function()
       listener()
-      M:clear_current_command()
+      if not leave_it then
+        M:clear_current_command()
+      end
     end)
     table.insert(M.timer_id_list, timer_id)
   end

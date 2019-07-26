@@ -98,22 +98,22 @@ function scene:show(event)
           elseif not player.controller:is_button_repeated("cursor") then
             camera:move(function(child, done)
               local x, y = camera:clamp(-3000, 30)
-              transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                timer.performWithDelay(1000, function(event)
+              global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                global_queue:performWithDelay(1000, function(event)
                   x, y = camera:clamp(0, 0)
-                  transition.to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                  global_queue:to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
                     x, y = camera:clamp(camera:get_following_positions())
-                      transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                      global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
                         done()
-                        transition.to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
-                          transition.to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
+                        global_queue:to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
+                          global_queue:to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
 
-                          end})
-                      end})
-                    end})
-                  end})
-                end)
-              end})
+                          end}, true)
+                      end}, true)
+                    end}, true)
+                  end}, true)
+                end, true)
+              end}, true)
             end)
             print(event.target.name .. " OFF!!")
           end
@@ -125,10 +125,6 @@ function scene:show(event)
     camera:set_following(player.actor.sprite)
     -- camera:set_following({x=0, y=0, width=32, height=32})
     camera:start_following()
-
-    local function clear_current_command()
-      global_queue:clear_current_command()
-    end
 
     player.controller:disable_touch_hit_testable(false)
     local function execute_opening()
@@ -248,7 +244,6 @@ function scene:hide(event)
     end
     scenerio_player:clean_up()
     scenerio_player = nil
-    transition.cancel()
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
