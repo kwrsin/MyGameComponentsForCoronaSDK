@@ -67,10 +67,8 @@ end
 
 function M:create_bbs(sceneGroup, map_path)
   local bbs = require('components.windows.bbs')()
-  local local_queue = require("components.synchronized_non_blocking_methods")()
   local object_sheets = M:get_object_sheets(map_path)
-  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3], local_queue)
-  Runtime:addEventListener("enterFrame", local_queue)
+  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3])
   return bbs
 end
 

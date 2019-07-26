@@ -41,6 +41,11 @@ return function()
       table.insert(tags, tag)
     end
 
+    if not command_queue then
+      command_queue = require("components.synchronized_non_blocking_methods")()
+      Runtime:addEventListener("enterFrame", command_queue)
+    end
+
     M.rows = rows
     M.cols = cols
     M.font_name = font_name
@@ -118,7 +123,6 @@ end
 
   function M:clear_bbs()
     self.command_queue:regist_command(function()
-      -- timer.performWithDelay(100, function()
         for i = 1, #self.characters do
           self.characters[i].text = ""
           self.characters[i].x = self.characters[i].init_x
@@ -141,7 +145,6 @@ end
         self.command_queue:clear_current_command()
       end)
 
-    -- end)
   end
 
   function M:get_next_characters_index()
