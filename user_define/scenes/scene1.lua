@@ -5,14 +5,13 @@ local scene = composer.newScene()
 local player
 local actor_list = {}
 local tilemap_panel
-local fast_speak
-local bbs
 local banner
 local _actors_enterFrame
-local map_path = 'assets.abcde'
+local map_path = 'assets.fghi'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
 local scenerio_player
+local camera
 
 local back_to_title
 
@@ -25,24 +24,17 @@ function scene:create(event)
   player = composer.getVariable("player")
   helper:create_stage(sceneGroup)
   tilemap_panel = display.newGroup()
-  sceneGroup:insert(tilemap_panel)
+  -- sceneGroup:insert(tilemap_panel)
+  local camera_group = display.newGroup()
 
+  camera = require("components.camera")(camera_group, 300, 300, tilemap_panel, nil, 5760, 576)
+  sceneGroup:insert(camera_group)
+  camera_group.x = display.contentCenterX - 150
   -- banner
   local scenario_panel = display.newGroup()
   sceneGroup:insert(scenario_panel)
   banner = display.newText(scenario_panel, "READY", -display.contentCenterX, display.contentCenterY, "Arial", 32 )
   banner.isVisible = false
-
-  -- bbs
-  bbs = require('components.windows.bbs')()
-  local bbs_group = display.newGroup()
-  sceneGroup:insert(bbs_group)
-  local local_queue = require("components.synchronized_non_blocking_methods")()
-  bbs:create_bbs(bbs_group, 0, 0, 6, 20, native.systemFont, 12, "frame_path", local_queue)
-  Runtime:addEventListener("enterFrame", local_queue)
-  fast_speak = function()
-    bbs:set_speed(15)
-  end
 
   back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
   back_to_title:addEventListener('touch', function(event)
@@ -61,79 +53,68 @@ function scene:show(event)
     physics.pause()
     
     -- player controller
+    camera.x_origin = 0
+    camera.y_origin = 0
     player.controller:set_vc_event_listeners(
       {
         touch = function(event)
-          if event.phase == "ended" or event.phase == "cancelled" then
-            print("Any Touch 2!!")
-            if fast_speak then
-              fast_speak()
-            end
+          if event.phase == "began" then
+            display.currentStage:setFocus(camera.child)
+            display.getCurrentStage():setFocus()
+            camera.x_origin = event.x - camera.child.x
+            camera.y_origin = event.y - camera.child.y
+            -- camera.is_playing = true
+          elseif event.phase == "moved" then
+            camera.child.x = event.x - camera.x_origin
+            camera.child.y = event.y - camera.y_origin
+            -- camera.is_playing = true
+          elseif event.phase == "ended" or event.phase == "cancelled" then
+            -- camera.is_playing = false
+            display.currentStage:setFocus(nil)
           end
+          camera.child.x, camera.child.y = camera:clamp(camera.child.x, camera.child.y)
+
         end,
         up = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         down = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         left = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         right = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         north = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         south = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         east = function(event)
-          if event.phase == "ended" or event.phase == "cancelled" then
-            print("EAST!!")
-          end
         end,
         west = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         cursor = function(event)
-          if not event.is_cursor_repeated then return end
-          if event.is_cursor_repeated > 0 then
+          if player.controller:is_button_repeated("cursor") then
             print(event.target.name .. " ON!!")
-            player.actor:up()
-            player.actor:move_up(true)
-          elseif event.is_cursor_repeated < 0 then
-            player.actor:down()
-            player.actor:move_up(false)
+
+          elseif not player.controller:is_button_repeated("cursor") then
+            camera:move(function(child, done)
+              local x, y = camera:clamp(-3000, 30)
+              global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                global_queue:performWithDelay(1000, function(event)
+                  x, y = camera:clamp(0, 0)
+                  global_queue:to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                    x, y = camera:clamp(camera:get_following_positions())
+                      global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                        done()
+                        global_queue:to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
+                          global_queue:to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
+
+                          end}, true)
+                      end}, true)
+                    end}, true)
+                  end}, true)
+                end, true)
+              end}, true)
+            end)
             print(event.target.name .. " OFF!!")
           end
         end,
@@ -141,53 +122,51 @@ function scene:show(event)
     )
 
     actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
-
-    local function clear_current_command()
-      global_queue:clear_current_command()
-    end
+    camera:set_following(player.actor.sprite)
+    -- camera:set_following({x=0, y=0, width=32, height=32})
+    camera:start_following()
 
     player.controller:disable_touch_hit_testable(false)
     local function execute_opening()
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
         banner.isVisible = true
-        transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=200, x=display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
       end)
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
         banner.text = "GO"
-        transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=200, x=display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
       end)
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
         banner.text = "FIGHT"
-        transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=200, x=display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        timer.performWithDelay(100, function()
+        global_queue:performWithDelay(100, function()
           banner.isVisible = false
           player.controller:disable_touch_hit_testable(true)
           player.controller:show_controller(true)
           physics.start()
-          clear_current_command()
         end)
       end)
     end
@@ -197,6 +176,17 @@ function scene:show(event)
 
     -- start game
     _actors_enterFrame = function(event)
+      -- player.controller:observe("cursor", function()
+      --   local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
+      --   local length = 3
+      --   local x_cursor = player.controller.cursor_object.x
+      --   local y_cursor = player.controller.cursor_object.y
+      --   local x = (x_cursor / sla) * length
+      --   local y = (y_cursor / sla) * length
+      --   player.actor:move(x, y)
+
+      -- end)
+
       for i = 1, #actor_list do
         actor_list[i].enterFrame(event)
       end
@@ -204,46 +194,22 @@ function scene:show(event)
     Runtime:addEventListener("enterFrame", _actors_enterFrame)
 
     execute_opening()
-    -- bbs:say({tag="S"}, t("HELLO").value .. "\nあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇおあういぇお\nはげ\n", 50, nil, {{begin=3, stop=4, color_table={0.7, 1, 0}}})
-    -- bbs:clear_bbs()
-    -- bbs:say({tag="D"}, "リゾット\nねいろ\n暗殺者\n", 100, nil, nil)
-    -- bbs:say({tag="D"}, "なんだと？　ドッピオ！！　さすがに足をやられるダメージはまずいっ！\nドッピオでは\nもう倒せない\n", 80, nil)
-    -- bbs:say({tag="D"}, "リゾット　俺はドッピオに言ったんだ！\nもうお前では\n勝てないって・・・\n", 80, nil, {{begin=10, stop=14, color_table={0.5, 0, 0}}})
-    -- bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
-
     local scenario_list = {
       {
-        start = function()
-          bbs:clear_bbs()
-          bbs:say({tag="S"}, "最近・・！\nうちのハムスターが\nメタボってきた(T T)\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
-          bbs:say({tag="D"}, "オー　ドッピオ！！　私の可愛いドッピオよっ！\n", 180, nil, nil, nil, nil)
-        end,
-        evaluate = function(self)
-          if player.actor.count >= 500 then
-            -- return 0
-            return 1
-          else
-            return -1
-          end
-        end,
-        finalize = function()
-          bbs:say({tag="D"}, "ありがとうございました！\n", 20, nil, nil, nil, nil)
-        end,
-      },
-     {
-        start = function()
-          bbs:clear_bbs()
-          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}})
+        quest = function(self, done)
+          done()
         end,
         evaluate = function()
-          if player.actor.sprite.x <= 0 then
-            return 1
-          else
-            return -1
-          end
+          -- if player.actor.count >= 500 then
+          --   -- return 0
+          --   return 1
+          -- else
+          --   return -1
+          -- end
+          return -1
         end,
-        finalize = function()
-          bbs:say({tag="D"}, "thank you！\n", 20, nil, nil, nil, nil)
+        answer = function(self, state, done)
+          done()
         end,
       },
 
@@ -261,7 +227,7 @@ function scene:hide(event)
   local sceneGroup = self.view
 
   if(event.phase == 'will') then
-    bbs:clean_up()
+    camera:stop_following()
     global_queue:clean_up()
     Runtime:removeEventListener("enterFrame", _actors_enterFrame)
     for i = 1 , #actor_list do

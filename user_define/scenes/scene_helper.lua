@@ -45,15 +45,15 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
         }
         local actor_instance
         local sprite_object = nil
-        if tile.properties.behavor then
+        if tile.properties.behavior then
           actor_instance = actor:create_actor_from_object_sheets(
-            layer_object, tile.properties.behavor, get_object_sheets_from_tilesets(loader.tilemap.tilesets), init_data)
+            layer_object, tile.properties.behavior, get_object_sheets_from_tilesets(loader.tilemap.tilesets), init_data)
           actor_instance:start_timer()
           sprite_object = actor_instance.sprite
         else
 
         end
-        if player and tile.properties.behavor == player.player_behavior then
+        if player and tile.properties.behavior == player.player_behavior then
 
           player.actor = actor_instance
         end

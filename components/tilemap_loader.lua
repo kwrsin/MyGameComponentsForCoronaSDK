@@ -160,8 +160,8 @@ function M:create_layer_objects(layer_object, map_options)
       print(string.format("could not create a game object %d", gid))
       return nil
     end
-    game_object.x = (col - 1) * width
-    game_object.y = (row - 1) * height
+    game_object.x = (col - 1) * width + width / 2
+    game_object.y = (row - 1) * height + height / 2
     game_object.identifier = grid_id
     game_object.layer_name = layer.name
     game_object.gid = gid
@@ -297,8 +297,8 @@ function M:create_layer_objects(layer_object, map_options)
         return nil
       end
 
-      game_object.x = object.x
-      game_object.y = object.y
+      game_object.x = object.x + width / 2
+      game_object.y = object.y - height / 2
       game_object.identifier = i
       game_object.layer_name = l.name
       game_object.gid = gid

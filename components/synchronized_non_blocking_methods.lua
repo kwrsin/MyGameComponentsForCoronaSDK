@@ -1,7 +1,8 @@
 return function()
   local M = {
     command_queue = {},
-    current_command = nil
+    current_command = nil,
+    timer_id_list = {},
   }
 
   function M:clear_current_command()
@@ -37,6 +38,37 @@ return function()
       -- table.remove(self.command_queue, i)
       self.command_queue[i] = nil
     end
+    while #M.timer_id_list > 0 do
+      local timer_id = table.remove(M.timer_id_list, 1)
+      if timer_id then
+        timer.cancel(timer_id)
+        timer_id = nil
+      end
+    end
+    transition.cancel("sync")
+  end
+
+  function M:to(game_object, listener, leave_it)
+    if not listener.onComplete then
+      listener.onComplete = function() 
+        if not leave_it then
+          M:clear_current_command()
+        end
+      end
+    end
+    listener.tag = "sync"
+    return transition.to(game_object, listener)
+  end
+
+  function M:performWithDelay(time, listener, leave_it)
+    local timer_id = timer.performWithDelay(time, function()
+      listener()
+      if not leave_it then
+        M:clear_current_command()
+      end
+    end)
+    table.insert(M.timer_id_list, timer_id)
+    return timer_id
   end
 
   return M
