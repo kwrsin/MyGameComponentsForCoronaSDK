@@ -4,7 +4,7 @@ local M = require("user_define.scenes.scene_helper")
 function M:initialize(player, bbs)
   player.controller:disable_touch_hit_testable(true)
   player.controller:show_controller(false)
-  player.controller:set_vc_event_listeners({
+  player.controller:set_listeners({
       touch = function(event)
         if event.phase == "ended" or event.phase == "cancelled" then
           print("Any Touch 2!!")

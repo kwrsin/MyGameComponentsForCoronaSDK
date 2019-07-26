@@ -86,4 +86,12 @@ function M:create_banner(sceneGroup, map_path)
   return banner
 end
 
+function M:create_camera(sceneGroup, view_group, width, height, view_width, view_height)
+  local camera_group = display.newGroup()
+  camera = require("components.camera")(camera_group, width, height, view_group, nil, view_width, view_height)
+  sceneGroup:insert(camera_group)
+  camera_group.x = display.contentCenterX - width / 2
+  return camera
+end
+
 return M

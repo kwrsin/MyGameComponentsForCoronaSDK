@@ -25,7 +25,7 @@ end
 
 function M:create_vertual_controller(layer_object, listeners)
   local event_handlers = {}
-  M:set_vc_event_listeners(listeners)
+  M:set_listeners(listeners)
 
   local function touch(self, event)
     if event.target and event.target.name == 'cursor' then
@@ -129,7 +129,7 @@ function M:get_virtual_controller(layer_object, listeners)
   return self:create_vertual_controller(layer_object, listeners)
 end
 
-function M:set_vc_event_listeners(listeners)
+function M:set_listeners(listeners)
   self.listeners = listeners
   for button_name, v in pairs(self.listeners) do
     M.button_state[button_name] = M.RELEASED
