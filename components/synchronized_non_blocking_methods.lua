@@ -57,7 +57,7 @@ return function()
       end
     end
     listener.tag = "sync"
-    transition.to(game_object, listener)
+    return transition.to(game_object, listener)
   end
 
   function M:performWithDelay(time, listener, leave_it)
@@ -68,6 +68,7 @@ return function()
       end
     end)
     table.insert(M.timer_id_list, timer_id)
+    return timer_id
   end
 
   return M
