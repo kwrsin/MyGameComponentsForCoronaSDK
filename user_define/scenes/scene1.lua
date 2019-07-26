@@ -96,25 +96,25 @@ function scene:show(event)
             print(event.target.name .. " ON!!")
 
           elseif not player.controller:is_button_repeated("cursor") then
-            -- camera:move(function(child, done)
-            --   local x, y = camera:clamp(-3000, 30)
-            --   transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-            --     timer.performWithDelay(1000, function(event)
-            --       x, y = camera:clamp(0, 0)
-            --       transition.to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-            --         x, y = camera:clamp(camera:get_following_positions())
-            --           transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-            --             done()
-            --             transition.to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
-            --               transition.to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
+            camera:move(function(child, done)
+              local x, y = camera:clamp(-3000, 30)
+              transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                timer.performWithDelay(1000, function(event)
+                  x, y = camera:clamp(0, 0)
+                  transition.to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                    x, y = camera:clamp(camera:get_following_positions())
+                      transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+                        done()
+                        transition.to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
+                          transition.to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
 
-            --               end})
-            --           end})
-            --         end})
-            --       end})
-            --     end)
-            --   end})
-            -- end)
+                          end})
+                      end})
+                    end})
+                  end})
+                end)
+              end})
+            end)
             print(event.target.name .. " OFF!!")
           end
         end,
@@ -135,43 +135,42 @@ function scene:show(event)
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
         banner.isVisible = true
-        transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=200, x=display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
       end)
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
         banner.text = "GO"
-        transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=200, x=display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
       end)
       global_queue:regist_command(function()
         banner.x = -display.contentCenterX
         banner.text = "FIGHT"
-        transition.to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic, onComplete=clear_current_command})
+        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=200, x=display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=200, x=display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        transition.to(banner, {time=100, x= display.contentWidth + display.contentCenterX, onComplete=clear_current_command})
+        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
       end)
       global_queue:regist_command(function()
-        timer.performWithDelay(100, function()
+        global_queue:performWithDelay(100, function()
           banner.isVisible = false
           player.controller:disable_touch_hit_testable(true)
           player.controller:show_controller(true)
           physics.start()
-          clear_current_command()
         end)
       end)
     end
@@ -181,16 +180,16 @@ function scene:show(event)
 
     -- start game
     _actors_enterFrame = function(event)
-      player.controller:observe("cursor", function()
-        local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
-        local length = 3
-        local x_cursor = player.controller.cursor_object.x
-        local y_cursor = player.controller.cursor_object.y
-        local x = (x_cursor / sla) * length
-        local y = (y_cursor / sla) * length
-        player.actor:move(x, y)
+      -- player.controller:observe("cursor", function()
+      --   local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
+      --   local length = 3
+      --   local x_cursor = player.controller.cursor_object.x
+      --   local y_cursor = player.controller.cursor_object.y
+      --   local x = (x_cursor / sla) * length
+      --   local y = (y_cursor / sla) * length
+      --   player.actor:move(x, y)
 
-      end)
+      -- end)
 
       for i = 1, #actor_list do
         actor_list[i].enterFrame(event)
@@ -249,6 +248,7 @@ function scene:hide(event)
     end
     scenerio_player:clean_up()
     scenerio_player = nil
+    transition.cancel()
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
