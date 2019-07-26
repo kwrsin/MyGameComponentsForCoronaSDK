@@ -76,87 +76,26 @@ function scene:show(event)
 
         end,
         up = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         down = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         left = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         right = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         north = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         south = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         east = function(event)
-          if event.phase == "ended" or event.phase == "cancelled" then
-            print("EAST!!")
-          end
         end,
         west = function(event)
-          if event.is_button_repeated then
-            print(event.target.name .. " ON!!")
-          else
-            print(event.target.name .. " OFF!!")
-          end
         end,
         cursor = function(event)
-          -- if not player.controller:is_button_repeated("cursor") then return end
           if player.controller:is_button_repeated("cursor") then
             print(event.target.name .. " ON!!")
-            local x_cursor = player.controller.cursor_object.x
-            local y_cursor = player.controller.cursor_object.y
-            if y_cursor * y_cursor - x_cursor * x_cursor> 0 then
-              if player.controller.cursor_object.y < 0 then
-                player.actor:up()
-              elseif player.controller.cursor_object.y > 0 then
-                player.actor:down()
-              end
-            elseif x_cursor * x_cursor - y_cursor * y_cursor> 0 then
-              if player.controller.cursor_object.x < 0 then
-                player.actor:left()
-              elseif player.controller.cursor_object.x > 0 then
-                player.actor:right()
-              end
-            end
-            -- player.actor:up()
-            -- player.actor:move_up(true)
-          elseif not player.controller:is_button_repeated("cursor") then
-            player.actor:down()
-            -- player.actor:down()
-            -- player.actor:move_up(false)
-            -- transition.to(player.actor.sprite, {time=1000, x=3600, y=80, transition=easing.inOutQuart, onComplete=function()
-            -- end})
 
+          elseif not player.controller:is_button_repeated("cursor") then
             -- camera:move(function(child, done)
             --   local x, y = camera:clamp(-3000, 30)
             --   transition.to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
@@ -176,7 +115,7 @@ function scene:show(event)
             --     end)
             --   end})
             -- end)
-            -- print(event.target.name .. " OFF!!")
+            print(event.target.name .. " OFF!!")
           end
         end,
       }
@@ -242,6 +181,17 @@ function scene:show(event)
 
     -- start game
     _actors_enterFrame = function(event)
+      player.controller:observe("cursor", function()
+        local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
+        local length = 3
+        local x_cursor = player.controller.cursor_object.x
+        local y_cursor = player.controller.cursor_object.y
+        local x = (x_cursor / sla) * length
+        local y = (y_cursor / sla) * length
+        player.actor:move(x, y)
+
+      end)
+
       for i = 1, #actor_list do
         actor_list[i].enterFrame(event)
       end
@@ -255,22 +205,6 @@ function scene:show(event)
           done()
         end,
         evaluate = function()
-          player.controller:observe("cursor", function()
-            local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
-            local length = 3
-            local x_cursor = player.controller.cursor_object.x
-            local y_cursor = player.controller.cursor_object.y
-            local x = (x_cursor / sla) * length
-            local y = (y_cursor / sla) * length
-            if not (x ~= x) then
-              player.actor.sprite.x = player.actor.sprite.x + x
-            end
-            if not (y ~= y) then
-              player.actor.sprite.y = player.actor.sprite.y + y
-            end
-
-          end)
-
           -- if player.actor.count >= 500 then
           --   -- return 0
           --   return 1

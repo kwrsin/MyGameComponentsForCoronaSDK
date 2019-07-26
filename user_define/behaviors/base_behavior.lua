@@ -62,55 +62,59 @@ return function()
 
     self.sprite = sprite
 
-    -- Runtime:addEventListener('enterFrame', function(event)
-    --   if M.is_move_up then
-    --     print("move")
-    --     M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
-    --     -- M.sprite:applyForce(0, -0.3, M.sprite.x, M.sprite.y)
-    --     -- M.sprite.y = M.sprite.y - 5
-    --   end
-    -- end)
+  end
 
+  function M:set_sequence(sequence_name)
+    if self.selected_seq_name ~= sequence_name then
+      self.sprite:pause()
+      self.sprite:setSequence(sequence_name)
+      self.sprite:play()
+      self.selected_seq_name = sequence_name
+    end
   end
 
   function M:up()
-    self.sprite:pause()
-    self.sprite:setSequence("up")
-    self.sprite:play()
+    M:set_sequence("up")
   end
 
   function M:down()
-    self.sprite:pause()
-    self.sprite:setSequence("down")
-    self.sprite:play()
+    M:set_sequence("down")
   end
 
   function M:left()
-    self.sprite:pause()
-    self.sprite:setSequence("left")
-    self.sprite:play()
+    M:set_sequence("left")
   end
 
   function M:right()
-    self.sprite:pause()
-    self.sprite:setSequence("right")
-    self.sprite:play()
+    M:set_sequence("right")
   end
 
-  M.is_move_up = false
-  function M:move_up(flag)
-    M.is_move_up = flag
+  function M:move(x, y)
+    if not (x ~= x) then
+      self.sprite.x = self.sprite.x + x
+    end
+    if not (y ~= y) then
+      self.sprite.y = self.sprite.y + y
+    end
+    if x * x -  y * y > 0 then
+      if x > 0 then
+        self:right()
+      elseif x < 0 then
+        self:left()
+      end
+    elseif y * y - x * x > 0 then
+      if y > 0 then
+        self:down()
+      elseif y < 0 then
+        self:up()
+      end
+    end
+
   end
 
   function M:enterFrame(event)
-    if M.is_move_up then
-      M:moveAround()
-      -- M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
-      -- M.sprite:applyForce(0, -0.3, M.sprite.x, M.sprite.y)
-      -- M.sprite.y = M.sprite.y - 5
-      M.is_move_up = not M.is_move_up
-    end
-      M.count = M.count + 1
+
+    M.count = M.count + 1
   end
 
   function M:moveAround()
