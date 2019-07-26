@@ -3,6 +3,7 @@ return function()
     sequence_names = {},
     sprite = nil,
     count = 0,
+    length = 3,
   }
 
   function M.CoroPerformWithDelay( delay, func, n )
@@ -91,10 +92,10 @@ return function()
 
   function M:move(x, y)
     if not (x ~= x) then
-      self.sprite.x = self.sprite.x + x
+      self.sprite.x = self.sprite.x + (x * M.length)
     end
     if not (y ~= y) then
-      self.sprite.y = self.sprite.y + y
+      self.sprite.y = self.sprite.y + (y * M.length)
     end
     if x * x -  y * y > 0 then
       if x > 0 then

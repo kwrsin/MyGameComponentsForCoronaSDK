@@ -148,6 +148,15 @@ function M:execute(event, button_name)
   return true
 end
 
+function M:get_cursor_positions()
+  local sla = math.sqrt(M.cursor_object.x * M.cursor_object.x + M.cursor_object.y * M.cursor_object.y)
+  local x_cursor = M.cursor_object.x
+  local y_cursor = M.cursor_object.y
+  local x = (x_cursor / sla)
+  local y = (y_cursor / sla)
+  return x, y
+end
+
 function M:observe(button_name, handler)
   if M.button_state[button_name] == M.PUSHED then
     handler()

@@ -96,25 +96,25 @@ function scene:show(event)
             print(event.target.name .. " ON!!")
 
           elseif not player.controller:is_button_repeated("cursor") then
-            camera:move(function(child, done)
-              local x, y = camera:clamp(-3000, 30)
-              global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                global_queue:performWithDelay(1000, function(event)
-                  x, y = camera:clamp(0, 0)
-                  global_queue:to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                    x, y = camera:clamp(camera:get_following_positions())
-                      global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                        done()
-                        global_queue:to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
-                          global_queue:to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
+            -- camera:move(function(child, done)
+            --   local x, y = camera:clamp(-3000, 30)
+            --   global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+            --     global_queue:performWithDelay(1000, function(event)
+            --       x, y = camera:clamp(0, 0)
+            --       global_queue:to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+            --         x, y = camera:clamp(camera:get_following_positions())
+            --           global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
+            --             done()
+            --             global_queue:to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
+            --               global_queue:to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
 
-                          end}, true)
-                      end}, true)
-                    end}, true)
-                  end}, true)
-                end, true)
-              end}, true)
-            end)
+            --               end}, true)
+            --           end}, true)
+            --         end}, true)
+            --       end}, true)
+            --     end, true)
+            --   end}, true)
+            -- end)
             print(event.target.name .. " OFF!!")
           end
         end,
@@ -176,16 +176,9 @@ function scene:show(event)
 
     -- start game
     _actors_enterFrame = function(event)
-      -- player.controller:observe("cursor", function()
-      --   local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
-      --   local length = 3
-      --   local x_cursor = player.controller.cursor_object.x
-      --   local y_cursor = player.controller.cursor_object.y
-      --   local x = (x_cursor / sla) * length
-      --   local y = (y_cursor / sla) * length
-      --   player.actor:move(x, y)
-
-      -- end)
+      player.controller:observe("cursor", function()
+        player.actor:move(player.controller:get_cursor_positions())
+      end)
 
       for i = 1, #actor_list do
         actor_list[i].enterFrame(event)
