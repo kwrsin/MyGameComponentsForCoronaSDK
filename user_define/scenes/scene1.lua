@@ -32,12 +32,6 @@ function scene:create(event)
   banner = display.newText(banner_panel, "READY", -display.contentCenterX, display.contentCenterY, "Arial", 32 )
   banner.isVisible = false
 
-  back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
-  back_to_title:addEventListener('touch', function(event)
-
-    composer.gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
-  end)
-
   print("scene1 created")
 end
 

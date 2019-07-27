@@ -120,26 +120,28 @@ function M:start_game(player, banner, physics)
   end
 
   local function execute_ending()
+    require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
   end
 
   -- start game
-  execute_opening()
   local scenario_list = {
     {
       quest = function(self, done)
+        execute_opening()
+        player.actor.count = 0
         done()
       end,
       evaluate = function()
-        -- if player.actor.count >= 500 then
-        --   -- return 0
-        --   return 1
-        -- else
-        --   return -1
-        -- end
-        return -1
+        if player.actor.count >= 500 then
+          -- return 0
+          return 1
+        else
+          return -1
+        end
       end,
       answer = function(self, state, done)
         done()
+        execute_ending()
       end,
     },
   }

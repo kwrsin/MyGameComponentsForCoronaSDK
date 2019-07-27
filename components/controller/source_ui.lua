@@ -143,7 +143,10 @@ function M:execute(event, button_name)
     M.button_state[button_name] = M.RELEASED
   end
   if self.listeners then
-    return self.listeners[button_name](event)
+    local func = self.listeners[button_name]
+    if func then
+      return func(event)
+    end
   end
   return true
 end
