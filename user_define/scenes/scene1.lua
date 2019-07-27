@@ -68,7 +68,7 @@ function scene:hide(event)
 
   if(event.phase == 'will') then
     camera:stop_following()
-    global_queue:clean_up()
+    global_command_queue:clean_up()
     actors_runner:stop_actors_runner()
     for i = 1 , #actor_list do
       if actor_list[i].timerId then

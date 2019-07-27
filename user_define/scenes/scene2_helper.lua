@@ -15,24 +15,24 @@ function M:initialize(player, bbs)
   )
 end
 
-function M:start_game(player, bbs, modal, banner, scenario_player)
+function M:start_game(player, bbs, modal, banner, scenario_runner)
   local function goodbye(state, done)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       if state then
         local message = "あばよ〜っ！！"
-        if state == scenario_player.CANCEL_ALL then
+        if state == scenario_runner.CANCEL_ALL then
           message = "この負け犬が〜っ"
         end
         bbs:clear_bbs()
         bbs:say({tag=""}, message, 100, nil, nil, function()
           if done then done() end
-          global_queue:clear_current_command()
+          global_command_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       else
         banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
           if done then done() end
-          global_queue:clear_current_command()
+          global_command_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       end
@@ -52,15 +52,15 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
         end,
         evaluate = function()
           if modal.result == -1 then
-            return scenario_player.CONTINUE
+            return scenario_runner.CONTINUE
           elseif modal.result == 2 then
-            return scenario_player.NEXT
+            return scenario_runner.NEXT
           elseif modal.result ~= 2 then
-            return scenario_player.CANCEL_ALL
+            return scenario_runner.CANCEL_ALL
           end
         end,
         answer = function(self, state, done)
-          if state == scenario_player.NEXT then
+          if state == scenario_runner.NEXT then
             bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
           else
             goodbye(state, done)
@@ -76,9 +76,9 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
         end,
         evaluate = function()
           if true then
-            return scenario_player.NEXT
+            return scenario_runner.NEXT
           else
-            return scenario_player.CONTINUE
+            return scenario_runner.CONTINUE
           end
         end,
         answer = function(self, state, done)
@@ -100,15 +100,15 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
             end,
             evaluate = function()
               if modal.result == -1 then
-                return scenario_player.CONTINUE
+                return scenario_runner.CONTINUE
               elseif modal.result == 1 then
-                return scenario_player.NEXT
+                return scenario_runner.NEXT
               elseif modal.result ~= 1 then
-                return scenario_player.CANCEL_ALL
+                return scenario_runner.CANCEL_ALL
               end
             end,
             answer = function(self, state, done)
-              if state == scenario_player.NEXT then
+              if state == scenario_runner.NEXT then
                 bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
               else
                 goodbye(state, done)
@@ -124,9 +124,9 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
             end,
             evaluate = function()
               if true then
-                return scenario_player.NEXT
+                return scenario_runner.NEXT
               else
-                return scenario_player.CONTINUE
+                return scenario_runner.CONTINUE
               end
             end,
             answer = function(self, state, done)
@@ -142,17 +142,17 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
 
       },
     }
-    scenario_player:set_scenario_list(scenario_list)
+    scenario_runner:set_scenario_list(scenario_list)
 
   end
 
-  global_queue:regist_command(function()
+  global_command_queue:regist_command(function()
     bbs:clear_bbs()
     bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil)
     bbs:say({tag=""}, "これからいくつか質問をします！！\n", 100, nil, nil)
     bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
       modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
-        global_queue:clear_current_command()
+        global_command_queue:clear_current_command()
         if result == 1 then
           start_scenario()
         else

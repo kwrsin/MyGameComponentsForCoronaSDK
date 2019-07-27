@@ -62,7 +62,7 @@ return function(scenario_list)
   end
 
   function M:clean_up()
-    print("close scenario_player")
+    print("close scenario_runner")
     Runtime:removeEventListener("enterFrame", M)
     M:delete_children()
     M.scenario = nil

@@ -27,7 +27,7 @@ function scene:show(event)
 
   if(event.phase == 'will') then
     helper:initialize(player, bbs)
-    scenerio_player = require("components.scenario_player")({})
+    scenerio_player = require("components.scenario_runner")({})
     helper:start_game(player, bbs, modal, banner, scenerio_player)
   elseif(event.phase == 'did') then
   end
