@@ -53,7 +53,7 @@ function scene:show(event)
     -- camera:set_following({x=0, y=0, width=32, height=32})
     camera:start_following()
 
-    actors_runner = require("components.actors_runner")(player, actor_list)
+    actors_runner = helper:create_actors_runner(player, actor_list)
 
     scenerio_player = helper:start_game(player, banner, physics)
 

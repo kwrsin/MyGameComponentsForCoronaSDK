@@ -1,20 +1,27 @@
-return function(player, actor_list)
+return function(player, actor_list, listener)
   local M = {}
+  function M:stop_actors_runner()
+    Runtime:removeEventListener("enterFrame", actors_runner)
+    self.observers = nil
+  end
+
+  function M:set_observers(listener)
+    self.observers = listener
+  end
+
 
   local actors_runner = function(event)
-    player.controller:observe("cursor", function()
-      player.actor:move(player.controller:get_cursor_positions())
-    end)
+    if M.observers then
+      M.observers()
+    end
 
     for i = 1, #actor_list do
       actor_list[i].enterFrame(event)
     end
   end
-  Runtime:addEventListener("enterFrame", actors_runner)
 
-  function M:stop_actors_runner()
-    Runtime:removeEventListener("enterFrame", actors_runner)
-  end
+  Runtime:addEventListener("enterFrame", actors_runner)
+  M:set_observers(listener)
 
   return M
 end

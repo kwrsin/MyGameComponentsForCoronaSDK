@@ -148,4 +148,14 @@ function M:start_game(player, banner, physics)
   return require("components.scenario_player")(scenario_list)
 end
 
+function M:create_actors_runner(player, actor_list)
+  local function observer()
+    player.controller:observe("cursor", function()
+      player.actor:move(player.controller:get_cursor_positions())
+    end)
+  end
+
+  return require("components.actors_runner")(player, actor_list, observer)
+end
+
 return M
