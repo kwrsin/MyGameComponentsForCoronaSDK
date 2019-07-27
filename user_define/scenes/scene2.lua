@@ -6,7 +6,7 @@ local modal
 local bbs
 local player
 local banner
-local scenerio_player
+local scenario_runner
 
 
 local scene = composer.newScene()
@@ -27,8 +27,8 @@ function scene:show(event)
 
   if(event.phase == 'will') then
     helper:initialize(player, bbs)
-    scenerio_player = require("components.scenario_runner")({})
-    helper:start_game(player, bbs, modal, banner, scenerio_player)
+    scenario_runner = require("components.scenario_runner")({})
+    helper:start_game(player, bbs, modal, banner, scenario_runner)
   elseif(event.phase == 'did') then
   end
 end
@@ -36,8 +36,8 @@ end
 function scene:hide(event)
   if(event.phase == 'will') then
     bbs:clean_up()
-    scenerio_player:clean_up()
-    scenerio_player = nil
+    scenario_runner:clean_up()
+    scenario_runner = nil
   elseif(event.phase == 'did') then
   end
 end

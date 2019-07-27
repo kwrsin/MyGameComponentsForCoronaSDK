@@ -10,7 +10,7 @@ local actors_runner
 local map_path = 'assets.fghi'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
-local scenerio_player
+local scenario_runner
 local camera
 
 local back_to_title
@@ -55,7 +55,7 @@ function scene:show(event)
 
     actors_runner = helper:create_actors_runner(player, actor_list)
 
-    scenerio_player = helper:start_game(player, banner, physics)
+    scenario_runner = helper:start_game(player, banner, physics)
 
   elseif(event.phase == 'did') then
 
@@ -82,8 +82,8 @@ function scene:hide(event)
         tilemap_panel[i] = nil
       end
     end
-    scenerio_player:clean_up()
-    scenerio_player = nil
+    scenario_runner:clean_up()
+    scenario_runner = nil
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
