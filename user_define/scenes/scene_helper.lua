@@ -80,14 +80,14 @@ end
 function M:create_modal(sceneGroup, map_path)
   local modal = require("components.windows.modal")
   local object_sheets = M:get_object_sheets(map_path)
-  modal:create_modal(sceneGroup, object_sheets[3], nil)
+  modal:create_modal(sceneGroup, object_sheets[3], nil, M.selected_audio_path)
   return modal
 end
 
 function M:create_banner(sceneGroup, map_path)
   local banner = require("components.windows.banner")
   local object_sheets = M:get_object_sheets(map_path)
-  banner:create_banner(sceneGroup, object_sheets[3], nil)
+  banner:create_banner(sceneGroup, object_sheets[3], nil, M.selected_audio_path)
   return banner
 end
 

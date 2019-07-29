@@ -11,7 +11,6 @@ function M:prepare_extra_audio()
   global_audio:add_se(M.bbs_audio_path_etc)
   global_audio:add_se(M.ok_audio_path)
   global_audio:add_se(M.ng_audio_path)
-  global_audio:add_se(M.selected_audio_path)
 end
 
 function M:initialize(player, bbs)
@@ -73,7 +72,6 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
           end
         end,
         answer = function(self, state, done)
-          global_audio:play_se(M.selected_audio_path)
           global_command_queue:performWithDelay(500, function()
             if state == scenario_runner.NEXT then
               global_audio:play_se(M.ok_audio_path)
@@ -126,7 +124,6 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
               end
             end,
             answer = function(self, state, done)
-              global_audio:play_se(M.selected_audio_path)
               global_command_queue:performWithDelay(500, function()
                 if state == scenario_runner.NEXT then
                   global_audio:play_se(M.ok_audio_path)
@@ -176,7 +173,6 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
     bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
       modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
         global_command_queue:clear_current_command()
-        global_audio:play_se(M.selected_audio_path)
         if result == 1 then
           start_scenario()
         else

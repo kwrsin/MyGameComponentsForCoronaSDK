@@ -96,7 +96,7 @@ function M:visible_content(content, enabled, onHide)
   end
 end
 
-function M:create_modal(parent, object_sheet, text_options)
+function M:create_modal(parent, object_sheet, text_options, audio_path)
   local root_group = display  .newGroup()
   local contents_group = display.newGroup()
   local frame_group = display.newGroup()
@@ -135,6 +135,9 @@ function M:create_modal(parent, object_sheet, text_options)
     content:addEventListener("touch", function(event)
       if event.phase == "ended" or event.phase == "cancelled" then
         if M.result == -1 then
+          if global_audio then
+            global_audio:play_se(M.audio_path)
+          end
           M.result = event.target.index
           M:close()
         end
@@ -149,8 +152,15 @@ function M:create_modal(parent, object_sheet, text_options)
   M.frame_group = frame_group
   frame_group.isVisible = false
   M:set_frame(frame_group, object_sheet)
+
+  M.audio_path = audio_path
+  M:set_sound_effects()
 end
 
+function M:set_sound_effects()
+  if not global_audio then return end
+  global_audio:add_se(M.audio_path)
+end
 
 function M:show(labels, x, y, size, x_margin, y_spacing, onClose, text_options)
   M.result = -1
