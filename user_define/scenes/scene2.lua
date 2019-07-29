@@ -1,7 +1,6 @@
 local composer = require('composer')
 
 local helper = require("user_define.scenes.scene2_helper")
-local map_path = 'assets.abcde'
 local modal
 local bbs
 local player
@@ -16,9 +15,9 @@ function scene:create(event)
   player = composer.getVariable("player")
   helper:prepare_extra_audio()
   helper:create_background(sceneGroup)
-  bbs = helper:create_bbs(sceneGroup, map_path)
-  modal = helper:create_modal(sceneGroup, map_path)
-  banner = helper:create_banner(sceneGroup, map_path)
+  bbs = helper:create_bbs(sceneGroup)
+  modal = helper:create_modal(sceneGroup)
+  banner = helper:create_banner(sceneGroup)
 
 end
 

@@ -1,16 +1,9 @@
-
 local M = require("user_define.scenes.scene_helper")
 
-M.bbs_audio_path = "assets/audio/on.wav"
-M.bbs_audio_path_etc = "assets/audio/tap.wav"
-M.ok_audio_path = "assets/audio/ok.wav"
-M.ng_audio_path = "assets/audio/ng.wav"
-M.selected_audio_path = "assets/audio/selected.wav"
-
 function M:prepare_extra_audio()
-  global_audio:add_se(M.bbs_audio_path_etc)
-  global_audio:add_se(M.ok_audio_path)
-  global_audio:add_se(M.ng_audio_path)
+  global_audio:add_se(M.BBS_AUDIO_PATH_ETC)
+  global_audio:add_se(M.OK_AUDIO_PATH)
+  global_audio:add_se(M.NG_AUDIO_PATH)
 end
 
 function M:initialize(player, bbs)
@@ -74,10 +67,10 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
         answer = function(self, state, done)
           global_command_queue:performWithDelay(500, function()
             if state == scenario_runner.NEXT then
-              global_audio:play_se(M.ok_audio_path)
+              global_audio:play_se(M.OK_AUDIO_PATH)
               bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
             else
-              global_audio:play_se(M.ng_audio_path)
+              global_audio:play_se(M.NG_AUDIO_PATH)
               goodbye(state, done)
             end
           end)
@@ -86,7 +79,7 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
      {
         quest = function(self, done)
           bbs:clear_bbs()
-          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, M.bbs_audio_path_etc, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, M.BBS_AUDIO_PATH_ETC, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
             done()
           end)
         end,
@@ -126,10 +119,10 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
             answer = function(self, state, done)
               global_command_queue:performWithDelay(500, function()
                 if state == scenario_runner.NEXT then
-                  global_audio:play_se(M.ok_audio_path)
+                  global_audio:play_se(M.OK_AUDIO_PATH)
                   bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
                 else
-                  global_audio:play_se(M.ng_audio_path)
+                  global_audio:play_se(M.NG_AUDIO_PATH)
                   goodbye(state, done)
                 end
               end)

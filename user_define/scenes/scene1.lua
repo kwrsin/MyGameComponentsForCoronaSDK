@@ -7,7 +7,6 @@ local actor_list = {}
 local tilemap_panel
 local banner
 local actors_runner
-local map_path = 'assets.fghi'
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
 local scenario_runner
@@ -48,7 +47,7 @@ function scene:show(event)
     player.controller:set_listeners(
       helper:get_controller_listeners(player, camera))
 
-    actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
+    actor_list = helper:create_tilemap(tilemap_panel, player, physics)
     camera:set_following(player.actor.sprite)
     -- camera:set_following({x=0, y=0, width=32, height=32})
     camera:start_following()
@@ -85,8 +84,6 @@ function scene:hide(event)
     scenario_runner:clean_up()
     scenario_runner = nil
 
-    helper:clear_audio()
-
     print("scene1 hide will")
   elseif(event.phase == 'did') then
     print("scene1 hide did")
@@ -95,6 +92,7 @@ end
 
 function scene:destroy(event)
   local sceneGroup = self.view
+  helper:clear_audio()
   print("scene1 destroyed")
 end
 

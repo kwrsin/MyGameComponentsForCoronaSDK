@@ -1,15 +1,11 @@
-local M = {
-  CONTINUE = -1,
-  BREAK = 0,
-  NEXT = 1,
-}
+local M = require("user_define.constants")
 
 function M:get_object_sheets(map_path)
   local loader = require('components.tilemap_loader')
   return loader:get_object_sheets(map_path)
 end
 
-function M:create_tilemap(tilemap_panel, player, map_path, physics)
+function M:create_tilemap(tilemap_panel, player, physics)
   local actor_list = {}
 
   local function touch_event(event)
@@ -32,7 +28,7 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
   end
 
   local loader = require('components.tilemap_loader')
-  loader:load_tilemap(tilemap_panel, map_path, {
+  loader:load_tilemap(tilemap_panel, M.MAP_PATH, {
     tilelayer_1 = {
       onTouch = touch_event,
       onLocalCollision = collision_event
@@ -69,25 +65,25 @@ function M:create_tilemap(tilemap_panel, player, map_path, physics)
   return actor_list
 end
 
-function M:create_bbs(sceneGroup, map_path)
+function M:create_bbs(sceneGroup)
   local bbs = require('components.windows.bbs')()
-  local object_sheets = M:get_object_sheets(map_path)
+  local object_sheets = M:get_object_sheets(M.FRAME_PATH)
 
-  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3], nil, M.bbs_audio_path)
+  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3], nil, M.BBS_AUDIO_PATH)
   return bbs
 end
 
-function M:create_modal(sceneGroup, map_path)
+function M:create_modal(sceneGroup)
   local modal = require("components.windows.modal")
-  local object_sheets = M:get_object_sheets(map_path)
-  modal:create_modal(sceneGroup, object_sheets[3], nil, M.selected_audio_path)
+  local object_sheets = M:get_object_sheets(M.FRAME_PATH)
+  modal:create_modal(sceneGroup, object_sheets[3], nil, M.MODAL_AUDIO_PATH)
   return modal
 end
 
-function M:create_banner(sceneGroup, map_path)
+function M:create_banner(sceneGroup)
   local banner = require("components.windows.banner")
-  local object_sheets = M:get_object_sheets(map_path)
-  banner:create_banner(sceneGroup, object_sheets[3], nil, M.selected_audio_path)
+  local object_sheets = M:get_object_sheets(M.FRAME_PATH)
+  banner:create_banner(sceneGroup, object_sheets[3], nil)
   return banner
 end
 
