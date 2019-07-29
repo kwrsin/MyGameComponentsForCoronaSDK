@@ -3,9 +3,13 @@ local M = require("user_define.scenes.scene_helper")
 
 M.bbs_audio_path = "assets/audio/on.wav"
 M.bbs_audio_path_etc = "assets/audio/tap.wav"
+M.ok_audio_path = "assets/audio/ok.wav"
+M.ng_audio_path = "assets/audio/ng.wav"
 
 function M:prepare_extra_audio()
   global_audio:add_se(M.bbs_audio_path_etc)
+  global_audio:add_se(M.ok_audio_path)
+  global_audio:add_se(M.ng_audio_path)
 end
 
 function M:initialize(player, bbs)
@@ -68,8 +72,10 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
         end,
         answer = function(self, state, done)
           if state == scenario_runner.NEXT then
+            global_audio:play_se(M.ok_audio_path)
             bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
           else
+            global_audio:play_se(M.ng_audio_path)
             goodbye(state, done)
           end
         end,
@@ -116,8 +122,10 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
             end,
             answer = function(self, state, done)
               if state == scenario_runner.NEXT then
+                global_audio:play_se(M.ok_audio_path)
                 bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
               else
+                global_audio:play_se(M.ng_audio_path)
                 goodbye(state, done)
               end
             end,

@@ -38,7 +38,7 @@ function scene:hide(event)
     bbs:clean_up()
     scenario_runner:clean_up()
     scenario_runner = nil
-    helper:clear_audio()
+    -- helper:clear_audio()
   elseif(event.phase == 'did') then
   end
 end
