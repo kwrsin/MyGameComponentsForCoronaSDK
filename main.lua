@@ -12,6 +12,7 @@ t = require("components.i18n.locale")("assets.translations")
 global_command_queue = require("components.synchronized_non_blocking_methods")()
 Runtime:addEventListener("enterFrame", global_command_queue)
 global_audio = require("components.audio_player")
+global_constants = require("user_define.constants")
 system.activate( "multitouch" )
 
 local composer = require('composer')

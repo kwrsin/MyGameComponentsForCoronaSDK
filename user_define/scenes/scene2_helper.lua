@@ -1,9 +1,9 @@
 local M = require("user_define.scenes.scene_helper")
 
 function M:prepare_extra_audio()
-  global_audio:add_se(M.BBS_AUDIO_PATH_ETC)
-  global_audio:add_se(M.OK_AUDIO_PATH)
-  global_audio:add_se(M.NG_AUDIO_PATH)
+  global_audio:add_se(global_constants.BBS_AUDIO_PATH_ETC)
+  global_audio:add_se(global_constants.OK_AUDIO_PATH)
+  global_audio:add_se(global_constants.NG_AUDIO_PATH)
 end
 
 function M:initialize(player, bbs)
@@ -25,7 +25,7 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
     global_command_queue:regist_command(function()
       if state then
         local message = "あばよ〜っ！！"
-        if state == scenario_runner.CANCEL_ALL then
+        if state == global_constants.CANCEL_ALL then
           message = "この負け犬が〜っ"
         end
         bbs:clear_bbs()
@@ -57,20 +57,20 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
         end,
         evaluate = function()
           if modal.result == -1 then
-            return scenario_runner.CONTINUE
+            return global_constants.CONTINUE
           elseif modal.result == 2 then
-            return scenario_runner.NEXT
+            return global_constants.NEXT
           elseif modal.result ~= 2 then
-            return scenario_runner.CANCEL_ALL
+            return global_constants.CANCEL_ALL
           end
         end,
         answer = function(self, state, done)
           global_command_queue:performWithDelay(500, function()
-            if state == scenario_runner.NEXT then
-              global_audio:play_se(M.OK_AUDIO_PATH)
+            if state == global_constants.NEXT then
+              global_audio:play_se(global_constants.OK_AUDIO_PATH)
               bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
             else
-              global_audio:play_se(M.NG_AUDIO_PATH)
+              global_audio:play_se(global_constants.NG_AUDIO_PATH)
               goodbye(state, done)
             end
           end)
@@ -79,15 +79,15 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
      {
         quest = function(self, done)
           bbs:clear_bbs()
-          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, M.BBS_AUDIO_PATH_ETC, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, global_constants.BBS_AUDIO_PATH_ETC, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
             done()
           end)
         end,
         evaluate = function()
           if true then
-            return scenario_runner.NEXT
+            return global_constants.NEXT
           else
-            return scenario_runner.CONTINUE
+            return global_constants.CONTINUE
           end
         end,
         answer = function(self, state, done)
@@ -109,20 +109,20 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
             end,
             evaluate = function()
               if modal.result == -1 then
-                return scenario_runner.CONTINUE
+                return global_constants.CONTINUE
               elseif modal.result == 1 then
-                return scenario_runner.NEXT
+                return global_constants.NEXT
               elseif modal.result ~= 1 then
-                return scenario_runner.CANCEL_ALL
+                return global_constants.CANCEL_ALL
               end
             end,
             answer = function(self, state, done)
               global_command_queue:performWithDelay(500, function()
-                if state == scenario_runner.NEXT then
-                  global_audio:play_se(M.OK_AUDIO_PATH)
+                if state == global_constants.NEXT then
+                  global_audio:play_se(global_constants.OK_AUDIO_PATH)
                   bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
                 else
-                  global_audio:play_se(M.NG_AUDIO_PATH)
+                  global_audio:play_se(global_constants.NG_AUDIO_PATH)
                   goodbye(state, done)
                 end
               end)
@@ -137,9 +137,9 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
             end,
             evaluate = function()
               if true then
-                return scenario_runner.NEXT
+                return global_constants.NEXT
               else
-                return scenario_runner.CONTINUE
+                return global_constants.CONTINUE
               end
             end,
             answer = function(self, state, done)

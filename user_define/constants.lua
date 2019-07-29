@@ -1,6 +1,6 @@
 local M = {}
 M.CONTINUE = -1
-M.BREAK = 0
+M.CANCEL_ALL = 0
 M.NEXT = 1
 
 -- DEFAULT AUDIO
