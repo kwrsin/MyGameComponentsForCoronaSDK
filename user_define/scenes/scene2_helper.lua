@@ -1,6 +1,13 @@
 
 local M = require("user_define.scenes.scene_helper")
 
+M.bbs_audio_path = "assets/audio/on.wav"
+M.bbs_audio_path_etc = "assets/audio/tap.wav"
+
+function M:prepare_extra_audio()
+  global_audio:add_se(M.bbs_audio_path_etc)
+end
+
 function M:initialize(player, bbs)
   player.controller:disable_touch_hit_testable(true)
   player.controller:show_controller(false)
@@ -70,7 +77,7 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
      {
         quest = function(self, done)
           bbs:clear_bbs()
-          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, M.bbs_audio_path_etc, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
             done()
           end)
         end,
@@ -168,6 +175,8 @@ function M:create_background(sceneGroup)
     display.actualContentWidth, display.actualContentHeight)
   bg:setFillColor(0, 0, 0)
 end
+
+
 
 -- function M:create_sample_modal_buttons(sceneGroup, map_path)
 --   local modal = require("components.windows.modal")

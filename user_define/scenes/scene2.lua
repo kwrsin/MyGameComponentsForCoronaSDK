@@ -14,7 +14,7 @@ local scene = composer.newScene()
 function scene:create(event)
   local sceneGroup = self.view
   player = composer.getVariable("player")
-
+  helper:prepare_extra_audio()
   helper:create_background(sceneGroup)
   bbs = helper:create_bbs(sceneGroup, map_path)
   modal = helper:create_modal(sceneGroup, map_path)
@@ -38,6 +38,7 @@ function scene:hide(event)
     bbs:clean_up()
     scenario_runner:clean_up()
     scenario_runner = nil
+    helper:clear_audio()
   elseif(event.phase == 'did') then
   end
 end

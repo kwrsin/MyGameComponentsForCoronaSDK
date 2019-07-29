@@ -1,4 +1,8 @@
-local M = {}
+local M = {
+  CONTINUE = -1,
+  BREAK = 0,
+  NEXT = 1,
+}
 
 function M:get_object_sheets(map_path)
   local loader = require('components.tilemap_loader')
@@ -68,7 +72,8 @@ end
 function M:create_bbs(sceneGroup, map_path)
   local bbs = require('components.windows.bbs')()
   local object_sheets = M:get_object_sheets(map_path)
-  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3])
+
+  bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3], nil, M.bbs_audio_path)
   return bbs
 end
 
@@ -92,6 +97,10 @@ function M:create_camera(sceneGroup, view_group, width, height, view_width, view
   sceneGroup:insert(camera_group)
   camera_group.x = display.contentCenterX - width / 2
   return camera
+end
+
+function M:clear_audio()
+  global_audio:destory_sound_assets()
 end
 
 return M

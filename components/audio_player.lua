@@ -8,6 +8,10 @@ local M = {
   volume = 0,
 }
 
+function M:reserve_channels(channels)
+  audio.reserveChannels(channels)
+end
+
 function M:add_se(file)
   if not file then return end
   self.sound_assets[file] = audio.loadSound(file)
@@ -19,7 +23,7 @@ function M:add_music(file)
   self.music_handles[file] = audio.loadStream(file)
 end
 
-function M:play_se(key, opts)
+function M:play_se(key, opts, allow_overlap)
   if self.is_mute then return end
   local options = {}
   if opts then
@@ -28,18 +32,20 @@ function M:play_se(key, opts)
     end
   end
 
-  local playing_se = table.indexOf(self.playing_se_list, key) 
-  if playing_se then
-    return
-  end
-  table.insert(self.playing_se_list, key)
-  options.onComplete = function()
-    table.remove(self.playing_se_list, key)
+  if not allow_overlap then
+    local playing_se = table.indexOf(self.playing_se_list, key) 
+    if playing_se then
+      return
+    end
+    table.insert(self.playing_se_list, key)
+    options.onComplete = function()
+      table.remove(self.playing_se_list, table.indexOf(self.playing_se_list, key))
+    end
   end
   self.sound_channels[key] = audio.play(self.sound_assets[key], options)
 end
 
-function M:play_bgm_loop(key, restart_time)
+function M:play_bgm_loop(key, restart_time, opts)
   if self.is_mute then return end
   local handle = self.music_handles[key]
   local options = {}
@@ -48,6 +54,11 @@ function M:play_bgm_loop(key, restart_time)
     if event.completed then
       audio.seek(restart_time, handle)
       self.sound_channels[key] = audio.play(handle, options)
+    end
+  end
+  if opts then
+    for key, value in ipairs(opts) do
+      options[key] = value
     end
   end
   audio.rewind(handle)
@@ -120,21 +131,27 @@ function M:seek(sec, key, options)
   end
 end
 
-function M:destory_assets()
+function M:destory_sound_assets()
+  audio.stop()
   if self.sound_assets then
-    for i, r in ipairs(self.sound_assets) do
+    for i, r in pairs(self.sound_assets) do
       audio.dispose( r )
       r = nil
-      print("disposing se")
     end
+    print("disposing se")
   end
 
+end
+
+function M:destory_music_assets()
+  audio.stop()
+
   if self.music_assets then
-    for i, r in ipairs(self.music_assets) do
+    for i, r in pairs(self.music_assets) do
       audio.dispose( r )
       r = nil
-      print("disposing bg")
     end
+    print("disposing bg")
   end
 end
 

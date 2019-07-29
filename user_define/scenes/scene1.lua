@@ -85,6 +85,8 @@ function scene:hide(event)
     scenario_runner:clean_up()
     scenario_runner = nil
 
+    helper:clear_audio()
+
     print("scene1 hide will")
   elseif(event.phase == 'did') then
     print("scene1 hide did")

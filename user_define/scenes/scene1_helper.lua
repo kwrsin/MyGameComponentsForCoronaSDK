@@ -133,10 +133,10 @@ function M:start_game(player, banner, physics)
       end,
       evaluate = function()
         if player.actor.count >= 500 then
-          -- return 0
-          return 1
+          -- return M.BREAK
+          return M.NEXT
         else
-          return -1
+          return M.CONTINUE
         end
       end,
       answer = function(self, state, done)

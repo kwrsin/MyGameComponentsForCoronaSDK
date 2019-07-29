@@ -3,8 +3,8 @@ local utf8 = require('plugin.utf8')
 
 return function()
   local M = require("components.windows.frame")()
-
-  function M:create_bbs(parent, x, y, rows, cols, font_name, size, object_sheet, command_queue)
+ 
+  function M:create_bbs(parent, x, y, rows, cols, font_name, size, object_sheet, command_queue, audio_path)
     self.x_start_pos = display.actualContentWidth / 2 - size * cols / 2
     local bbs_group = display.newGroup()
     local offset_group = display.newGroup()
@@ -60,9 +60,22 @@ return function()
     M.bbs_group = bbs_group
     M.characters_offset = 0
     M.command_queue = command_queue
+    M.audio_path = audio_path
     M:set_frame(frame_group, object_sheet)
     local width, height = cols * size, rows * size
     M:adjust_frame(frame_group, width, height, size)
+    
+    M:set_sound_effects()
+  end
+
+  function M:set_sound_effects()
+    if not global_audio then return end
+    global_audio:add_se(M.audio_path)
+  end
+
+  function M:play_se(key)
+    if not global_audio then return end
+    global_audio:play_se(key)
   end
 
   function M:set_frame(frame_group, object_sheet)
@@ -88,34 +101,34 @@ return function()
   --   frame_group[1]:setFillColor( 0.1, 0, 0, 0.3 )
   --   frame_group[1]:setStrokeColor( 1, 0, 0 )
   -- end
-function M:adjust_frame(frame_group, width, height, size)
-  if frame_group.numChildren <= 0 then
-    return
+  function M:adjust_frame(frame_group, width, height, size)
+    if frame_group.numChildren <= 0 then
+      return
+    end
+    frame_group[1].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
+    frame_group[1].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
+    frame_group[2].x = display.contentCenterX - size / 2
+    frame_group[2].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
+    frame_group[2].width = width
+    frame_group[3].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
+    frame_group[3].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
+    frame_group[4].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
+    frame_group[4].y = display.contentCenterY - frame_group[1].height + size / 2
+    frame_group[4].height = height + frame_group[1].height / 2
+    -- frame_group[5].x = 0
+    -- frame_group[5].y = 0
+    frame_group[5].isVisible = false
+    frame_group[6].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
+    frame_group[6].y = display.contentCenterY - frame_group[1].height + size / 2
+    frame_group[6].height = height + frame_group[1].height / 2
+    frame_group[7].x = display.contentCenterX -width / 2 - frame_group[1].width / 2 - size / 2
+    frame_group[7].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2
+    frame_group[8].x = display.contentCenterX - size / 2
+    frame_group[8].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2
+    frame_group[8].width = width
+    frame_group[9].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
+    frame_group[9].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2 
   end
-  frame_group[1].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
-  frame_group[1].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
-  frame_group[2].x = display.contentCenterX - size / 2
-  frame_group[2].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
-  frame_group[2].width = width
-  frame_group[3].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
-  frame_group[3].y = display.contentCenterY - height / 2 - frame_group[1].height / 2 - frame_group[1].height + size / 2
-  frame_group[4].x = display.contentCenterX - width / 2 - frame_group[1].width / 2 - size / 2
-  frame_group[4].y = display.contentCenterY - frame_group[1].height + size / 2
-  frame_group[4].height = height + frame_group[1].height / 2
-  -- frame_group[5].x = 0
-  -- frame_group[5].y = 0
-  frame_group[5].isVisible = false
-  frame_group[6].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
-  frame_group[6].y = display.contentCenterY - frame_group[1].height + size / 2
-  frame_group[6].height = height + frame_group[1].height / 2
-  frame_group[7].x = display.contentCenterX -width / 2 - frame_group[1].width / 2 - size / 2
-  frame_group[7].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2
-  frame_group[8].x = display.contentCenterX - size / 2
-  frame_group[8].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2
-  frame_group[8].width = width
-  frame_group[9].x = display.contentCenterX + width / 2 + frame_group[1].width / 2 - size / 2
-  frame_group[9].y = display.contentCenterY + height / 2 + frame_group[1].height / 2 - frame_group[1].height + size / 2 
-end
 
   function M:get_tag_start_position()
     return self.x_start_pos
@@ -246,6 +259,11 @@ end
             character.text = v
             set_color(character, start_output_position, skip_space_count, colorOptions)
             self.output_count = self.output_count + 1
+            if sound and #sound > 0 then
+              M:play_se(sound, true)
+            else
+              M:play_se(M.audio_path, true)
+            end
           end
           if label == nil and actor then
             if actor.tag then
@@ -288,5 +306,6 @@ end
       run(#serif_array)
     end)
   end
+
   return M
 end

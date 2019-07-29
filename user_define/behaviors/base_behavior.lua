@@ -4,6 +4,7 @@ return function()
     sprite = nil,
     count = 0,
     length = 3,
+    audio_path_step = "assets/audio/step.wav",
   }
 
   function M.CoroPerformWithDelay( delay, func, n )
@@ -62,7 +63,18 @@ return function()
     sprite:play()
 
     self.sprite = sprite
+    M:set_sound_effects()
 
+  end
+
+  function M:set_sound_effects()
+    if not global_audio then return end
+    global_audio:add_se(M.audio_path_step)
+  end
+
+  function M:play_se(key)
+    if not global_audio then return end
+    global_audio:play_se(key)
   end
 
   function M:set_sequence(sequence_name)
@@ -100,14 +112,18 @@ return function()
     if x * x -  y * y > 0 then
       if x > 0 then
         self:right()
+        self:play_se(M.audio_path_step)
       elseif x < 0 then
         self:left()
+        self:play_se(M.audio_path_step)
       end
     elseif y * y - x * x > 0 then
       if y > 0 then
         self:down()
+        self:play_se(M.audio_path_step)
       elseif y < 0 then
         self:up()
+        self:play_se(M.audio_path_step)
       end
     end
 
