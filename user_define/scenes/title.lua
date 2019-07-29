@@ -22,14 +22,14 @@ function scene:show(event)
       30)
     local player = composer.getVariable("player")
     player.controller:show_controller(false)
-    player.controller:set_vc_event_listeners({
+    player.controller:set_listeners({
       touch = function(event)
         if event.phase == "ended" or event.phase == "cancelled" then
           local options = {
             effect = 'slideLeft',
             time = 200,
           }
-          composer.gotoScene("user_define.scenes.scene1", options)
+          composer.gotoScene("user_define.scenes.scene2", options)
         end
       end,
     })

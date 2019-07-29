@@ -1,10 +1,15 @@
-
 local M = require("user_define.scenes.scene_helper")
+
+function M:prepare_extra_audio()
+  global_audio:add_se(M.BBS_AUDIO_PATH_ETC)
+  global_audio:add_se(M.OK_AUDIO_PATH)
+  global_audio:add_se(M.NG_AUDIO_PATH)
+end
 
 function M:initialize(player, bbs)
   player.controller:disable_touch_hit_testable(true)
   player.controller:show_controller(false)
-  player.controller:set_vc_event_listeners({
+  player.controller:set_listeners({
       touch = function(event)
         if event.phase == "ended" or event.phase == "cancelled" then
           print("Any Touch 2!!")
@@ -15,24 +20,24 @@ function M:initialize(player, bbs)
   )
 end
 
-function M:start_game(player, bbs, modal, banner, scenario_player)
+function M:start_game(player, bbs, modal, banner, scenario_runner)
   local function goodbye(state, done)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       if state then
         local message = "あばよ〜っ！！"
-        if state == scenario_player.CANCEL_ALL then
+        if state == scenario_runner.CANCEL_ALL then
           message = "この負け犬が〜っ"
         end
         bbs:clear_bbs()
         bbs:say({tag=""}, message, 100, nil, nil, function()
           if done then done() end
-          global_queue:clear_current_command()
+          global_command_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       else
         banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
           if done then done() end
-          global_queue:clear_current_command()
+          global_command_queue:clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       end
@@ -52,33 +57,37 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
         end,
         evaluate = function()
           if modal.result == -1 then
-            return scenario_player.CONTINUE
+            return scenario_runner.CONTINUE
           elseif modal.result == 2 then
-            return scenario_player.NEXT
+            return scenario_runner.NEXT
           elseif modal.result ~= 2 then
-            return scenario_player.CANCEL_ALL
+            return scenario_runner.CANCEL_ALL
           end
         end,
         answer = function(self, state, done)
-          if state == scenario_player.NEXT then
-            bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
-          else
-            goodbye(state, done)
-          end
+          global_command_queue:performWithDelay(500, function()
+            if state == scenario_runner.NEXT then
+              global_audio:play_se(M.OK_AUDIO_PATH)
+              bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
+            else
+              global_audio:play_se(M.NG_AUDIO_PATH)
+              goodbye(state, done)
+            end
+          end)
         end,
       },
      {
         quest = function(self, done)
           bbs:clear_bbs()
-          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, nil, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
+          bbs:say({tag="C"}, "transition.*\nThe transition library provides functions and methods to transition tween display objects or display groups over a specific period of time. Library features include\nAbility to pause, resume, or cancel a transition (or all transitions)\n", 80, M.BBS_AUDIO_PATH_ETC, {{begin=32, stop=38, color_table={1, 1, 0}}}, function()
             done()
           end)
         end,
         evaluate = function()
           if true then
-            return scenario_player.NEXT
+            return scenario_runner.NEXT
           else
-            return scenario_player.CONTINUE
+            return scenario_runner.CONTINUE
           end
         end,
         answer = function(self, state, done)
@@ -100,19 +109,23 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
             end,
             evaluate = function()
               if modal.result == -1 then
-                return scenario_player.CONTINUE
+                return scenario_runner.CONTINUE
               elseif modal.result == 1 then
-                return scenario_player.NEXT
+                return scenario_runner.NEXT
               elseif modal.result ~= 1 then
-                return scenario_player.CANCEL_ALL
+                return scenario_runner.CANCEL_ALL
               end
             end,
             answer = function(self, state, done)
-              if state == scenario_player.NEXT then
-                bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
-              else
-                goodbye(state, done)
-              end
+              global_command_queue:performWithDelay(500, function()
+                if state == scenario_runner.NEXT then
+                  global_audio:play_se(M.OK_AUDIO_PATH)
+                  bbs:say({tag="D"}, "正解です\n", 20, nil, nil, function() done() end, nil)
+                else
+                  global_audio:play_se(M.NG_AUDIO_PATH)
+                  goodbye(state, done)
+                end
+              end)
             end,
           },
           {
@@ -124,9 +137,9 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
             end,
             evaluate = function()
               if true then
-                return scenario_player.NEXT
+                return scenario_runner.NEXT
               else
-                return scenario_player.CONTINUE
+                return scenario_runner.CONTINUE
               end
             end,
             answer = function(self, state, done)
@@ -142,17 +155,17 @@ function M:start_game(player, bbs, modal, banner, scenario_player)
 
       },
     }
-    scenario_player:set_scenario_list(scenario_list)
+    scenario_runner:set_scenario_list(scenario_list)
 
   end
 
-  global_queue:regist_command(function()
+  global_command_queue:regist_command(function()
     bbs:clear_bbs()
     bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil)
     bbs:say({tag=""}, "これからいくつか質問をします！！\n", 100, nil, nil)
     bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
       modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
-        global_queue:clear_current_command()
+        global_command_queue:clear_current_command()
         if result == 1 then
           start_scenario()
         else
@@ -168,6 +181,8 @@ function M:create_background(sceneGroup)
     display.actualContentWidth, display.actualContentHeight)
   bg:setFillColor(0, 0, 0)
 end
+
+
 
 -- function M:create_sample_modal_buttons(sceneGroup, map_path)
 --   local modal = require("components.windows.modal")

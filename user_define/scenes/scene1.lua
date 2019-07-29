@@ -6,11 +6,10 @@ local player
 local actor_list = {}
 local tilemap_panel
 local banner
-local _actors_enterFrame
-local map_path = 'assets.fghi'
+local actors_runner
 local physics = require("physics")
 local helper = require("user_define.scenes.scene1_helper")
-local scenerio_player
+local scenario_runner
 local camera
 
 local back_to_title
@@ -24,23 +23,13 @@ function scene:create(event)
   player = composer.getVariable("player")
   helper:create_stage(sceneGroup)
   tilemap_panel = display.newGroup()
-  -- sceneGroup:insert(tilemap_panel)
-  local camera_group = display.newGroup()
+  camera = helper:create_camera(sceneGroup, tilemap_panel, 300, 300, 5760, 576)
 
-  camera = require("components.camera")(camera_group, 300, 300, tilemap_panel, nil, 5760, 576)
-  sceneGroup:insert(camera_group)
-  camera_group.x = display.contentCenterX - 150
   -- banner
-  local scenario_panel = display.newGroup()
-  sceneGroup:insert(scenario_panel)
-  banner = display.newText(scenario_panel, "READY", -display.contentCenterX, display.contentCenterY, "Arial", 32 )
+  local banner_panel = display.newGroup()
+  sceneGroup:insert(banner_panel)
+  banner = display.newText(banner_panel, "READY", -display.contentCenterX, display.contentCenterY, "Arial", 32 )
   banner.isVisible = false
-
-  back_to_title = display.newText(sceneGroup, "back to title", display.contentCenterX, display.contentCenterY, native.systemFont, 24)
-  back_to_title:addEventListener('touch', function(event)
-
-    composer.gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
-  end)
 
   print("scene1 created")
 end
@@ -55,167 +44,17 @@ function scene:show(event)
     -- player controller
     camera.x_origin = 0
     camera.y_origin = 0
-    player.controller:set_vc_event_listeners(
-      {
-        touch = function(event)
-          if event.phase == "began" then
-            display.currentStage:setFocus(camera.child)
-            display.getCurrentStage():setFocus()
-            camera.x_origin = event.x - camera.child.x
-            camera.y_origin = event.y - camera.child.y
-            -- camera.is_playing = true
-          elseif event.phase == "moved" then
-            camera.child.x = event.x - camera.x_origin
-            camera.child.y = event.y - camera.y_origin
-            -- camera.is_playing = true
-          elseif event.phase == "ended" or event.phase == "cancelled" then
-            -- camera.is_playing = false
-            display.currentStage:setFocus(nil)
-          end
-          camera.child.x, camera.child.y = camera:clamp(camera.child.x, camera.child.y)
+    player.controller:set_listeners(
+      helper:get_controller_listeners(player, camera))
 
-        end,
-        up = function(event)
-        end,
-        down = function(event)
-        end,
-        left = function(event)
-        end,
-        right = function(event)
-        end,
-        north = function(event)
-        end,
-        south = function(event)
-        end,
-        east = function(event)
-        end,
-        west = function(event)
-        end,
-        cursor = function(event)
-          if player.controller:is_button_repeated("cursor") then
-            print(event.target.name .. " ON!!")
-
-          elseif not player.controller:is_button_repeated("cursor") then
-            camera:move(function(child, done)
-              local x, y = camera:clamp(-3000, 30)
-              global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                global_queue:performWithDelay(1000, function(event)
-                  x, y = camera:clamp(0, 0)
-                  global_queue:to(child, {time=2000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                    x, y = camera:clamp(camera:get_following_positions())
-                      global_queue:to(child, {time=1000, x=x, y=y, transition=easing.inOutQuart, onComplete=function()
-                        done()
-                        global_queue:to(player.actor.sprite, {time=6000, x=5730, y=80, transition=easing.inOutQuart, onComplete=function()
-                          global_queue:to(player.actor.sprite, {time=4000, x=10, y=500, transition=easing.inOutQuart, onComplete=function()
-
-                          end}, true)
-                      end}, true)
-                    end}, true)
-                  end}, true)
-                end, true)
-              end}, true)
-            end)
-            print(event.target.name .. " OFF!!")
-          end
-        end,
-      }
-    )
-
-    actor_list = helper:create_tilemap(tilemap_panel, player, map_path, physics)
+    actor_list = helper:create_tilemap(tilemap_panel, player, physics)
     camera:set_following(player.actor.sprite)
     -- camera:set_following({x=0, y=0, width=32, height=32})
     camera:start_following()
 
-    player.controller:disable_touch_hit_testable(false)
-    local function execute_opening()
-      global_queue:regist_command(function()
-        banner.x = -display.contentCenterX
-        banner.isVisible = true
-        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
-      end)
-      global_queue:regist_command(function()
-        global_queue:to(banner, {time=200, x=display.contentCenterX})
-      end)
-      global_queue:regist_command(function()
-        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
-      end)
-      global_queue:regist_command(function()
-        banner.x = -display.contentCenterX
-        banner.text = "GO"
-        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
-      end)
-      global_queue:regist_command(function()
-        global_queue:to(banner, {time=200, x=display.contentCenterX})
-      end)
-      global_queue:regist_command(function()
-        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
-      end)
-      global_queue:regist_command(function()
-        banner.x = -display.contentCenterX
-        banner.text = "FIGHT"
-        global_queue:to(banner, {time=600, x=display.contentCenterX, transition=easing.inOutElastic})
-      end)
-      global_queue:regist_command(function()
-        global_queue:to(banner, {time=200, x=display.contentCenterX})
-      end)
-      global_queue:regist_command(function()
-        global_queue:to(banner, {time=100, x= display.contentWidth + display.contentCenterX})
-      end)
-      global_queue:regist_command(function()
-        global_queue:performWithDelay(100, function()
-          banner.isVisible = false
-          player.controller:disable_touch_hit_testable(true)
-          player.controller:show_controller(true)
-          physics.start()
-        end)
-      end)
-    end
+    actors_runner = helper:create_actors_runner(player, actor_list)
 
-    local function execute_ending()
-    end
-
-    -- start game
-    _actors_enterFrame = function(event)
-      -- player.controller:observe("cursor", function()
-      --   local sla = math.sqrt(player.controller.cursor_object.x * player.controller.cursor_object.x + player.controller.cursor_object.y * player.controller.cursor_object.y)
-      --   local length = 3
-      --   local x_cursor = player.controller.cursor_object.x
-      --   local y_cursor = player.controller.cursor_object.y
-      --   local x = (x_cursor / sla) * length
-      --   local y = (y_cursor / sla) * length
-      --   player.actor:move(x, y)
-
-      -- end)
-
-      for i = 1, #actor_list do
-        actor_list[i].enterFrame(event)
-      end
-    end
-    Runtime:addEventListener("enterFrame", _actors_enterFrame)
-
-    execute_opening()
-    local scenario_list = {
-      {
-        quest = function(self, done)
-          done()
-        end,
-        evaluate = function()
-          -- if player.actor.count >= 500 then
-          --   -- return 0
-          --   return 1
-          -- else
-          --   return -1
-          -- end
-          return -1
-        end,
-        answer = function(self, state, done)
-          done()
-        end,
-      },
-
-    }
-    scenerio_player = require("components.scenario_player")(scenario_list)
-
+    scenario_runner = helper:start_game(player, banner, physics)
 
   elseif(event.phase == 'did') then
 
@@ -228,8 +67,8 @@ function scene:hide(event)
 
   if(event.phase == 'will') then
     camera:stop_following()
-    global_queue:clean_up()
-    Runtime:removeEventListener("enterFrame", _actors_enterFrame)
+    global_command_queue:clean_up()
+    actors_runner:stop_actors_runner()
     for i = 1 , #actor_list do
       if actor_list[i].timerId then
         timer.cancel(actor_list[i].timerId)
@@ -242,8 +81,8 @@ function scene:hide(event)
         tilemap_panel[i] = nil
       end
     end
-    scenerio_player:clean_up()
-    scenerio_player = nil
+    scenario_runner:clean_up()
+    scenario_runner = nil
 
     print("scene1 hide will")
   elseif(event.phase == 'did') then
@@ -253,6 +92,7 @@ end
 
 function scene:destroy(event)
   local sceneGroup = self.view
+  helper:clear_audio()
   print("scene1 destroyed")
 end
 

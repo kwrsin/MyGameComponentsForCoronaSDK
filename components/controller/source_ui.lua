@@ -25,7 +25,7 @@ end
 
 function M:create_vertual_controller(layer_object, listeners)
   local event_handlers = {}
-  M:set_vc_event_listeners(listeners)
+  M:set_listeners(listeners)
 
   local function touch(self, event)
     if event.target and event.target.name == 'cursor' then
@@ -129,7 +129,7 @@ function M:get_virtual_controller(layer_object, listeners)
   return self:create_vertual_controller(layer_object, listeners)
 end
 
-function M:set_vc_event_listeners(listeners)
+function M:set_listeners(listeners)
   self.listeners = listeners
   for button_name, v in pairs(self.listeners) do
     M.button_state[button_name] = M.RELEASED
@@ -143,9 +143,21 @@ function M:execute(event, button_name)
     M.button_state[button_name] = M.RELEASED
   end
   if self.listeners then
-    return self.listeners[button_name](event)
+    local func = self.listeners[button_name]
+    if func then
+      return func(event)
+    end
   end
   return true
+end
+
+function M:get_cursor_positions()
+  local sla = math.sqrt(M.cursor_object.x * M.cursor_object.x + M.cursor_object.y * M.cursor_object.y)
+  local x_cursor = M.cursor_object.x
+  local y_cursor = M.cursor_object.y
+  local x = (x_cursor / sla)
+  local y = (y_cursor / sla)
+  return x, y
 end
 
 function M:observe(button_name, handler)

@@ -1,12 +1,11 @@
 local composer = require('composer')
 
 local helper = require("user_define.scenes.scene2_helper")
-local map_path = 'assets.abcde'
 local modal
 local bbs
 local player
 local banner
-local scenerio_player
+local scenario_runner
 
 
 local scene = composer.newScene()
@@ -14,11 +13,11 @@ local scene = composer.newScene()
 function scene:create(event)
   local sceneGroup = self.view
   player = composer.getVariable("player")
-
+  helper:prepare_extra_audio()
   helper:create_background(sceneGroup)
-  bbs = helper:create_bbs(sceneGroup, map_path)
-  modal = helper:create_modal(sceneGroup, map_path)
-  banner = helper:create_banner(sceneGroup, map_path)
+  bbs = helper:create_bbs(sceneGroup)
+  modal = helper:create_modal(sceneGroup)
+  banner = helper:create_banner(sceneGroup)
 
 end
 
@@ -27,8 +26,8 @@ function scene:show(event)
 
   if(event.phase == 'will') then
     helper:initialize(player, bbs)
-    scenerio_player = require("components.scenario_player")({})
-    helper:start_game(player, bbs, modal, banner, scenerio_player)
+    scenario_runner = require("components.scenario_runner")({})
+    helper:start_game(player, bbs, modal, banner, scenario_runner)
   elseif(event.phase == 'did') then
   end
 end
@@ -36,8 +35,9 @@ end
 function scene:hide(event)
   if(event.phase == 'will') then
     bbs:clean_up()
-    scenerio_player:clean_up()
-    scenerio_player = nil
+    scenario_runner:clean_up()
+    scenario_runner = nil
+    -- helper:clear_audio()
   elseif(event.phase == 'did') then
   end
 end

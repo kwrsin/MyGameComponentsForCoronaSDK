@@ -3,6 +3,8 @@ return function()
     sequence_names = {},
     sprite = nil,
     count = 0,
+    length = 3,
+    audio_path_step = "assets/audio/step.wav",
   }
 
   function M.CoroPerformWithDelay( delay, func, n )
@@ -61,7 +63,18 @@ return function()
     sprite:play()
 
     self.sprite = sprite
+    M:set_sound_effects()
 
+  end
+
+  function M:set_sound_effects()
+    if not global_audio then return end
+    global_audio:add_se(M.audio_path_step)
+  end
+
+  function M:play_se(key)
+    if not global_audio then return end
+    global_audio:play_se(key)
   end
 
   function M:set_sequence(sequence_name)
@@ -91,22 +104,26 @@ return function()
 
   function M:move(x, y)
     if not (x ~= x) then
-      self.sprite.x = self.sprite.x + x
+      self.sprite.x = self.sprite.x + (x * M.length)
     end
     if not (y ~= y) then
-      self.sprite.y = self.sprite.y + y
+      self.sprite.y = self.sprite.y + (y * M.length)
     end
     if x * x -  y * y > 0 then
       if x > 0 then
         self:right()
+        self:play_se(M.audio_path_step)
       elseif x < 0 then
         self:left()
+        self:play_se(M.audio_path_step)
       end
     elseif y * y - x * x > 0 then
       if y > 0 then
         self:down()
+        self:play_se(M.audio_path_step)
       elseif y < 0 then
         self:up()
+        self:play_se(M.audio_path_step)
       end
     end
 
@@ -118,29 +135,29 @@ return function()
   end
 
   function M:moveAround()
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       M:up()
-      transition.to(self.sprite, {time = 1000, x = 0, y = 0, onComplete=function() global_queue:clear_current_command() end})
+      transition.to(self.sprite, {time = 1000, x = 0, y = 0, onComplete=function() global_command_queue:clear_current_command() end})
     end)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       M:right()
-      transition.to(self.sprite, {time = 1000, x = display.contentWidth, y = 0, onComplete=function() global_queue:clear_current_command() end})
+      transition.to(self.sprite, {time = 1000, x = display.contentWidth, y = 0, onComplete=function() global_command_queue:clear_current_command() end})
     end)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       M:down()
-      transition.to(self.sprite, {time = 1000, x = display.contentWidth, y = display.contentHeight, onComplete=function() global_queue:clear_current_command() end})
+      transition.to(self.sprite, {time = 1000, x = display.contentWidth, y = display.contentHeight, onComplete=function() global_command_queue:clear_current_command() end})
     end)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       M:left()
-      transition.to(self.sprite, {time = 1000, x = 0, y = display.contentHeight, onComplete=function() global_queue:clear_current_command() end})
+      transition.to(self.sprite, {time = 1000, x = 0, y = display.contentHeight, onComplete=function() global_command_queue:clear_current_command() end})
     end)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       M:up()
-      transition.to(self.sprite, {time = 1000, x = display.contentCenterX, y = display.contentCenterY, onComplete=function() global_queue:clear_current_command() end})
+      transition.to(self.sprite, {time = 1000, x = display.contentCenterX, y = display.contentCenterY, onComplete=function() global_command_queue:clear_current_command() end})
     end)
-    global_queue:regist_command(function()
+    global_command_queue:regist_command(function()
       M.sprite:applyLinearImpulse(0, -0.1, M.sprite.x, M.sprite.y)
-      global_queue:clear_current_command()
+      global_command_queue:clear_current_command()
     end)
   end
 
