@@ -54,7 +54,6 @@ return function()
     M.tags = tags
     M.output_count = 0
     M.characters_index = -1
-    M.prompt_icon_path = nil
     M.timer_id_list = {}
     M.offset_group = offset_group
     M.bbs_group = bbs_group
@@ -66,6 +65,12 @@ return function()
     M:adjust_frame(frame_group, width, height, size)
     
     M:set_sound_effects()
+  end
+
+  function M:set_prompt(prompt)
+    M.prompt = prompt
+    M.prompt:set_position(width, height)
+    M.prompt:hide_prompt()
   end
 
   function M:set_sound_effects()
@@ -157,7 +162,12 @@ return function()
         self.characters_offset = 0
         self.command_queue:clear_current_command()
       end)
-
+  
+      if M.prompt then
+        if M.prompt:is_shown() then
+         M.prompt:hide_prompt()
+        end
+      end
   end
 
   function M:get_next_characters_index()
@@ -197,6 +207,10 @@ return function()
     self.offset_group.y = 0
     self.characters_offset = 0
 
+    if M.prompt then
+      M.prompt:hide_prompt()
+    end
+
   end
 
   function M:say(actor, serif, speed, sound, colorOptions, onAsk, onActorAction)
@@ -233,8 +247,16 @@ return function()
       self.set_speed = function(self, value)
         _set_speed(value)
       end
+      if M.prompt then
+        M.prompt:hide_prompt()
+      end
       local function run(count)
         if count <= 0 then
+          if M.prompt then
+            if not M.prompt:is_shown() then
+              M.prompt:show_prompt()
+            end
+          end
           if onAsk then
             onAsk()
           end

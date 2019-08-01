@@ -70,6 +70,8 @@ function M:create_bbs(sceneGroup)
   local object_sheets = M:get_object_sheets(global_constants.FRAME_PATH)
 
   bbs:create_bbs(sceneGroup, 0, -180, 6, 20, native.systemFont, 12, object_sheets[3], nil, global_constants.BBS_AUDIO_PATH)
+  local bbs_prompt = require("components.windows.bbs_prompt")(bbs.bbs_group, object_sheets[4])
+  bbs:set_prompt(bbs_prompt)
   return bbs
 end
 

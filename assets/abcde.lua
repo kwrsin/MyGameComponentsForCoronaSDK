@@ -1,7 +1,7 @@
 return {
   version = "1.1",
   luaversion = "5.1",
-  tiledversion = "0.17.2",
+  tiledversion = "0.18.0",
   orientation = "orthogonal",
   renderorder = "right-down",
   width = 9,
@@ -118,7 +118,7 @@ return {
             offsety = 0,
             draworder = "index",
             properties = {
-              ["bounce"] = 0.80000000000000004,
+              ["bounce"] = 0.8,
               ["density"] = 10,
               ["friction"] = "0.2"
             },
@@ -177,6 +177,25 @@ return {
       properties = {},
       terrains = {},
       tilecount = 9,
+      tiles = {}
+    },
+    {
+      name = "prompt",
+      firstgid = 778,
+      tilewidth = 16,
+      tileheight = 16,
+      spacing = 0,
+      margin = 0,
+      image = "prompt.png",
+      imagewidth = 16,
+      imageheight = 16,
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 1,
       tiles = {}
     }
   },
