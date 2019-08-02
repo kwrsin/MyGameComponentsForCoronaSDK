@@ -23,7 +23,7 @@ end
 
 function M:start_game(player, bbs, modal, banner, scenario_runner)
   local function goodbye(state, done)
-    global_command_queue:regist_command(function()
+    global_command_queue:run(function(clear_current_command)
       if state then
         local message = "あばよ〜っ！！"
         if state == global_constants.CANCEL_ALL then
@@ -32,13 +32,13 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
         bbs:clear_bbs()
         bbs:say({tag=""}, message, 100, nil, nil, function()
           if done then done() end
-          global_command_queue:clear_current_command()
+          clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       else
         banner:show("あばよ〜っ！！", display.actualContentWidth / 2, display.actualContentHeight / 4, 24, nil, function()
           if done then done() end
-          global_command_queue:clear_current_command()
+          clear_current_command()
           require("composer").gotoScene("user_define.scenes.title", {time=200, effect="slideLeft"})
         end)
       end
@@ -101,12 +101,25 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
         scenario_list = {
           {
             quest = function(self, done)
-              bbs:clear_bbs()
-              bbs:say({tag="S"}, "問題2\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
-              bbs:say({tag="D"}, "8 + 9 = ?\n", 180, nil, nil, function()
-                modal:show({{"17"}, {"19"}}, 0, 0, 24, 80, 20)
-                done()
+              global_command_queue:run(function(clear_current_command)
+                bbs:clear_bbs()
+                bbs:say({tag="S"}, "問題2\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}}, function()
+                  bbs:show_prompt(function() clear_current_command() end)
+                end)
               end)
+              global_command_queue:run(function(clear_current_command)
+                bbs:say({tag="D"}, "8 + 9 = ?\n", 180, nil, nil, function()
+                  clear_current_command()
+                  modal:show({{"17"}, {"19"}}, 0, 0, 24, 80, 20)
+                  done()
+                end)
+              end)
+              -- bbs:clear_bbs()
+              -- bbs:say({tag="S"}, "問題2\n", 80, nil, {{begin=9, stop=13, color_table={1, 0, 1}}})
+              -- bbs:say({tag="D"}, "8 + 9 = ?\n", 180, nil, nil, function()
+              --   modal:show({{"17"}, {"19"}}, 0, 0, 24, 80, 20)
+              --   done()
+              -- end)
             end,
             evaluate = function()
               if modal.result == -1 then
@@ -160,13 +173,13 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
 
   end
 
-  -- global_command_queue:regist_command(function()
+  -- global_command_queue:run(function(clear_current_command)
   --   bbs:clear_bbs()
   --   bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil)
   --   bbs:say({tag=""}, "これからいくつか質問をします！！\n", 100, nil, nil)
   --   bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
   --     modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
-  --       global_command_queue:clear_current_command()
+  --       clear_current_command()
   --       if result == 1 then
   --         start_scenario()
   --       else
