@@ -71,6 +71,22 @@ return function()
     M.prompt = prompt
     M.prompt:set_position(width, height)
     M.prompt:hide_prompt()
+    M.prompt_done = nil
+  end
+
+  function M:show_prompt(done)
+    if M.prompt and done then
+      M.prompt:show_prompt()
+      M.prompt_done = done
+    end
+  end
+
+  function M:hide_prompt()
+    if M.prompt and M.prompt_done then
+      M.prompt:hide_prompt()
+      M.prompt_done()
+      M.prompt_done = nil
+    end
   end
 
   function M:set_sound_effects()
@@ -247,16 +263,8 @@ return function()
       self.set_speed = function(self, value)
         _set_speed(value)
       end
-      if M.prompt then
-        M.prompt:hide_prompt()
-      end
       local function run(count)
         if count <= 0 then
-          if M.prompt then
-            if not M.prompt:is_shown() then
-              M.prompt:show_prompt()
-            end
-          end
           if onAsk then
             onAsk()
           end

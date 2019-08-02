@@ -14,6 +14,7 @@ function M:initialize(player, bbs)
         if event.phase == "ended" or event.phase == "cancelled" then
           print("Any Touch 2!!")
           bbs:set_speed(15)
+          bbs:hide_prompt()
         end
       end,
     }
@@ -159,19 +160,25 @@ function M:start_game(player, bbs, modal, banner, scenario_runner)
 
   end
 
-  global_command_queue:regist_command(function()
+  -- global_command_queue:regist_command(function()
+  --   bbs:clear_bbs()
+  --   bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil)
+  --   bbs:say({tag=""}, "これからいくつか質問をします！！\n", 100, nil, nil)
+  --   bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
+  --     modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
+  --       global_command_queue:clear_current_command()
+  --       if result == 1 then
+  --         start_scenario()
+  --       else
+  --         goodbye()
+  --       end
+  --     end)
+  --   end)
+  -- end)
+  global_command_queue:run(function(done)
     bbs:clear_bbs()
-    bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil)
-    bbs:say({tag=""}, "これからいくつか質問をします！！\n", 100, nil, nil)
-    bbs:say({tag=""}, "それでは準備はよろしいでしょうか？\n", 100, nil, nil, function()
-      modal:show({{t("YES").value}, {t("NO").value}}, 0, 0, 24, 80, 20, function(result)
-        global_command_queue:clear_current_command()
-        if result == 1 then
-          start_scenario()
-        else
-          goodbye()
-        end
-      end)
+    bbs:say({tag="D"}, "はじめまして、僕,ドラえもん！！\n", 100, nil, nil, function()
+      bbs:show_prompt(function() start_scenario();done() end)
     end)
   end)
 end
