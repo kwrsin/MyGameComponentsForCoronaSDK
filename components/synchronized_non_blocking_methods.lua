@@ -71,5 +71,15 @@ return function()
     return timer_id
   end
 
+  function M:run(onAction)
+    M:regist_command(function()
+      if onAction then
+        onAction(function(result)
+          M:clear_current_command()
+        end)
+      end
+    end)
+  end
+
   return M
 end

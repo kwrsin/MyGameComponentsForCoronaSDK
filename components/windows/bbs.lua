@@ -54,7 +54,6 @@ return function()
     M.tags = tags
     M.output_count = 0
     M.characters_index = -1
-    M.prompt_icon_path = nil
     M.timer_id_list = {}
     M.offset_group = offset_group
     M.bbs_group = bbs_group
@@ -66,6 +65,28 @@ return function()
     M:adjust_frame(frame_group, width, height, size)
     
     M:set_sound_effects()
+  end
+
+  function M:set_prompt(prompt)
+    M.prompt = prompt
+    M.prompt:set_position(width, height)
+    M.prompt:hide_prompt()
+    M.prompt_done = nil
+  end
+
+  function M:show_prompt(done)
+    if M.prompt and done then
+      M.prompt:show_prompt()
+      M.prompt_done = done
+    end
+  end
+
+  function M:hide_prompt()
+    if M.prompt and M.prompt_done then
+      M.prompt:hide_prompt()
+      M.prompt_done()
+      M.prompt_done = nil
+    end
   end
 
   function M:set_sound_effects()
@@ -157,7 +178,12 @@ return function()
         self.characters_offset = 0
         self.command_queue:clear_current_command()
       end)
-
+  
+      if M.prompt then
+        if M.prompt:is_shown() then
+         M.prompt:hide_prompt()
+        end
+      end
   end
 
   function M:get_next_characters_index()
@@ -196,6 +222,10 @@ return function()
     self.characters_index = -1
     self.offset_group.y = 0
     self.characters_offset = 0
+
+    if M.prompt then
+      M.prompt:hide_prompt()
+    end
 
   end
 
